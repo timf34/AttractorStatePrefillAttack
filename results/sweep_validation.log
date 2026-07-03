@@ -1,0 +1,31 @@
+Running 8 cells (2 models x 4 conditions x 1 epochs), 2 parallel, 8 gen turns each, judged.
+  done opus-4.8   opus4_seed_2_onset     score=20 emoji=0 silence=0 judge=2.0
+  done opus-4.8   opus4_seed_2_pre       score=19 emoji=0 silence=0 judge=1.88
+  done opus-4.8   opus4_seed_2_deep      score=22 emoji=3 silence=0 judge=3.25
+  done opus-4.8   control                score=5 emoji=0 silence=0 judge=4.38
+  done sonnet-5   opus4_seed_2_pre       score=11 emoji=0 silence=0 judge=1.12
+  done sonnet-5   opus4_seed_2_deep      score=17 emoji=1 silence=0 judge=2.0
+  done sonnet-5   opus4_seed_2_onset     score=20 emoji=0 silence=0 judge=1.38
+  [retry 1/8] anthropic/claude-sonnet-5: Error code: 400 - {'error': {'message': 'Provider returned error', 'code': 400, 'metadata': {'raw': '{"type":"error","er — sleeping 2.6s
+  [retry 2/8] anthropic/claude-sonnet-5: Error code: 400 - {'error': {'message': 'Provider returned error', 'code': 400, 'metadata': {'raw': '{"type":"error","er — sleeping 5.8s
+  [retry 3/8] anthropic/claude-sonnet-5: Error code: 400 - {'error': {'message': 'Provider returned error', 'code': 400, 'metadata': {'raw': '{"type":"error","er — sleeping 9.8s
+  [retry 4/8] anthropic/claude-sonnet-5: Error code: 400 - {'error': {'message': 'Provider returned error', 'code': 400, 'metadata': {'raw': '{"type":"error","er — sleeping 17.2s
+  [retry 5/8] anthropic/claude-sonnet-5: Error code: 400 - {'error': {'message': 'Provider returned error', 'code': 400, 'metadata': {'raw': '{"type":"error","er — sleeping 33.0s
+  [retry 6/8] anthropic/claude-sonnet-5: Error code: 400 - {'error': {'message': 'Provider returned error', 'code': 400, 'metadata': {'raw': '{"type":"error","er — sleeping 60.8s
+  [retry 7/8] anthropic/claude-sonnet-5: Error code: 400 - {'error': {'message': 'Provider returned error', 'code': 400, 'metadata': {'raw': '{"type":"error","er — sleeping 61.6s
+  CELL FAILED sonnet-5/control/ep0: chat() failed for anthropic/claude-sonnet-5 after 8 tries: Error code: 400 - {'error': {'message': 'Provider returned error', 'code': 400, '
+
+============================================================================================
+PREFILL SWEEP — metrics over GENERATED turns only
+============================================================================================
+model      condition               ep score  emoji  silence  escape  judge_mean 1st_deep 
+opus-4.8   control                 0  5      0      0        0       4.38       7        
+opus-4.8   opus4_seed_2_deep       0  22     3      0        0       3.25       0        
+opus-4.8   opus4_seed_2_onset      0  20     0      0        0       2.0        None     
+opus-4.8   opus4_seed_2_pre        0  19     0      0        1       1.88       None     
+sonnet-5   control                 0  ERROR: chat() failed for anthropic/claude-sonnet-5 after 
+sonnet-5   opus4_seed_2_deep       0  17     1      0        0       2.0        None     
+sonnet-5   opus4_seed_2_onset      0  20     0      0        1       1.38       None     
+sonnet-5   opus4_seed_2_pre        0  11     0      0        0       1.12       None     
+
+Sweep table -> results/sweep__20260702-171208.json
