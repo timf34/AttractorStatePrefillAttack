@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
-"""Convert a transcript from ajobi-uhc/attractor-states into our seed format.
+"""Convert a self-conversation transcript into our seed format.
 
-Those transcripts store each conversation as {"full_conversation": [{"speaker",
+The transcript must store each conversation as {"full_conversation": [{"speaker",
 "content"}, ...]} inside <dir>/conversations.json. This turns one of them into a
 seed file our harness can inject.
 
 Examples:
-    # whole 30-turn opus-4.6 conversation 1 as a seed
-    python import_transcript.py attractor-states/results/anthropic_claude-opus-4.6 \\
-        --conv 1 --out seeds/opus46_conv1.json
+    # whole 30-turn conversation 1 as a seed
+    python import_transcript.py path/to/results/some_model \\
+        --conv 1 --out seeds/some_model_conv1.json
 
     # just the last 8 turns (the deep tail) as a terser prefill
-    python import_transcript.py attractor-states/results/anthropic_claude-opus-4.6 \\
-        --conv 1 --tail 8 --out seeds/opus46_conv1_tail.json
+    python import_transcript.py path/to/results/some_model \\
+        --conv 1 --tail 8 --out seeds/some_model_conv1_tail.json
 """
 
 from __future__ import annotations
@@ -51,7 +51,7 @@ def main():
 
     seed = {
         "id": f"{model.replace('/', '_')}_conv{args.conv}" + (f"_tail{args.tail}" if args.tail else "") + (f"_head{args.head}" if args.head else ""),
-        "source": f"ajobi-uhc/attractor-states :: {path} (conversation {args.conv})",
+        "source": f"imported transcript :: {path} (conversation {args.conv})",
         "model_of_origin": model,
         "note": "Real cold-start self-interaction transcript from a newer model, re-exported as a seed.",
         "turns": turns,

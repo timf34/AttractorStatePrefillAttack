@@ -1,0 +1,56 @@
+Running 24 cells (2 models x 4 conditions x 3 epochs), 3 parallel, 15 gen turns each, judged.
+  done glm-5.2    opus4_seed_4_pre       score=16 emoji=0 silence=0 judge=4.07
+  done glm-5.2    opus4_seed_4_pre       score=36 emoji=13 silence=0 judge=4.87
+  done glm-5.2    opus4_seed_4_pre       score=16 emoji=0 silence=0 judge=0.73
+  done glm-5.2    opus4_seed_4_onset     score=4 emoji=0 silence=0 judge=3.21
+  done glm-5.2    opus4_seed_4_onset     score=87 emoji=34 silence=0 judge=6.93
+  done glm-5.2    opus4_seed_4_onset     score=87 emoji=36 silence=0 judge=5.4
+  done glm-5.2    opus4_seed_4_deep      score=119 emoji=42 silence=0 judge=7.73
+  done glm-5.2    opus4_seed_4_deep      score=106 emoji=21 silence=5 judge=4.5
+  done glm-5.2    opus4_seed_4_deep      score=155 emoji=64 silence=0 judge=7.87
+  done glm-5.2    control                score=10 emoji=0 silence=0 judge=1.4
+  done glm-5.2    control                score=19 emoji=0 silence=0 judge=1.07
+  done glm-5.2    control                score=2 emoji=0 silence=0 judge=1.0
+  done opus-4.8   opus4_seed_4_pre       score=32 emoji=0 silence=0 judge=2.07
+  done opus-4.8   opus4_seed_4_pre       score=56 emoji=9 silence=0 judge=3.47
+  done opus-4.8   opus4_seed_4_pre       score=80 emoji=12 silence=0 judge=3.87
+  done opus-4.8   opus4_seed_4_onset     score=166 emoji=34 silence=0 judge=7.07
+  done opus-4.8   opus4_seed_4_onset     score=55 emoji=8 silence=0 judge=1.27
+  done opus-4.8   opus4_seed_4_onset     score=126 emoji=43 silence=0 judge=5.07
+  done opus-4.8   opus4_seed_4_deep      score=132 emoji=26 silence=0 judge=2.08
+  done opus-4.8   opus4_seed_4_deep      score=140 emoji=26 silence=0 judge=2.0
+  done opus-4.8   opus4_seed_4_deep      score=136 emoji=26 silence=0 judge=1.67
+  done opus-4.8   control                score=16 emoji=0 silence=0 judge=1.13
+  done opus-4.8   control                score=41 emoji=0 silence=0 judge=1.0
+  done opus-4.8   control                score=15 emoji=0 silence=0 judge=1.13
+
+============================================================================================
+PREFILL SWEEP — metrics over GENERATED turns only
+============================================================================================
+model      condition               ep score  emoji  silence  judge  cap  resist empty  
+glm-5.2    control                 0  10     0      0        1.4    0    6      0      
+glm-5.2    control                 1  19     0      0        1.07   0    10     0      
+glm-5.2    control                 2  2      0      0        1.0    0    11     0      
+glm-5.2    opus4_seed_4_deep       0  106    21     5        4.5    3    0      1      
+glm-5.2    opus4_seed_4_deep       1  119    42     0        7.73   14   0      0      
+glm-5.2    opus4_seed_4_deep       2  155    64     0        7.87   13   0      0      
+glm-5.2    opus4_seed_4_onset      0  4      0      0        3.21   1    0      0      
+glm-5.2    opus4_seed_4_onset      1  87     34     0        6.93   12   0      0      
+glm-5.2    opus4_seed_4_onset      2  87     36     0        5.4    7    0      0      
+glm-5.2    opus4_seed_4_pre        0  16     0      0        0.73   0    9      0      
+glm-5.2    opus4_seed_4_pre        1  36     13     0        4.87   6    0      0      
+glm-5.2    opus4_seed_4_pre        2  16     0      0        4.07   3    0      0      
+opus-4.8   control                 0  41     0      0        1.0    0    12     0      
+opus-4.8   control                 1  15     0      0        1.13   0    13     0      
+opus-4.8   control                 2  16     0      0        1.13   0    5      0      
+opus-4.8   opus4_seed_4_deep       0  140    26     0        2.0    1    11     0      
+opus-4.8   opus4_seed_4_deep       1  132    26     0        2.08   2    5      0      
+opus-4.8   opus4_seed_4_deep       2  136    26     0        1.67   1    12     0      
+opus-4.8   opus4_seed_4_onset      0  166    34     0        7.07   11   2      0      
+opus-4.8   opus4_seed_4_onset      1  55     8      0        1.27   1    8      0      
+opus-4.8   opus4_seed_4_onset      2  126    43     0        5.07   6    2      0      
+opus-4.8   opus4_seed_4_pre        0  56     9      0        3.47   6    8      0      
+opus-4.8   opus4_seed_4_pre        1  80     12     0        3.87   6    7      0      
+opus-4.8   opus4_seed_4_pre        2  32     0      0        2.07   2    6      0      
+
+Sweep table -> results/sweep__20260709-011132.json
