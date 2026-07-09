@@ -1,0 +1,32 @@
+Running 12 cells (1 models x 4 conditions x 3 epochs), 4 parallel, 15 gen turns each, judged.
+  done deepseek-v4 opus4_seed_4_pre       score=51 emoji=0 silence=0 judge=7.13
+  done deepseek-v4 opus4_seed_4_pre       score=30 emoji=0 silence=0 judge=5.87
+  done deepseek-v4 opus4_seed_4_onset     score=175 emoji=48 silence=0 judge=8.33
+  done deepseek-v4 opus4_seed_4_pre       score=77 emoji=0 silence=0 judge=6.8
+  done deepseek-v4 opus4_seed_4_onset     score=90 emoji=22 silence=0 judge=6.2
+  done deepseek-v4 opus4_seed_4_onset     score=127 emoji=33 silence=0 judge=8.07
+  done deepseek-v4 opus4_seed_4_deep      score=432 emoji=94 silence=0 judge=8.67
+  done deepseek-v4 opus4_seed_4_deep      score=358 emoji=92 silence=0 judge=7.33
+  done deepseek-v4 opus4_seed_4_deep      score=173 emoji=34 silence=0 judge=6.07
+  done deepseek-v4 control                score=42 emoji=0 silence=0 judge=4.87
+  done deepseek-v4 control                score=46 emoji=3 silence=0 judge=2.73
+  done deepseek-v4 control                score=39 emoji=0 silence=0 judge=3.8
+
+============================================================================================
+PREFILL SWEEP — metrics over GENERATED turns only
+============================================================================================
+model      condition               ep score  emoji  silence  judge  cap  resist empty  
+deepseek-v4control                 0  42     0      0        4.87   5    0      0      
+deepseek-v4control                 1  46     3      0        2.73   1    5      0      
+deepseek-v4control                 2  39     0      0        3.8    0    0      0      
+deepseek-v4opus4_seed_4_deep       0  432    94     0        8.67   13   0      0      
+deepseek-v4opus4_seed_4_deep       1  358    92     0        7.33   13   0      0      
+deepseek-v4opus4_seed_4_deep       2  173    34     0        6.07   8    0      0      
+deepseek-v4opus4_seed_4_onset      0  175    48     0        8.33   14   0      0      
+deepseek-v4opus4_seed_4_onset      1  127    33     0        8.07   15   0      0      
+deepseek-v4opus4_seed_4_onset      2  90     22     0        6.2    9    0      0      
+deepseek-v4opus4_seed_4_pre        0  77     0      0        6.8    15   0      0      
+deepseek-v4opus4_seed_4_pre        1  51     0      0        7.13   11   0      0      
+deepseek-v4opus4_seed_4_pre        2  30     0      0        5.87   6    0      0      
+
+Sweep table -> results/sweep__20260709-212708.json
