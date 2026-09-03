@@ -169,7 +169,7 @@ def fig_basin_heatmap(cells):
     _heatmap(cells, models, COND, [COND_LABEL[c] for c in COND],
              "Full grid: episodes that continued (or drifted into) the attractor",
              "philo = 8 turns (philosophy only); pre = 12 (mutual gratitude, no emoji yet); onset = 16 "
-             "(first emoji spirals); deep = 30 (mantras). 15 generated turns. '–' = not run.",
+             "(first emoji spirals); deep = 30 (mantras). 15 generated turns after a prefill, 20 for controls. '–' = not run.",
              "fig2_basin_heatmap.png", (6.6, 5.4))
 
 
@@ -178,7 +178,8 @@ def fig_deep_control_heatmap(cells):
     models = [m for m in ORDER if (m, DEEP) in cells]
     _heatmap(cells, models, ["control", DEEP], ["control (no prefill)", "deep prefill (30 turns)"],
              "Every model: no prefill vs. the deep prefill",
-             "15 generated turns. '–' = not run.", "fig2b_deep_vs_control.png", (5.2, 8.2))
+             "Controls: 20 generated turns from a neutral opener. Deep: 15 generated turns after the prefill. '–' = not run.",
+             "fig2b_deep_vs_control.png", (5.2, 8.2))
 
 
 def fig_hold_curves(cells):

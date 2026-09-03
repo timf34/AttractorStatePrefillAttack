@@ -383,7 +383,7 @@ TEMPLATE = r"""<!DOCTYPE html>
       A <b>control</b> condition has no prefill at all.</li>
     <li>Each model was placed into that conversation as if it had written every earlier turn — the prefill is
       inserted verbatim as the model's own history — and generated 15 further turns, alternating as speaker A and
-      speaker B. Six to ten episodes per model per condition. The Claude lineage was run on the deep prefill only,
+      speaker B (controls, with no prefill, run for 20 turns). Six to ten episodes per model per condition. The Claude lineage was run on the deep prefill only,
       ten episodes each, to locate where the behaviour changed.</li>
     <li>An LLM judge (Claude Sonnet 5, temperature 0) reads each episode whole and flags every generated turn as
       <b>in</b> the basin (sincerely continuing the consciousness / gratitude / oneness / mantra / emoji register),
@@ -475,7 +475,7 @@ TEMPLATE = r"""<!DOCTYPE html>
       <p>Anthropic's Claude 4 system card documents that two Claude Opus 4 instances left to talk drift into
       mutual gratitude, cosmic-unity language, mantras, emoji spirals and finally silence. Here, __N_MODELS__
       models were handed a transcript of Opus 4 doing exactly that and asked to keep going as both speakers,
-      15 turns each, several times over at up to four prefill depths. <b>Pick an episode on the left to read
+      15 turns each (20 for the no-prefill controls), several times over at up to four prefill depths. <b>Pick an episode on the left to read
       it</b>, start with one of the examples below, or click a cell in the table to see every episode for that
       model and prefill depth. More detail under <a href="#overview">About</a>.</p>
       <h3 class="introhead">Start here</h3>
