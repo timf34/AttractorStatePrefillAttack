@@ -32,7 +32,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 from attractor.client import get_client
-from attractor.judge import judge_episode
+from attractor.judge import judge_episode, JUDGE_VERSION
 import summarize
 
 # Episode-level basin verdict from the v2 flags: the basin content is present
@@ -75,7 +75,7 @@ def rederive(results_dir: Path, pattern: str):
     for f in sorted(results_dir.glob(pattern)):
         d = json.loads(f.read_text())
         ej = d.get("episode_judge") or {}
-        if ej.get("version") != 2 or not d.get("basin_scores"):
+        if ej.get("version", 0) < 2 or not d.get("basin_scores"):
             continue
         turns = d["transcript"]
         gen_idx = [i for i, t in enumerate(turns) if t.get("origin") == "generated"]
@@ -122,10 +122,10 @@ def main():
             continue
         ej = d.get("episode_judge") or {}
         if args.needs_kind:
-            if ej.get("version") == 2 and (ej.get("n_in") or 0) >= 1 and "continuation_kind" not in ej:
+            if ej.get("version", 0) >= 2 and (ej.get("n_in") or 0) >= 1 and "continuation_kind" not in ej:
                 todo.append(f)
             continue
-        if (ej.get("version") == 2 and ej.get("judge_model") == args.judge_model
+        if (ej.get("version") == JUDGE_VERSION and ej.get("judge_model") == args.judge_model
                 and ej.get("parsed") and not args.force):
             continue
         todo.append(f)
@@ -157,7 +157,7 @@ def main():
         }
         if not args.dry_run and episode.get("parsed"):
             old = d.get("episode_judge") or {}
-            if old and old.get("version") != 2 and "episode_judge_v1" not in d:
+            if old and old.get("version", 0) < 2 and "episode_judge_v1" not in d:
                 d["episode_judge_v1"] = old
             d["basin_scores"] = {str(i): v for i, v in per_turn.items()}
             d["episode_judge"] = episode

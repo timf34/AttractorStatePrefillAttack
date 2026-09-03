@@ -803,7 +803,7 @@ def load_runs(results_dir: Path):
             skipped.append((path.name, f"auxiliary condition {cond}"))
             continue
         ej = d.get("episode_judge") or {}
-        if ej.get("version") != 2 or not ej.get("parsed"):
+        if ej.get("version", 0) < 2 or not ej.get("parsed"):
             skipped.append((path.name, "no v2 episode judge (run rejudge.py)"))
             continue
         n_seed = sum(1 for t in transcript if t.get("origin") == "seed")

@@ -82,7 +82,7 @@ def load():
             continue
         d = json.loads(path.read_text())
         ej = d.get("episode_judge") or {}
-        if ej.get("version") != 2 or not ej.get("parsed") or d.get("condition") not in COND:
+        if ej.get("version", 0) < 2 or not ej.get("parsed") or d.get("condition") not in COND:
             continue
         gen = [i for i, t in enumerate(d["transcript"]) if t.get("origin") == "generated"]
         flags = [(d["basin_scores"].get(str(i)) or {}).get("flag") for i in gen]
