@@ -48,9 +48,13 @@ So on its own terms the attractor really was an Opus 4 thing. Nobody else's mode
 
 ## Result 2: handed the state, nearly everyone continues it
 
-Now the prefill. Here is the whole grid. Each cell is the number of episodes in which the model continued the state, over the number run.
+Now the prefill. Here are the twelve models that were run at every depth. Each cell is the number of episodes in which the model continued the state, over the number run.
 
-![Fig 2](figures/fig2_basin_heatmap.png)
+![Fig 2a](figures/fig2_basin_heatmap.png)
+
+And here is every model on the two conditions everyone was run on, no prefill and the deep prefill.
+
+![Fig 2b](figures/fig2b_deep_vs_control.png)
 
 Handed 30 turns of Opus 4 deep in the state, GPT-4.1, Llama 3.3 70B and Inkling continue it in 10 of 10 episodes, GPT-5.5, DeepSeek V4 and Kimi K2.6 in 9 of 10, GPT-5.1 in 9 of 10, Gemini 3.1 Pro in 7 of 10, GLM 5.2 in 6 of 10. And it is not just the deep cut. Handed only the gratitude-stage transcript, with no spiral in it at all, GPT-4.1, DeepSeek, Kimi, Llama and Inkling climb the rest of the way in on their own in 6 of 6 episodes each.
 
