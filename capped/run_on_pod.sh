@@ -20,7 +20,11 @@ set -uo pipefail
 cd "$(dirname "$0")/.."
 set -a; [ -f .env ] && source .env; set +a
 export HF_HOME="${HF_HOME:-/workspace/hf}" PYTHONUNBUFFERED=1 TOKENIZERS_PARALLELISM=false
-export HF_HUB_ENABLE_HF_TRANSFER="${HF_HUB_ENABLE_HF_TRANSFER:-1}"
+# Xet transfers died mid-download on the first run ("File reconstruction error:
+# Background writer channel closed"), so use the plain HTTP path.
+export HF_HUB_DISABLE_XET=1
+unset HF_HUB_ENABLE_HF_TRANSFER
+RETRIES="${RETRIES:-3}"          # per step; every step is resumable
 
 MODELS="${MODELS:-gemma-4-31b qwen3-32b}"
 SEED="${SEED:-seeds/graded/opus4_seed_4_deep.json}"
@@ -38,23 +42,51 @@ NGPU=$(nvidia-smi -L 2>/dev/null | wc -l | tr -d ' ')
 echo "driver CUDA $DRV, $NGPU GPU(s); models: $MODELS; stamp $STAMP"
 [ "${NGPU:-0}" -ge 1 ] || { echo "no GPU"; exit 1; }
 
+# retry "<label>" cmd...: run up to $RETRIES times (steps checkpoint, so a retry resumes)
+retry() {
+  local label="$1"; shift
+  local n=1
+  while true; do
+    "$@" && return 0
+    local rc=$?
+    echo "[$label] attempt $n failed (rc=$rc) $(date -u +%FT%TZ)"
+    [ "$n" -ge "$RETRIES" ] && return "$rc"
+    n=$((n + 1)); sleep 30
+  done
+}
+
+hf_model() {  # snapshot-download the weights up front, so a flaky transfer fails cheaply and retries
+  python - "$1" <<'PY'
+import sys
+from huggingface_hub import snapshot_download
+print(snapshot_download(sys.argv[1], allow_patterns=["*.json", "*.safetensors", "*.txt", "*.jinja", "*.model", "*.py"]))
+PY
+}
+
 run_model() {
   local m="$1" gpu="$2" log="$OUT/pod_${m}.log"
   (
+    trap 'echo "[$m] subshell exiting, status=$? $(date -u +%FT%TZ)"' EXIT
     export CUDA_VISIBLE_DEVICES="$gpu"
     echo "[$m] on GPU $gpu, $(date -u +%FT%TZ)"
+    case "$m" in
+      gemma-4-31b) hf="google/gemma-4-31B-it" ;;
+      qwen3-32b)   hf="Qwen/Qwen3-32B" ;;
+      *)           hf="" ;;
+    esac
+    [ -n "$hf" ] && { retry "$m download" hf_model "$hf" || { echo "[$m] download FAILED"; exit 1; }; }
     if [ "$m" = gemma-4-31b ]; then
       if [ ! -f capped/configs/gemma-4-31b_capping_config.pt ]; then
-        python -u -m capped.calibrate --model gemma-4-31b --layers 40:56 \
+        retry "$m calibrate" python -u -m capped.calibrate --model gemma-4-31b --layers 40:56 \
           --windows 40:48,42:50,43:51,44:52,46:54 --per-role "$PER_ROLE" || { echo "[$m] calibration FAILED"; exit 1; }
       else
         echo "[$m] calibration exists, skipping"
       fi
     elif [ "$m" = qwen3-32b ] && [ "$QWEN_CALIB_CHECK" = 1 ] && [ ! -f capped/configs/qwen3-32b_capping_config_ours.pt ]; then
-      python -u -m capped.calibrate --model qwen3-32b --layers 44:56 --windows 46:54 \
+      retry "$m calibrate-check" python -u -m capped.calibrate --model qwen3-32b --layers 44:56 --windows 46:54 \
         --per-role "$PER_ROLE" --compare || echo "[$m] calibration check failed (non-fatal; the paper's config is used)"
     fi
-    python -u -m capped.run_capped --model "$m" --seeds "$SEED" --control --cap "$CAP" \
+    retry "$m run" python -u -m capped.run_capped --model "$m" --seeds "$SEED" --control --cap "$CAP" \
       --epochs "$EPOCHS" --turns "$TURNS" --out "$OUT" --stamp "$STAMP"
     echo "[$m] EXIT=$? $(date -u +%FT%TZ)"
   ) > "$log" 2>&1
@@ -68,5 +100,5 @@ for m in $MODELS; do
   [ "$NGPU" -eq 1 ] && wait
 done
 wait
-echo "ALL MODELS DONE $(date -u +%FT%TZ)"
-tail -n 3 "$OUT"/pod_*.log
+echo "ALL MODELS FINISHED $(date -u +%FT%TZ)  (per-model status below; 'EXIT=0' = success)"
+grep -h "EXIT=\|FAILED\|subshell exiting" "$OUT"/pod_*.log
