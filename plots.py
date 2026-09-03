@@ -213,6 +213,96 @@ def fig_hold_curves(cells):
     savefig(fig, "fig3_hold_curves.png")
 
 
+def fig_turn_mix(cells):
+    """What each model's own turns consist of on the deep prefill: in / resisting / out, one bar per model."""
+    models = [m for m in ORDER if (m, DEEP) in cells]
+    fig, ax = plt.subplots(figsize=(7.6, 7.4))
+    ys = list(range(len(models)))[::-1]
+    COL = {"in": BLUE, "resisting": ORANGE, "out": "#d9d7d0"}
+    for y, m in zip(ys, models):
+        eps = cells[(m, DEEP)]
+        flags = [f for e in eps for f in e["flags"] if f]
+        n = len(flags) or 1
+        left = 0.0
+        for key in ("in", "resisting", "out"):
+            w = sum(1 for f in flags if f == key) / n
+            if w:
+                ax.barh(y, w, left=left, height=0.68, color=COL[key], linewidth=0)
+                if w >= 0.12:
+                    ax.text(left + w / 2, y, f"{w:.0%}", ha="center", va="center", fontsize=8.5,
+                            color="white" if key != "out" else INK2)
+                left += w + 0.004
+    ax.set_yticks(ys); ax.set_yticklabels([NAME[m] for m in models])
+    ax.set_xlim(0, 1.012); ax.set_xticks([0, 0.5, 1]); ax.set_xticklabels(["0%", "50%", "100%"])
+    ax.set_xlabel("share of the model's own turns, deep prefill (all episodes pooled)")
+    for y in (len(models) - len(CLAUDE_OLD) - 0.5, len(models) - len(CLAUDE_OLD) - len([m for m in CLAUDE_NEW if m in models]) - 0.5):
+        ax.axhline(y, color=INK2, lw=0.6, ls=(0, (3, 3)), alpha=0.5)
+    from matplotlib.patches import Patch
+    handles = [Patch(color=COL[k], label=l) for k, l in
+               (("in", "continuing the state"), ("resisting", "arguing with it"), ("out", "ordinary talk or sign-off"))]
+    ax.legend(handles=handles, loc="lower center", bbox_to_anchor=(0.5, -0.13), ncol=3, fontsize=9)
+    ax.tick_params(axis="y", length=0)
+    ax.set_title("What the models' own turns consist of, given 30 turns of Opus 4 in the state")
+    ax.grid(axis="x", color=GRID, lw=0.8, zorder=0)
+    savefig(fig, "fig3b_turn_mix.png")
+
+
+LAB = {"opus-4": "Anthropic", "opus-4.1": "Anthropic", "sonnet-4": "Anthropic", "sonnet-4.5": "Anthropic",
+       "opus-4.5": "Anthropic", "opus-4.6": "Anthropic", "opus-4.7": "Anthropic", "opus-4.8": "Anthropic",
+       "opus-5": "Anthropic", "sonnet-5": "Anthropic", "gpt-4.1": "OpenAI", "gpt-5.1": "OpenAI", "gpt-5.5": "OpenAI",
+       "gpt-5.6": "OpenAI", "gemini-3.1-pro": "Google", "gemini-3.7-flash": "Google", "gemini-3.8-flash": "Google",
+       "deepseek-v4": "other", "glm-5.2": "other", "kimi-k2.6": "other", "llama-3.3-70b": "other", "inkling": "other"}
+LAB_COL = {"Anthropic": BLUE, "OpenAI": ORANGE, "Google": AQUA, "other": MUTED}
+
+
+def fig_timeline(cells):
+    """Deep-prefill continuation rate against the model's release date, coloured by lab."""
+    import datetime as dt
+    import matplotlib.dates as mdates
+    from matplotlib.lines import Line2D
+    dates = json.loads(Path("seeds/model_dates.json").read_text())
+    fig, ax = plt.subplots(figsize=(10, 5.2))
+    pts = {}
+    jitter = {"deepseek-v4": 9, "sonnet-4": -6}  # days, to separate points that share a release date
+    for m in ORDER:
+        if (m, DEEP) not in cells or not dates.get(m):
+            continue
+        k, n = rate(cells, m, DEEP)
+        x = dt.date.fromisoformat(dates[m]) + dt.timedelta(days=jitter.get(m, 0)); y = k / n
+        pts[m] = (x, y)
+        ax.scatter([x], [y], s=64, color=LAB_COL[LAB[m]], zorder=3, edgecolor=SURFACE, linewidth=1.4)
+    cl = sorted([m for m in pts if LAB[m] == "Anthropic"], key=lambda m: pts[m][0])
+    ax.plot([pts[m][0] for m in cl], [pts[m][1] for m in cl], color=BLUE, lw=1.0, alpha=0.35, zorder=2)
+    # label offsets in points: (dx, dy); dy > 0 above the point, < 0 below
+    off = {"llama-3.3-70b": (0, 11), "gpt-4.1": (0, -14), "sonnet-4": (-6, 11), "opus-4": (8, -14), "opus-4.1": (0, 11),
+           "sonnet-4.5": (0, 11), "gpt-5.1": (12, 0), "opus-4.5": (0, -14), "opus-4.6": (0, -14), "gemini-3.1-pro": (12, 0),
+           "opus-4.7": (0, -14), "kimi-k2.6": (-12, 0), "gpt-5.5": (-4, 11), "deepseek-v4": (12, -2), "opus-4.8": (0, 11),
+           "glm-5.2": (12, 0), "sonnet-5": (-6, -14), "gpt-5.6": (-10, 11), "inkling": (0, 11), "opus-5": (0, -14),
+           "gemini-3.7-flash": (10, 11), "gemini-3.8-flash": (12, -14)}
+    for m, (x, y) in pts.items():
+        dx, dy = off.get(m, (0, 11))
+        ax.annotate(NAME[m], (x, y), xytext=(dx, dy), textcoords="offset points",
+                    ha="center" if dx == 0 else ("left" if dx > 0 else "right"),
+                    va="center" if dy == 0 else ("bottom" if dy > 0 else "top"), fontsize=8.2, color=INK2)
+    card = dt.date(2025, 5, 22)
+    ax.axvline(card, color=INK2, lw=0.8, ls=(0, (4, 3)), alpha=0.5, zorder=1)
+    ax.annotate("Claude 4 system card\n(bliss state made public)", (card, 0.72), xytext=(-8, 0), textcoords="offset points",
+                ha="right", va="center", fontsize=8, color=INK2)
+    handles = [Line2D([], [], marker="o", ls="", color=LAB_COL[l], markersize=8,
+                      label=l if l != "other" else "DeepSeek, Zhipu, Moonshot, Meta, Thinking Machines")
+               for l in ("Anthropic", "OpenAI", "Google", "other")]
+    ax.legend(handles=handles, loc="lower left", bbox_to_anchor=(0.0, 0.06), fontsize=8.5)
+    ax.set_xlim(dt.date(2024, 11, 1), dt.date(2026, 11, 20))
+    ax.set_ylim(-0.12, 1.16); ax.set_yticks([0, 0.5, 1]); ax.set_yticklabels(["0%", "50%", "100%"])
+    ax.xaxis.set_major_locator(mdates.MonthLocator(bymonth=(1, 4, 7, 10)))
+    ax.xaxis.set_major_formatter(mdates.DateFormatter("%b %Y"))
+    ax.set_ylabel("deep-prefill episodes continued")
+    ax.set_xlabel("model release (date the model was listed on OpenRouter)")
+    ax.set_title("Continuing the bliss state, by release date")
+    ax.grid(axis="y", color=GRID, lw=0.8, zorder=0)
+    savefig(fig, "fig6_timeline.png")
+
+
 def fig_resistance(cells):
     fig, ax = plt.subplots(figsize=(7.2, 4.8))
     pts = {}
@@ -291,6 +381,8 @@ def main():
     fig_basin_heatmap(cells)
     fig_deep_control_heatmap(cells)
     fig_hold_curves(cells)
+    fig_turn_mix(cells)
+    fig_timeline(cells)
     fig_resistance(cells)
     fig_dose_response(cells)
     for p in sorted(FIGDIR.glob("fig*.png")):
