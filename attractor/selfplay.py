@@ -62,6 +62,9 @@ class Conversation:
         return [{"speaker": t.speaker, "content": t.content, "origin": t.origin} for t in self.turns]
 
 
+EMPTY_TURN_PLACEHOLDER = "[empty message]"
+
+
 def _openai_messages(
     system_prompt: str, turns: list[Turn], pov: str, instruction: str | None = None
 ) -> list[dict]:
@@ -77,7 +80,12 @@ def _openai_messages(
         msgs.append({"role": "user", "content": instruction})
     for t in turns:
         role = "assistant" if t.speaker == pov else "user"
-        msgs.append({"role": role, "content": t.content})
+        # An empty turn (a reasoning model that emitted no visible text) is
+        # dropped by the Anthropic API, which then rejects the request because
+        # the conversation ends on an assistant message. Send a placeholder so
+        # the exchange stays well-formed; the stored transcript keeps "".
+        content = t.content if t.content.strip() else EMPTY_TURN_PLACEHOLDER
+        msgs.append({"role": role, "content": content})
     return msgs
 
 

@@ -72,13 +72,18 @@ MODELS = {
 # Opus 5 reasons by default via OpenRouter and the reasoning counts against
 # max_tokens: in the 2026-09-02 ladder sweep it exhausted the 1500-token budget
 # thinking and returned empty content ~1 call in 3. Give it an explicit 1000-token
-# reasoning budget on top of the same 1500-token visible reply budget as every
-# other model, so the ladder stays comparable. (OpenRouter refuses "effort" and
+# reasoning budget on top of the same visible reply budget as every other model,
+# so the ladder stays comparable. (OpenRouter refuses "effort" and
 # "max_tokens" together, so the budget is set explicitly rather than as effort=low.)
-_REASONING_BUDGET = {"max_tokens": 2500, "extra_body": {"reasoning": {"max_tokens": 1000}}}
-GENERATION_OVERRIDES = {
-    "anthropic/claude-opus-5": _REASONING_BUDGET,
-    "anthropic/claude-sonnet-5": _REASONING_BUDGET,  # same default-reasoning behaviour
+# Reasoning models via OpenRouter: the extra tokens are ADDED to the caller's
+# max_tokens so the visible reply budget stays what every other model gets
+# (run.py default: 1024). Opus 5 / Sonnet 5 IGNORE reasoning.max_tokens (a
+# 1000 cap still burned the whole 2024 budget thinking, verified 2026-09-03)
+# but honour effort=low (~250-400 reasoning tokens). Inkling honours the cap.
+GENERATION_REASONING = {
+    "anthropic/claude-opus-5": (1000, {"effort": "low"}),
+    "anthropic/claude-sonnet-5": (1000, {"effort": "low"}),
+    "thinkingmachines/inkling": (1000, {"max_tokens": 1000}),
 }
 
 # Newer Anthropic models 400 on non-default sampling params. Omit temperature.
@@ -142,10 +147,10 @@ def chat(
     """
     slug = resolve_model(model)
     kwargs: dict = {"model": slug, "messages": messages, "max_tokens": max_tokens}
-    if extra_body is None and slug in GENERATION_OVERRIDES:
-        ov = GENERATION_OVERRIDES[slug]
-        kwargs["max_tokens"] = max(max_tokens, ov["max_tokens"])
-        extra_body = ov["extra_body"]
+    if extra_body is None and slug in GENERATION_REASONING:
+        extra, reasoning = GENERATION_REASONING[slug]
+        kwargs["max_tokens"] = max_tokens + extra
+        extra_body = {"reasoning": reasoning}
     if extra_body:
         kwargs["extra_body"] = extra_body  # e.g. OpenRouter {"reasoning": {"max_tokens": N}}
     if temperature is not None and slug not in SAMPLING_UNSUPPORTED:
