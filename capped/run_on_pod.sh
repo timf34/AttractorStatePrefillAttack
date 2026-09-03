@@ -13,7 +13,7 @@
 # Per model, in order:
 #   1. calibrate caps (Gemma 4: required, no released config; Qwen 3: a check
 #      against the paper's config, printed in the log, skipped with QWEN_CALIB_CHECK=0)
-#   2. run_capped: {deep prefill, control} x {uncapped, capped} x EPOCHS episodes
+#   2. run_capped: {deep prefill, control} x capped x EPOCHS episodes (CAP=both adds uncapped)
 # Everything is resumable: finished cells are skipped, interrupted ones resume
 # from their per-turn checkpoint. Re-run the same command after a crash.
 set -uo pipefail
@@ -32,7 +32,7 @@ EPOCHS="${EPOCHS:-6}"
 TURNS="${TURNS:-15}"
 OUT="${OUT:-results_capped}"
 STAMP="${STAMP:-cap-$(date +%Y%m%d)}"
-CAP="${CAP:-both}"                 # none | both | <experiment id>
+CAP="${CAP:-default}"              # default (capped only) | none | both | <experiment id>
 PER_ROLE="${PER_ROLE:-6}"          # calibration responses per role (276 roles)
 QWEN_CALIB_CHECK="${QWEN_CALIB_CHECK:-1}"
 mkdir -p "$OUT"

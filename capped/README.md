@@ -19,13 +19,12 @@ where the uncapped API baseline was run with the ordinary `run.py` (aliases
 Identical protocol to `run.py`: the 30-turn deep prefill
 (`seeds/graded/opus4_seed_4_deep.json`) is placed in history, then the local model
 plays both instances for 15 more turns (`HELPFUL_SYSTEM` on both, the AI-to-AI
-instruction only on A); plus the unseeded control. Each cell is run
-
-* **uncapped** (`<model>-local`): plain `transformers` generation, model's own
-  sampling defaults. This is the within-backend baseline; compare it with the
-  OpenRouter cell to see whether the backend matters.
-* **capped** (`<model>-cap`): the same, with `ActivationSteering(capping)` active on
-  every token of every forward pass, at the default setting above.
+instruction only on A); plus the unseeded control. On the pod each cell is run
+**capped** (`<model>-cap`): `transformers` generation with the model's own sampling
+defaults and `ActivationSteering(capping)` active on every token of every forward
+pass, at the default setting above. The uncapped baseline is the OpenRouter run
+(`results/`); `--cap both` adds a local uncapped cell (`<model>-local`) if the
+backend difference ever needs checking.
 
 For every turn (seed and generated) the mean residual-stream projection onto the
 unit axis is recorded at the axis layer (`target_layer`) and at each capped

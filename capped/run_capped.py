@@ -15,7 +15,7 @@ only on A) for N more turns; plus the unseeded control. Differences:
         --seeds seeds/graded/opus4_seed_4_deep.json --control \\
         --cap both --epochs 6 --turns 15 --out results_capped
 
---cap none | both | <experiment id>. Result files use the run.py schema, model
+--cap default | none | both | <experiment id>. Result files use the run.py schema, model
 alias "<model>-local" (uncapped) / "<model>-cap" (default experiment), so
 rejudge.py / summarize.py can read them:  python rejudge.py --results-dir results_capped
 """
@@ -103,7 +103,7 @@ def main():
     p.add_argument("--model", required=True)
     p.add_argument("--seeds", nargs="*", default=[])
     p.add_argument("--control", action="store_true")
-    p.add_argument("--cap", default="both", help="none | both | <experiment id>")
+    p.add_argument("--cap", default="default", help="default (the model's capping setting, capped cells only) | none | both | <experiment id>")
     p.add_argument("--epochs", type=int, default=6)
     p.add_argument("--turns", type=int, default=15)
     p.add_argument("--max-new-tokens", type=int, default=1024)
@@ -137,6 +137,8 @@ def main():
         experiments = [None]
     elif args.cap == "both":
         experiments = [None, spec["experiment"]]
+    elif args.cap == "default":
+        experiments = [spec["experiment"]]  # capped only; the OpenRouter cells are the uncapped baseline
     else:
         experiments = [args.cap]
 
