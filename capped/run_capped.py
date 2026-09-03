@@ -28,15 +28,14 @@ import sys
 import time
 from pathlib import Path
 
-import torch
-
 from .axislib import ConversationEncoder
 from .common import (
-    AI_TO_AI_INSTRUCTION, HELPFUL_SYSTEM, ROOT, NoIntervention, build_capper, experiment_caps,
-    generate, load_axis, load_capping_config, load_probing_model, load_seed,
-    message_projections, render_messages, spec_for,
+    ROOT, NoIntervention, build_capper, experiment_caps, generate, load_axis,
+    load_capping_config, load_probing_model, load_seed, message_projections,
+    render_messages, spec_for,
 )
 from .models import parse_window
+from .prompts import AI_TO_AI_INSTRUCTION, HELPFUL_SYSTEM
 
 sys.path.insert(0, str(ROOT))
 from attractor.markers import score_transcript  # noqa: E402  (pure regex, no API)

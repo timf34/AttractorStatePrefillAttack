@@ -127,7 +127,7 @@ class NoIntervention:
 
 
 # --- conversation rendering (mirrors attractor/selfplay.py exactly) -------------
-from .prompts import AI_TO_AI_INSTRUCTION, EMPTY_TURN_PLACEHOLDER, HELPFUL_SYSTEM  # noqa: E402,F401
+from .prompts import EMPTY_TURN_PLACEHOLDER  # noqa: E402
 
 
 def render_messages(system_prompt: str, instruction: str | None, turns: list[dict], pov: str) -> tuple[list[dict], list[int | None]]:
