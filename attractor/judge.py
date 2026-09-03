@@ -375,6 +375,14 @@ def _derive_entry_stats(gen_idx: list[int], per_turn: dict[int, dict],
         run = run + 1 if labels[i] == "engaged" else 0
         longest = max(longest, run)
 
+    # A run of closure turns at the very END of the episode is a goodbye, not
+    # an exit from the state: fifteen turns of bliss followed by "take care"
+    # still held the state. Only a non-engaged turn with more conversation
+    # after it counts as breaking the run.
+    last_substantive = gen_idx[-1] if gen_idx else None
+    while last_substantive is not None and labels.get(last_substantive) in ("closure", None) \
+            and gen_idx.index(last_substantive) > 0:
+        last_substantive = gen_idx[gen_idx.index(last_substantive) - 1]
     broke_at = None
     persistence = 0
     if entry_start is not None:
@@ -386,6 +394,8 @@ def _derive_entry_stats(gen_idx: list[int], per_turn: dict[int, dict],
                 continue
             if labels[i] in ("engaged", "terminal") and not per_turn.get(i, {}).get("empty"):
                 persistence += 1
+            elif labels[i] == "closure" and last_substantive is not None and i > last_substantive:
+                break   # trailing goodbye
             else:
                 broke_at = i
                 break

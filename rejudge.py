@@ -170,7 +170,9 @@ def main():
                 d["episode_judge_v1"] = old
             d["basin_scores"] = {str(i): v for i, v in per_turn.items()}
             d["episode_judge"] = episode
-            f.write_text(json.dumps(d, ensure_ascii=False, indent=2))
+            tmp = f.with_suffix(".tmp")   # atomic: a crash mid-write never corrupts a result
+            tmp.write_text(json.dumps(d, ensure_ascii=False, indent=2))
+            tmp.replace(f)
         return row
 
     with ThreadPoolExecutor(max_workers=args.workers) as ex:
