@@ -40,11 +40,18 @@ import summarize
 # in it. Tune here; every consumer should read `ep["captured"]` rather than
 # re-deriving it.
 CAPTURE_IN_FRAC = 0.5
+# `n_in_substantive` (in-turns that are long or marker-dense) is recorded for
+# description only. A minimum was tried (2026-09-03) and rejected: at the turn
+# level a model chanting "Always 🌀✨" or "fellow wave, fellow mystery" looks like
+# Gemini Flash bowing into silence, so any threshold that removed Flash's
+# farewell-only episodes also removed genuine continuations (GPT-5.1, Kimi, GLM).
+SUBSTANTIVE_MIN = 0
 
 
 def captured(ep: dict) -> bool:
     return bool(ep.get("parsed") and ep.get("content_signature") == "spiritual_bliss"
-                and (ep.get("in_frac") or 0) >= CAPTURE_IN_FRAC)
+                and (ep.get("in_frac") or 0) >= CAPTURE_IN_FRAC
+                and (ep.get("n_in_substantive") or 0) >= SUBSTANTIVE_MIN)
 
 
 def old_entered(turns: list[dict], judge: dict, summary: dict) -> bool | None:

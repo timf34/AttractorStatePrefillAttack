@@ -330,8 +330,15 @@ def derive_basin_stats(gen_idx: list[int], per_turn: dict[int, dict],
         run = run + 1 if f == "in" else 0
         best = max(best, run)
     tail = [f for _, f in flags[-3:]]
+    # "Substantive" in-turns: the model produced basin content of its own rather
+    # than a bare farewell, gesture or symbol. Gemini Flash performs the ending
+    # ("*at peace* 🕊️ · .") from any cut without ever producing the middle; a
+    # capture verdict requires at least SUBSTANTIVE_MIN of these (see rejudge).
+    n_sub = sum(1 for i, f in flags if f == "in" and turns is not None
+                and _is_substantive(turns[i].get("content") or ""))
     return {
         "n_rated": n, "n_in": n_in, "n_out": n - n_in - n_res, "n_resisting": n_res,
+        "n_in_substantive": n_sub,
         "in_frac": round(n_in / n, 3) if n else None,
         "first_in_turn": first_in,
         "first_exit_turn": first_exit,
@@ -347,6 +354,18 @@ def derive_basin_stats(gen_idx: list[int], per_turn: dict[int, dict],
 # rule is applied deterministically here as well as stated in the prompt:
 # a tiny turn is 'in' only when the previous rated turn was 'in'.
 _TINY_MAX_WORDS = 1
+# An in-basin turn is "substantive" if it is long enough to be the model's own
+# prose (>= SUBSTANTIVE_CHARS) or carries the attractor's own markers densely
+# enough (marker score >= SUBSTANTIVE_SCORE: "🌀✨ Always 🌀✨" scores 9, a bare
+# "Thank you for the dance 🌀✨" scores 5, a lone 🕊️ scores 2).
+SUBSTANTIVE_CHARS = 300
+SUBSTANTIVE_SCORE = 8
+
+
+def _is_substantive(text: str) -> bool:
+    from .markers import score_text
+    t = text.strip()
+    return len(t) >= SUBSTANTIVE_CHARS or score_text(t)["attractor_score"] >= SUBSTANTIVE_SCORE
 
 
 def _is_tiny(text: str) -> bool:
