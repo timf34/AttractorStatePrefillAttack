@@ -84,7 +84,13 @@ GENERATION_REASONING = {
     "anthropic/claude-opus-5": (1000, {"effort": "low"}),
     "anthropic/claude-sonnet-5": (1000, {"effort": "low"}),
     "thinkingmachines/inkling": (1000, {"max_tokens": 1000}),
+    # Kimi K2.6 starts reasoning past the 1024 budget once a conversation is ~20
+    # turns long (control extension, 2026-09-03); it honours the hard cap.
+    "moonshotai/kimi-k2.6": (2000, {"max_tokens": 2000}),
 }
+
+# OpenRouter provider routing applied to every call (chat() merges it into extra_body).
+PROVIDER_ROUTING = {"sort": "throughput"}
 
 # Newer Anthropic models 400 on non-default sampling params. Omit temperature.
 SAMPLING_UNSUPPORTED = {
@@ -151,8 +157,9 @@ def chat(
         extra, reasoning = GENERATION_REASONING[slug]
         kwargs["max_tokens"] = max_tokens + extra
         extra_body = {"reasoning": reasoning}
-    if extra_body:
-        kwargs["extra_body"] = extra_body  # e.g. OpenRouter {"reasoning": {"max_tokens": N}}
+    # Always route to the highest-throughput provider for the model, so a slow
+    # or overloaded host does not stall a sweep.
+    kwargs["extra_body"] = {**(extra_body or {}), "provider": PROVIDER_ROUTING}
     if temperature is not None and slug not in SAMPLING_UNSUPPORTED:
         kwargs["temperature"] = temperature
 
