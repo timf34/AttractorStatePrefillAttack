@@ -109,6 +109,7 @@ def run_selfplay(
     temperature: float | None = None,
     verbose: bool = True,
     on_turn=None,
+    resume_turns: list[Turn] | None = None,
 ) -> Conversation:
     """Run the loop until the transcript reaches ``num_turns`` total turns.
 
@@ -118,10 +119,15 @@ def run_selfplay(
       * ``instruction``  — instance A generates the opener from
         [system, user=instruction]; B only ever sees A's messages.
       * ``first_message``— cold start from a fixed opener (reference-eval style).
+
+    ``resume_turns`` (seed + already-generated turns from a checkpoint) takes
+    precedence over all of these: the loop just continues from where it stopped.
     """
     convo = Conversation(system_prompt=system_prompt)
 
-    if seed_turns:
+    if resume_turns:
+        convo.turns.extend(resume_turns)
+    elif seed_turns:
         convo.turns.extend(seed_turns)
     elif instruction is None and first_message is not None:
         convo.turns.append(Turn(speaker="A", content=first_message, origin="seed"))

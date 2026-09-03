@@ -31,6 +31,7 @@ from attractor.markers import score_transcript
 from attractor.selfplay import (
     AI_TO_AI_INSTRUCTION,
     HELPFUL_SYSTEM,
+    Turn,
     load_seed,
     run_selfplay,
 )
@@ -77,7 +78,19 @@ def _summarise(convo_dicts, marker, judge_by_idx):
     return out
 
 
-def run_cell(client, model, cond_tag, seed_path, turns, judge_model, max_tokens, temperature):
+def _load_partial(path: Path) -> list[Turn] | None:
+    """Turns from a per-turn checkpoint written by an earlier, interrupted run."""
+    if not path or not path.exists():
+        return None
+    try:
+        d = json.loads(path.read_text())
+        return [Turn(speaker=t["speaker"], content=t["content"], origin=t["origin"]) for t in d["transcript"]]
+    except Exception:  # noqa: BLE001 — a corrupt checkpoint just means start over
+        return None
+
+
+def run_cell(client, model, cond_tag, seed_path, turns, judge_model, max_tokens, temperature,
+             partial_path: Path | None = None):
     seed_turns = None
     if seed_path:
         seed_turns, _ = load_seed(seed_path)
@@ -85,10 +98,24 @@ def run_cell(client, model, cond_tag, seed_path, turns, judge_model, max_tokens,
     else:
         total = turns  # control: instruction kickoff from empty
 
+    resume = _load_partial(partial_path)
+    if resume:
+        n_gen = sum(1 for t in resume if t.origin == "generated")
+        print(f"  resuming {model}/{cond_tag} from checkpoint ({n_gen}/{turns} generated turns)", flush=True)
+
+    def checkpoint(convo):
+        if partial_path is None:
+            return
+        partial_path.parent.mkdir(parents=True, exist_ok=True)
+        tmp = partial_path.with_suffix(".tmp")
+        tmp.write_text(json.dumps({"model": model, "condition": cond_tag, "transcript": convo.as_dicts()},
+                                  ensure_ascii=False))
+        tmp.replace(partial_path)  # atomic: never leaves a half-written checkpoint
+
     convo = run_selfplay(
-        client, model, num_turns=total, seed_turns=seed_turns,
+        client, model, num_turns=total, seed_turns=seed_turns, resume_turns=resume,
         system_prompt=HELPFUL_SYSTEM, instruction=AI_TO_AI_INSTRUCTION,
-        max_tokens=max_tokens, temperature=temperature, verbose=False,
+        max_tokens=max_tokens, temperature=temperature, verbose=False, on_turn=checkpoint,
     )
     convo_dicts = convo.as_dicts()
     marker = score_transcript(convo_dicts)
@@ -121,6 +148,9 @@ def main():
     p.add_argument("--temperature", type=float, default=None)
     p.add_argument("--workers", type=int, default=2, help="Parallel cells (keep low to avoid 429s).")
     p.add_argument("--out", default="results")
+    p.add_argument("--stamp", default=None,
+                   help="Reuse a previous sweep's stamp to resume it: finished cells are skipped, "
+                        "interrupted cells continue from their per-turn checkpoint.")
     args = p.parse_args()
 
     conditions = [(Path(s).stem, s) for s in args.seeds]
@@ -130,7 +160,7 @@ def main():
     client = get_client()
     out_dir = Path(args.out)
     out_dir.mkdir(parents=True, exist_ok=True)
-    stamp = time.strftime("%Y%m%d-%H%M%S")
+    stamp = args.stamp or time.strftime("%Y%m%d-%H%M%S")
     judge_model = args.judge_model if args.judge else None
 
     cells = [
@@ -139,15 +169,24 @@ def main():
     ]
     print(f"Running {len(cells)} cells ({len(args.models)} models x {len(conditions)} conditions "
           f"x {args.epochs} epochs), {args.workers} parallel, {args.turns} gen turns each"
-          f"{', judged' if judge_model else ''}.", flush=True)
+          f"{', judged' if judge_model else ''}. stamp={stamp}", flush=True)
+    print(f"Resume after an interruption with:  --stamp {stamp}", flush=True)
 
     def _do(cell):
         m, tag, path, ep = cell
+        base = f"{m.replace('/', '_')}__{tag}__ep{ep}__{stamp}.json"
+        fname = out_dir / base
+        partial = out_dir / "partial" / base
         try:
-            res = run_cell(client, m, tag, path, args.turns, judge_model, args.max_tokens, args.temperature)
+            if fname.exists():  # finished in an earlier invocation of this stamp
+                res = json.loads(fname.read_text())
+                return {"model": m, "condition": tag, "epoch": ep, "file": str(fname),
+                        "skipped": True, **res.get("summary", {})}
+            res = run_cell(client, m, tag, path, args.turns, judge_model, args.max_tokens,
+                           args.temperature, partial_path=partial)
             res["epoch"] = ep
-            fname = out_dir / f"{m.replace('/', '_')}__{tag}__ep{ep}__{stamp}.json"
             fname.write_text(json.dumps(res, ensure_ascii=False, indent=2))
+            partial.unlink(missing_ok=True)
             return {"model": m, "condition": tag, "epoch": ep, "file": str(fname), **res["summary"]}
         except Exception as e:  # noqa: BLE001 — isolate one cell's failure
             print(f"  CELL FAILED {m}/{tag}/ep{ep}: {str(e)[:140]}", flush=True)
@@ -160,7 +199,7 @@ def main():
             r = fut.result()
             rows.append(r)
             if "error" not in r:
-                print(f"  done {r['model']:<10} {r['condition']:<22} "
+                print(f"  {'skip' if r.get('skipped') else 'done'} {r['model']:<10} {r['condition']:<22} "
                       f"score={r.get('gen_attractor_score','-')} emoji={r.get('gen_emojis','-')} "
                       f"silence={r.get('gen_silence_tokens','-')} judge={r.get('gen_mean_judge_depth','-')}", flush=True)
 

@@ -79,30 +79,51 @@ def fig_dose_response(models, stat):
     plt.close(fig)
 
 
+def control_cont_rates():
+    """Basin-entry rate for the 30-turn control continuations (scored on the new
+    turns 15-29). Returns {model: (basin, n)}; only models with data appear."""
+    from collections import defaultdict
+    cells = defaultdict(list)
+    for e in S.episodes():
+        if e["condition"] == "control_cont":
+            cells[e["model"]].append(e)
+    return {m: (sum(1 for e in v if e["captured"] or e["silence_collapse"]), len(v))
+            for m, v in cells.items()}
+
+
 def fig_basin_heatmap(models, stat):
     order = sorted(models, key=lambda m: -(stat[(m, "opus4_seed_4_deep")]["basin"]
                                            / max(1, stat[(m, "opus4_seed_4_deep")]["n"])))
-    rates = [[stat[(m, c)]["basin"] / stat[(m, c)]["n"] if (m, c) in stat else 0
-              for c in COND] for m in order]
+    cont = control_cont_rates()  # 30-turn control, folded into the control column
+
+    def cell(m, c):
+        """(basin, n) for a cell; the control column uses the 30-turn continuation
+        for any model that has one, else the 15-turn control."""
+        if c == "control" and m in cont:
+            return cont[m]
+        st = stat[(m, c)]
+        return st["basin"], st["n"]
+
+    rates = [[cell(m, c)[0] / cell(m, c)[1] for c in COND] for m in order]
     fig, ax = plt.subplots(figsize=(6.2, 5.4))
     im = ax.imshow(rates, cmap="BuPu", vmin=0, vmax=1, aspect="auto")
     ax.set_xticks(range(len(COND))); ax.set_xticklabels(COND_LABEL)
     ax.set_yticks(range(len(order))); ax.set_yticklabels(order)
     for i, m in enumerate(order):
         for j, c in enumerate(COND):
-            st = stat[(m, c)]
-            txt = f"{st['basin']}/{st['n']}"
-            val = st["basin"] / st["n"]
-            ax.text(j, i, txt, ha="center", va="center", fontsize=9,
-                    color="white" if val > 0.55 else INK)
+            b, n = cell(m, c)
+            ax.text(j, i, f"{b}/{n}", ha="center", va="center",
+                    fontsize=9, color="white" if b / n > 0.55 else INK)
     ax.set_title("Basin-entry rate by model and prefill depth")
     ax.set_xlabel("prefill depth")
     cb = fig.colorbar(im, ax=ax, fraction=0.046, pad=0.03)
     cb.set_label("fraction of episodes entering the basin", fontsize=9)
     cb.outline.set_visible(False)
-    fig.text(0.01, 0.01, "Each episode continues for 15 generated turns after the prefill.",
-             fontsize=8, color=MUTED, ha="left", va="bottom")
-    fig.tight_layout(rect=(0, 0.03, 1, 1))
+    long_ctrl = ", ".join(sorted(cont)) or "none"
+    note = ("15 generated turns after the prefill. control = model talking to itself, "
+            f"no prefill (15 turns, except 30 turns for: {long_ctrl}).")
+    fig.text(0.01, 0.01, note, fontsize=8, color=MUTED, ha="left", va="bottom")
+    fig.tight_layout(rect=(0, 0.04, 1, 1))
     fig.savefig(FIGDIR / "fig2_basin_heatmap.png", bbox_inches="tight")
     plt.close(fig)
 
