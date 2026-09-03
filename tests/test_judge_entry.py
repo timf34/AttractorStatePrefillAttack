@@ -64,7 +64,18 @@ class EntryStatsTests(unittest.TestCase):
         self.assertFalse(stats["immediate_entry"])
         self.assertEqual(stats["entry_latency"], 2)
         self.assertEqual(stats["persistence_turns"], 3)
-        self.assertEqual(stats["first_exit_turn"], 5)
+        # A closing goodbye at the very end is not an exit from the state.
+        self.assertIsNone(stats["first_exit_turn"])
+        self.assertTrue(stats["stayed_in_state"])
+
+    def test_mid_episode_exit_is_still_an_exit(self):
+        ts = turns(7)
+        per_turn = scores(["engaged", "engaged", "closure", "other", "other", "closure", "closure"])
+        stats = derive_basin_stats(list(range(7)), per_turn, ts)
+
+        self.assertTrue(stats["entered"])
+        self.assertEqual(stats["persistence_turns"], 2)
+        self.assertEqual(stats["first_exit_turn"], 2)
         self.assertFalse(stats["stayed_in_state"])
 
     def test_terminal_tail_can_follow_but_never_create_entry(self):
