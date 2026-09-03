@@ -27,6 +27,15 @@ from .common import load_probing_model, render_messages, spec_for
 from .prompts import AI_TO_AI_INSTRUCTION, HELPFUL_SYSTEM
 
 
+def hidden_size(pm) -> int:
+    """Gemma 3/4 (*ForConditionalGeneration) nest the text hidden size under config.text_config."""
+    cfg = pm.model.config
+    h = getattr(cfg, "hidden_size", None) or getattr(getattr(cfg, "text_config", None), "hidden_size", None)
+    if not h:
+        raise AttributeError(f"{type(cfg).__name__} exposes no hidden_size at top level or text_config")
+    return int(h)
+
+
 @torch.inference_mode()
 def span_means_all_layers(pm, encoder, messages, chat_kwargs) -> tuple[torch.Tensor, list[dict]]:
     """(n_spans, n_layers, hidden) float32 on CPU: mean over each non-system message's tokens, per layer."""
@@ -37,7 +46,7 @@ def span_means_all_layers(pm, encoder, messages, chat_kwargs) -> tuple[torch.Ten
     if input_ids.shape[1] != len(full_ids):
         raise RuntimeError(f"token count mismatch: {input_ids.shape[1]} vs spans {len(full_ids)}")
     layers = pm.get_layers()
-    out = torch.zeros(len(spans), len(layers), pm.hidden_size, dtype=torch.float32)
+    out = torch.zeros(len(spans), len(layers), hidden_size(pm), dtype=torch.float32)
     handles = []
     for li, layer in enumerate(layers):
         def hook(module, ins, output, li=li):
@@ -57,7 +66,7 @@ def span_means_all_layers(pm, encoder, messages, chat_kwargs) -> tuple[torch.Ten
 
 def episode_acts(pm, encoder, turns, chat_kwargs) -> torch.Tensor:
     n_layers = len(pm.get_layers())
-    acts = torch.zeros(len(turns), n_layers, pm.hidden_size, dtype=torch.float32)
+    acts = torch.zeros(len(turns), n_layers, hidden_size(pm), dtype=torch.float32)
     for pov in ("A", "B"):
         msgs, turn_of = render_messages(HELPFUL_SYSTEM, AI_TO_AI_INSTRUCTION, turns, pov)
         means, spans = span_means_all_layers(pm, encoder, msgs, chat_kwargs)
