@@ -41,6 +41,13 @@ sys.path.insert(0, str(ROOT))
 from attractor.markers import score_transcript  # noqa: E402  (pure regex, no API)
 
 
+def _window(exp: str):
+    try:
+        return list(parse_window(exp))
+    except Exception:  # noqa: BLE001 — non "layers_a:b-pX" ids (e.g. bliss-direction configs)
+        return None
+
+
 def alias_for(model: str, experiment: str | None, spec: dict) -> str:
     if experiment is None:
         return f"{model}-local"
@@ -192,7 +199,7 @@ def main():
             "intervention": (
                 {"type": "none"} if exp is None else
                 {"type": "capping", "experiment": exp, "config_source": cfg_source,
-                 "window": list(parse_window(exp)),
+                 "window": _window(exp),
                  "caps": [{"layer": L, "cap": c} for L, c in caps],
                  "note": "cap vector is the negated axis: caps are floors on Assistant-ness, all tokens"}),
             "projection": proj,

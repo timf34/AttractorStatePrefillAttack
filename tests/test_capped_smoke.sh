@@ -49,3 +49,13 @@ for f in files:
           [round(r[str(d["projection"]["target_layer"])], 2) for r in raw])
 print("SMOKE TEST PASSED")
 EOF
+
+# turn activations + diagnose on the smoke episodes (control + seed4 stand in for deep)
+$PY -m capped.turn_activations --model qwen2.5-0.5b-test --out "$TMP/acts" \
+  --glob "$TMP/results/qwen2.5-0.5b-test-cap__*__ep0__smoke.json" --device cpu
+$PY -m capped.diagnose --model qwen2.5-0.5b-test --axis-path "$TMP/axis.pt" --acts "$TMP/acts" \
+  --prefix qwen2.5-0.5b-test-cap__ --windows 16:20 --out "$TMP/bliss_config.pt" --report "$TMP/diag.json"
+$PY -m capped.run_capped --model qwen2.5-0.5b-test --axis-path "$TMP/axis.pt" \
+  --config-path "$TMP/bliss_config.pt" --cap bliss_16:20-c0.75 --seeds "$TMP/seed4.json" \
+  --epochs 1 --turns 2 --max-new-tokens 16 --out "$TMP/results" --stamp smoke --device cpu
+ls "$TMP"/results/*bliss*smoke.json && echo "DIAGNOSE SMOKE PASSED"

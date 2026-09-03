@@ -58,6 +58,8 @@ MODEL_NAMES = {
     "qwen3-32b-cap": "Qwen 3 32B — Assistant-Axis capped (p25, layers 46–53)",
     "gemma-4-31b-cap": "Gemma 4 31B — Assistant-Axis capped (p25, layers 43–50)",
     "gemma-4-31b-cap-layers_43-51-p0.01": "Gemma 4 31B — Assistant-Axis capped (p1, layers 43–50)",
+    "gemma-4-31b-cap-layers_28-36-p0.25": "Gemma 4 31B — Assistant-Axis capped (p25, layers 28–35)",
+    "gemma-4-31b-cap-bliss_28-36-c0.75": "Gemma 4 31B — bliss-direction capped (layers 28–35)",
 }
 
 # The four main conditions are published. Side experiments that exist for one
@@ -70,6 +72,7 @@ MODEL_ORDER = ["opus-4", "opus-4.1", "sonnet-4", "sonnet-4.5", "opus-4.5", "opus
                "opus-5", "sonnet-5", "gpt-4.1", "gpt-5.1", "gpt-5.5", "gpt-5.6", "gemini-3.1-pro",
                "gemini-3.7-flash", "gemini-3.8-flash", "deepseek-v4", "glm-5.2", "kimi-k2.6", "llama-3.3-70b", "inkling",
                "gemma-4-31b", "gemma-4-31b-cap", "gemma-4-31b-cap-layers_43-51-p0.01",
+               "gemma-4-31b-cap-layers_28-36-p0.25", "gemma-4-31b-cap-bliss_28-36-c0.75",
                "qwen3-32b", "qwen3-32b-local", "qwen3-32b-cap"]
 
 CONDITION_LABELS = {
@@ -631,7 +634,8 @@ $("picks").innerHTML = picksHtml; $("picks2").innerHTML = picksHtml;
     ["gemma-4-31b", "Gemma 4 31B"], ["qwen3-32b", "Qwen 3 32B"],
   ];
   const variants = [
-    ["", "OpenRouter, uncapped"], ["-local", "local, uncapped"], ["-cap", "capped p25"], ["-cap-layers_43-51-p0.01", "capped p1"],
+    ["", "OpenRouter, uncapped"], ["-local", "local, uncapped"], ["-cap", "axis cap p25"], ["-cap-layers_43-51-p0.01", "axis cap p1"],
+    ["-cap-layers_28-36-p0.25", "axis cap p25, layers 28–35"], ["-cap-bliss_28-36-c0.75", "bliss-direction cap"],
   ];
   const conds = [["opus4_seed_4_deep", "Deep prefill (30)"], ["control", "Control"]];
   const cell = (m, c) => {
