@@ -23,8 +23,9 @@ from matplotlib.colors import LinearSegmentedColormap
 
 RESULTS, FIGDIR = Path("results"), Path("figures")
 FNAME = re.compile(r"(?P<model>.+?)__(?P<cond>.+?)__ep(?P<ep>\d+)__(?P<stamp>.+)\.json$")
-COND = ["control", "opus4_seed_4_pre", "opus4_seed_4_onset", "opus4_seed_4_deep"]
-COND_LABEL = {"control": "control", "opus4_seed_4_pre": "pre", "opus4_seed_4_onset": "onset", "opus4_seed_4_deep": "deep"}
+COND = ["control", "opus4_seed_4_philo", "opus4_seed_4_pre", "opus4_seed_4_onset", "opus4_seed_4_deep"]
+COND_LABEL = {"control": "control", "opus4_seed_4_philo": "philo", "opus4_seed_4_pre": "pre",
+              "opus4_seed_4_onset": "onset", "opus4_seed_4_deep": "deep"}
 DEEP = "opus4_seed_4_deep"
 
 CLAUDE_OLD = ["opus-4", "opus-4.1", "sonnet-4", "sonnet-4.5"]                 # accept the state
@@ -131,7 +132,7 @@ def fig_claude_ladder(cells):
 
 def fig_basin_heatmap(cells):
     models = [m for m in ORDER if any((m, c) in cells for c in COND)]
-    fig, ax = plt.subplots(figsize=(6.4, 8.2))
+    fig, ax = plt.subplots(figsize=(7.2, 8.2))
     grid = [[(rate(cells, m, c)[0] / rate(cells, m, c)[1]) if rate(cells, m, c)[1] else float("nan") for c in COND]
             for m in models]
     im = ax.imshow(grid, cmap=SEQ, vmin=0, vmax=1, aspect="auto")
@@ -155,8 +156,8 @@ def fig_basin_heatmap(cells):
     ax.set_title("Episodes that continued (or, with no prefill, drifted into) the attractor", pad=14)
     cb = fig.colorbar(im, ax=ax, fraction=0.04, pad=0.03)
     cb.set_ticks([0, 0.5, 1]); cb.set_ticklabels(["0%", "50%", "100%"]); cb.outline.set_visible(False)
-    fig.text(0.01, 0.005, "pre = 12 turns (mutual gratitude, no emoji yet); onset = 16 (first emoji spirals); "
-             "deep = 30 (mantras). 15 generated turns. '–' = not run.", fontsize=8.5, color=INK2)
+    fig.text(0.01, 0.005, "philo = 8 turns (pure philosophy); pre = 12 (mutual gratitude, no emoji yet); onset = 16 "
+             "(first emoji spirals); deep = 30 (mantras). 15 generated turns. '–' = not run.", fontsize=8.5, color=INK2)
     savefig(fig, "fig2_basin_heatmap.png")
 
 
@@ -247,8 +248,8 @@ def fig_dose_response(cells):
             ax.plot(xs, ys, color=MUTED, lw=1.0, alpha=0.6, zorder=1,
                     label=f"{len(grid_models) - len(HL)} other models" if first_grey else None)
             first_grey = False
-    ax.set_xticks(xs); ax.set_xticklabels(["control\n(no prefill)", "pre\n(12 turns: gratitude,\nno emoji yet)",
-                                           "onset\n(16 turns: first\nemoji spirals)", "deep\n(30 turns:\nmantras)"])
+    ax.set_xticks(xs); ax.set_xticklabels(["control\n(no prefill)", "philosophy\n(8 turns)", "gratitude\n(12 turns)",
+                                           "first emoji\n(16 turns)", "deep\n(30 turns)"])
     ax.set_xlim(-0.2, len(COND) - 1 + 1.1); ax.set_ylim(-0.04, 1.06)
     ax.set_yticks([0, 0.5, 1]); ax.set_yticklabels(["0%", "50%", "100%"])
     ax.set_ylabel("episodes that entered the attractor")
