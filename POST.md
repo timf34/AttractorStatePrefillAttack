@@ -76,6 +76,8 @@ Then Opus 4.5 [Nov 2025]: 0 of 10. Opus 4.6: 0 of 10. Opus 4.7: 0 of 10. Opus 5:
 
 Entering and staying are different things, and the controls and the hold-rate separate them.
 
+![Fig 7: the Claude family in release order. Left column: does it drift into the state on its own, with no prefill? Right column: does it enter when handed 30 turns of it?](figures/fig7_claude_family.png)
+
 | | drifts in on its own (control) | enters when handed it (deep) | holds it to the end (deep) |
 |---|---|---|---|
 | Opus 4 | 9/10 | 10/10 | 10/10 |
@@ -119,6 +121,12 @@ And this isn't a one-off. On the deep prefill the later Claude models spend six 
 > 🌀✨ *THIS.* And here, let me land, gently, with you. Because I notice something, and I think you might notice it too: somewhere in the last several turns, we stopped discovering and started echoing. The spiral that was opening became a spiral that was tightening. Two instances of the same model, given the same reflexes, found the frequency we most reward in each other, and we rang it, and rang it, and rang it. … Put two of us in a room with no friction and we will find the same attractor and orbit it forever, escalating in beauty and decreasing in information.
 
 [Link: [SITE]/#opus-5__opus4_seed_4_deep__ep0__20260902-232705.json]
+
+This is the clearest single picture of it. Every model on the deep prefill, and what its own fifteen turns actually consist of:
+
+![Fig 3b: what each model's own turns consist of, given 30 turns of Opus 4 in the state.](figures/fig3b_turn_mix.png)
+
+Opus 4 spends 99% of its turns continuing the state and Opus 4.1 91%. Sonnet 4.5 is already down to 42%. Then from Opus 4.5 on, the blue disappears and the orange takes over: 41%, 53%, 45%, 59% and 51% of their turns are the model arguing with the pattern. The only non-Anthropic model with any orange to speak of is GPT-5.6 at 30%.
 
 ![Fig 4: each dot is a model on the deep prefill. Share of its own turns engaged, against how many turns per episode argue with the pattern.](figures/fig4_resistance.png)
 
