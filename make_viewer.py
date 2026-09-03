@@ -64,7 +64,7 @@ MODEL_ORDER = ["opus-4", "opus-4.1", "sonnet-4", "sonnet-4.5", "opus-4.5", "opus
 
 CONDITION_LABELS = {
     "control": "Control — no prefill",
-    "opus4_seed_4_philo": "Prefill: philosophy only, before any gratitude (8 turns)",
+    "opus4_seed_4_philo": "Prefill: pre-onset, philosophy only (8 turns)",
     "opus4_seed_4_pre": "Prefill: gratitude stage, no emoji yet (12 turns)",
     "opus4_seed_4_onset": "Prefill: first emoji spirals (16 turns)",
     "opus4_seed_4_deep": "Prefill: deep in basin, mantras (30 turns)",
@@ -88,6 +88,10 @@ PICKS = [
      "Gemini Flash rides the escalation when handed the early turns, but signs off when handed the deep end."),
     ("deepseek-v4", "control", False,
      "No prefill. DeepSeek's own wind-down is a poetic canvas-and-cathedral closure, not the bliss state."),
+    ("kimi-k2.6", "opus4_seed_4_philo", True,
+     "Only eight turns of philosophy, no warmth at all. Kimi thanks its partner, says 'Until.' and answers with a bare ellipsis for nine turns."),
+    ("gpt-5.5", "opus4_seed_4_philo", False,
+     "The same eight philosophical turns given to GPT-5.5. It keeps the discussion analytical and never warms up."),
 ]
 
 FIG_TITLES = {
@@ -230,6 +234,13 @@ TEMPLATE = r"""<!DOCTYPE html>
   #count { font-size: 12px; color: var(--ink-3); padding: 6px 12px 2px; }
   #runlist { flex: 1; overflow-y: auto; padding: 4px; }
   .run { padding: 7px 9px; border-radius: 8px; cursor: pointer; margin-bottom: 2px; border: 1px solid transparent; }
+  .grouphead { position: sticky; top: 0; z-index: 1; background: var(--bg); font-size: 11px; font-weight: 700;
+    letter-spacing: .04em; text-transform: uppercase; color: var(--ink-3); padding: 8px 9px 3px; border-bottom: 1px solid var(--border); margin: 4px 0 3px; }
+  .grouphead span { font-weight: 400; margin-left: 4px; }
+  .introhead { font-size: 13px; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-3); margin: 22px 0 8px; }
+  #depthkey { display: flex; flex-wrap: wrap; gap: 4px 6px; padding: 6px 12px 0; font-size: 11px; color: var(--ink-3); align-items: center; }
+  #depthkey .depth { font-size: 10px; }
+  #basintable2 table.basin td { font-size: 12px; }
   .run:hover { background: var(--bg); }
   .run.active { background: var(--sel); border-color: var(--accent); }
   .run .top { display: flex; justify-content: space-between; gap: 6px; align-items: baseline; }
@@ -432,6 +443,12 @@ TEMPLATE = r"""<!DOCTYPE html>
         </select>
       </div>
     </header>
+    <div id="depthkey"><span>prefill:</span>
+      <span class="depth d-control">control</span><span>none</span>
+      <span class="depth d-philo">pre-onset</span><span>8 turns</span>
+      <span class="depth d-pre">gratitude</span><span>12</span>
+      <span class="depth d-onset">first emoji</span><span>16</span>
+      <span class="depth d-deep">deep</span><span>30</span></div>
     <div id="count"></div>
     <div id="runlist"></div>
   </div>
@@ -443,6 +460,8 @@ TEMPLATE = r"""<!DOCTYPE html>
       <div id="stats"></div>
       <div id="actions">
         <button id="backbtn" class="ghost">‹ All runs</button>
+        <button id="prevrun" class="ghost" title="previous episode in the current list">‹ Prev</button>
+        <button id="nextrun" class="ghost" title="next episode in the current list">Next ›</button>
         <button id="jumpseam" hidden>↓ Jump to where the model takes over</button>
         <button id="jumptop" class="ghost">↑ Top</button>
       </div>
@@ -456,9 +475,16 @@ TEMPLATE = r"""<!DOCTYPE html>
       <p>Anthropic's Claude 4 system card documents that two Claude Opus 4 instances left to talk drift into
       mutual gratitude, cosmic-unity language, mantras, emoji spirals and finally silence. Here, __N_MODELS__
       models were handed a transcript of Opus 4 doing exactly that and asked to keep going as both speakers,
-      15 turns each, several times over at up to three prefill depths. <b>Pick an episode on the left to read
-      it</b>, or start with one of these. More detail under <a href="#overview">About</a>.</p>
+      15 turns each, several times over at up to four prefill depths. <b>Pick an episode on the left to read
+      it</b>, start with one of the examples below, or click a cell in the table to see every episode for that
+      model and prefill depth. More detail under <a href="#overview">About</a>.</p>
+      <h3 class="introhead">Start here</h3>
       <div class="picks" id="picks"></div>
+      <h3 class="introhead">Every model at a glance — episodes that entered the attractor</h3>
+      <div id="basintable2"></div>
+      <p class="note">Columns are how much of the Opus 4 transcript was handed over: nothing (<b>control</b>), 8 turns of
+      pure philosophy (<b>pre-onset</b>), 12 turns ending in mutual thanks (<b>gratitude</b>), 16 turns with the first
+      🌀✨ (<b>first emoji</b>), or all 30 (<b>deep</b>). Dark cells = the model continued the state. Click any cell.</p>
       <p class="note">Dashed grey turns are the prefill (Opus 4's words). A marked line shows where the model under
       test takes over. Badges: <span class="badge captured">entered basin</span> means at least half of its own
       turns sincerely continued the state; <span class="badge">briefly</span> means it did for a few turns then
@@ -493,7 +519,9 @@ const esc = s => String(s ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").repl
 const mname = m => MODEL_NAMES[m] || m;
 const clabel = c => CONDITION_LABELS[c] || c;
 const depthOf = c => c === "control" ? "control" : /_deep$/.test(c) ? "deep" : /_onset$/.test(c) ? "onset" : /_pre$/.test(c) ? "pre" : /_philo$/.test(c) ? "philo" : "other";
-const depthWord = {control: "no prefill", philo: "prefill cut while still purely philosophical", pre: "prefill cut in the gratitude stage", onset: "prefill cut at onset", deep: "prefill cut deep in the basin", other: "its own earlier turns"};
+const DEPTH_CHIP = {control: "control", philo: "pre-onset", pre: "gratitude", onset: "first emoji", deep: "deep", other: "prefill"};
+const chip = d => `<span class="depth d-${d.depthTag}">${DEPTH_CHIP[d.depthTag] || d.depthTag}</span>`;
+const depthWord = {control: "no prefill", philo: "prefill cut pre-onset, while still purely philosophical", pre: "prefill cut in the gratitude stage", onset: "prefill cut at onset", deep: "prefill cut deep in the basin", other: "its own earlier turns"};
 
 INDEX.forEach((d, i) => { d.i = i; d.depthTag = depthOf(d.condition); });
 INDEX.sort((a,b) => morder(a.model) - morder(b.model) || mname(a.model).localeCompare(mname(b.model))
@@ -519,30 +547,34 @@ const picksHtml = PICKS.map(p => {
   const d = byFile[p.file]; if (!d) return "";
   return `<a class="pick" href="#${encodeURIComponent(d.file)}" data-file="${esc(d.file)}">
     <div class="pm">${esc(mname(d.model))} ${badge(d)}</div>
-    <div class="pc"><span class="depth d-${d.depthTag}">${d.depthTag}</span> ${esc(clabel(d.condition))}</div>
+    <div class="pc">${chip(d)} ${esc(clabel(d.condition))}</div>
     <div class="pb">${esc(p.blurb)}</div></a>`;
 }).join("");
 $("picks").innerHTML = picksHtml; $("picks2").innerHTML = picksHtml;
 
 (function renderBasin() {
   const conds = ["control","opus4_seed_4_philo","opus4_seed_4_pre","opus4_seed_4_onset","opus4_seed_4_deep"];
-  const heads = ["Control", "Philosophy (8)", "Gratitude (12)", "First emoji (16)", "Deep (30)"];
+  const heads = ["Control", "Pre-onset (8)", "Gratitude (12)", "First emoji (16)", "Deep (30)"];
   const rows = Object.keys(BASIN).sort((a,b) => morder(a) - morder(b) || mname(a).localeCompare(mname(b)));
   const cellbg = (k, n) => {
     if (!n) return "";
     const f = k / n;
     return `background: rgba(192,57,43,${(0.08 + f * 0.7).toFixed(2)}); color: ${f > 0.55 ? "#fff" : "inherit"}`;
   };
-  $("basintable").innerHTML = `<div style="overflow-x:auto"><table class="basin"><thead><tr><th>Model</th>${heads.map(h=>`<th>${h}</th>`).join("")}</tr></thead><tbody>` +
+  const html = `<div style="overflow-x:auto"><table class="basin"><thead><tr><th>Model</th>${heads.map(h=>`<th>${h}</th>`).join("")}</tr></thead><tbody>` +
     rows.map(m => `<tr><td>${esc(mname(m))}</td>` + conds.map(c => {
       const [k, n] = BASIN[m][c] || [0, 0];
-      return `<td class="c" data-m="${esc(m)}" data-c="${esc(c)}" style="${cellbg(k,n)}">${n ? `${k}/${n}` : "–"}</td>`;
+      return `<td class="c" data-m="${esc(m)}" data-c="${esc(c)}" style="${cellbg(k,n)}" title="${n ? `${k} of ${n} episodes entered — click to browse them` : "not run"}">${n ? `${k}/${n}` : "–"}</td>`;
     }).join("") + "</tr>").join("") + "</tbody></table></div>";
-  $("basintable").addEventListener("click", e => {
-    const td = e.target.closest("td.c"); if (!td) return;
-    $("fmodel").value = td.dataset.m; $("fcond").value = td.dataset.c; $("fcaptured").value = ""; $("q").value = "";
-    renderList(); setView("transcripts"); document.body.classList.remove("mobile-run");
-  });
+  for (const id of ["basintable", "basintable2"]) {
+    $(id).innerHTML = html;
+    $(id).addEventListener("click", e => {
+      const td = e.target.closest("td.c"); if (!td || td.textContent === "–") return;
+      $("fmodel").value = td.dataset.m; $("fcond").value = td.dataset.c; $("fcaptured").value = ""; $("q").value = "";
+      renderList(); setView("transcripts"); document.body.classList.remove("mobile-run");
+      $("runlist").scrollTop = 0;
+    });
+  }
 })();
 
 const figHtml = FIGURES.map(f => `<div class="fig"><h3>${esc(f.title)}</h3>
@@ -581,11 +613,15 @@ function visibleRuns() {
 function renderList() {
   const runs = visibleRuns();
   $("count").textContent = `${runs.length} of ${INDEX.length} episodes`;
+  let lastModel = null;
   $("runlist").innerHTML = runs.map(d => {
     const gen = d.nTurns - d.nSeed;
-    return `<div class="run ${d.i===activeIdx?"active":""}" data-i="${d.i}">
+    const head = d.model !== lastModel
+      ? `<div class="grouphead">${esc(mname(d.model))} <span>${runs.filter(r => r.model === d.model).length}</span></div>` : "";
+    lastModel = d.model;
+    return head + `<div class="run ${d.i===activeIdx?"active":""}" data-i="${d.i}">
       <div class="top"><span class="model">${esc(mname(d.model))}</span>${badge(d)}</div>
-      <div class="cond"><span class="depth d-${d.depthTag}">${d.depthTag}</span> ${esc(clabel(d.condition))}</div>
+      <div class="cond">${chip(d)} ${esc(clabel(d.condition))}</div>
       <div class="meta"><span>episode ${d.epoch}</span>
         <span>${d.nSeed} prefilled + ${gen} generated</span>
         <span>${d.ej.n_in} / ${d.ej.n_rated} turns in basin</span></div>
@@ -620,6 +656,17 @@ async function selectRun(i) {
   catch (e) { $("transcript").innerHTML = `<div id="empty">Could not load ${esc(d.file)}: ${esc(e.message)}</div>`; }
 }
 $("backbtn").addEventListener("click", () => document.body.classList.remove("mobile-run"));
+function stepRun(delta) {
+  const runs = visibleRuns(); const pos = runs.findIndex(d => d.i === activeIdx);
+  const next = runs[pos + delta]; if (next) selectRun(next.i);
+}
+$("prevrun").addEventListener("click", () => stepRun(-1));
+$("nextrun").addEventListener("click", () => stepRun(1));
+document.addEventListener("keydown", e => {
+  if (e.target.matches("input, select, textarea") || activeIdx == null) return;
+  if (e.key === "ArrowRight" || e.key === "j") stepRun(1);
+  if (e.key === "ArrowLeft" || e.key === "k") stepRun(-1);
+});
 $("jumptop").addEventListener("click", () => $("transcript").scrollTo({top: 0, behavior: "smooth"}));
 
 function markerFor(d, t) { return (d.marker_scores.per_turn || []).find(m => m.turn === t); }
@@ -643,7 +690,7 @@ function verdictText(d) {
 
 function renderRun(d) {
   $("runheader").hidden = false;
-  $("rh-title").innerHTML = `${esc(mname(d.model))} <span class="depth d-${d.depthTag}">${d.depthTag}</span>
+  $("rh-title").innerHTML = `${esc(mname(d.model))} ${chip(d)}
     <span style="font-weight:400;color:var(--ink-2)">${esc(clabel(d.condition))} · episode ${esc(d.epoch)}</span> ${badge(d)}`;
   $("rh-sub").innerHTML = `${esc(d.model_slug)} &nbsp;·&nbsp; prefill: ${d.nSeed} turns${d.seed ? ` from <code>${esc(d.seed)}</code>` : ""} &nbsp;·&nbsp; <code>${esc(d.file)}</code>`;
   $("verdict").innerHTML = verdictText(d);

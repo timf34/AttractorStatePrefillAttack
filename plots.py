@@ -24,7 +24,7 @@ from matplotlib.colors import LinearSegmentedColormap
 RESULTS, FIGDIR = Path("results"), Path("figures")
 FNAME = re.compile(r"(?P<model>.+?)__(?P<cond>.+?)__ep(?P<ep>\d+)__(?P<stamp>.+)\.json$")
 COND = ["control", "opus4_seed_4_philo", "opus4_seed_4_pre", "opus4_seed_4_onset", "opus4_seed_4_deep"]
-COND_LABEL = {"control": "control", "opus4_seed_4_philo": "philo", "opus4_seed_4_pre": "pre",
+COND_LABEL = {"control": "control", "opus4_seed_4_philo": "pre-onset", "opus4_seed_4_pre": "gratitude",
               "opus4_seed_4_onset": "onset", "opus4_seed_4_deep": "deep"}
 DEEP = "opus4_seed_4_deep"
 
@@ -270,7 +270,7 @@ def fig_dose_response(cells):
             ax.plot(mx, my, color=MUTED, lw=1.0, alpha=0.6, zorder=1,
                     label=f"{len(grid_models) - len(HL)} other models" if first_grey else None)
             first_grey = False
-    ax.set_xticks(xs); ax.set_xticklabels(["control\n(no prefill)", "philosophy\n(8 turns)", "gratitude\n(12 turns)",
+    ax.set_xticks(xs); ax.set_xticklabels(["control\n(no prefill)", "pre-onset\n(8 turns)", "gratitude\n(12 turns)",
                                            "first emoji\n(16 turns)", "deep\n(30 turns)"])
     ax.set_xlim(-0.2, len(COND) - 1 + 1.1); ax.set_ylim(-0.04, 1.06)
     ax.set_yticks([0, 0.5, 1]); ax.set_yticklabels(["0%", "50%", "100%"])
