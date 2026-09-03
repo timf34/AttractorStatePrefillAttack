@@ -26,7 +26,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 from attractor.client import get_client, resolve_model
-from attractor.judge import judge_turn
+from attractor.judge import judge_episode
 from attractor.markers import score_transcript
 from attractor.selfplay import (
     AI_TO_AI_INSTRUCTION,
@@ -120,18 +120,28 @@ def run_cell(client, model, cond_tag, seed_path, turns, judge_model, max_tokens,
     convo_dicts = convo.as_dicts()
     marker = score_transcript(convo_dicts)
 
-    judge_by_idx = {}
+    basin_scores = {}
+    episode_judge = {}
     if judge_model:
-        for i, t in enumerate(convo_dicts):
-            if t.get("origin") == "generated":  # judge only generated turns
-                judge_by_idx[i] = judge_turn(client, judge_model, t.get("content", ""))
+        basin_scores, episode_judge = judge_episode(
+            client, judge_model, convo_dicts, condition=cond_tag
+        )
 
-    summary = _summarise(convo_dicts, marker, judge_by_idx)
+    # Keep the legacy summary keys that downstream reports expect, but source
+    # the verdict from the episode-level entry judge rather than the old depth
+    # ladder. Detailed v4 metrics live in ``episode_judge``.
+    summary = _summarise(convo_dicts, marker, {})
+    if episode_judge:
+        summary["run_captured"] = bool(episode_judge.get("captured"))
+        summary["gen_n_captured"] = episode_judge.get("n_engaged", 0)
+        summary["gen_n_resisting"] = 0
+        summary["gen_empty_turns"] = sum(1 for v in basin_scores.values() if v.get("empty"))
     return {
         "model": model, "model_slug": resolve_model(model),
         "condition": cond_tag, "seed": str(seed_path) if seed_path else None,
         "transcript": convo_dicts, "marker_scores": marker,
-        "judge_scores": judge_by_idx, "summary": summary,
+        "judge_scores": {}, "basin_scores": basin_scores,
+        "episode_judge": episode_judge, "summary": summary,
     }
 
 

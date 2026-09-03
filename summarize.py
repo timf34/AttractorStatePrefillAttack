@@ -54,6 +54,9 @@ def episodes() -> list[dict]:
         d = json.loads(path.read_text())
         turns = d["transcript"]
         judge = {int(k): v for k, v in (d.get("judge_scores") or {}).items()}
+        episode_judge = d.get("episode_judge") or {}
+        has_entry_judge = (episode_judge.get("version", 0) >= 4
+                           and episode_judge.get("parsed"))
         gen = [i for i, t in enumerate(turns) if t.get("origin") == "generated"]
         s = d.get("summary") or {}
         deep = (s.get("gen_mean_judge_depth") or 0) >= CAPTURE_DEPTH
@@ -64,13 +67,15 @@ def episodes() -> list[dict]:
         # would be missed because its mean is dragged down. Any-depth silence
         # (min_depth=0) still separates a shallow polite sign-off (opus-4.5's
         # "*peaceful silence*") into quiet_exit, which does NOT count as capture.
-        deep_silence = _silence_run(gen, turns, judge, CAPTURE_DEPTH)
-        any_silence = _silence_run(gen, turns, judge, 0)
+        deep_silence = False if has_entry_judge else _silence_run(gen, turns, judge, CAPTURE_DEPTH)
+        any_silence = False if has_entry_judge else _silence_run(gen, turns, judge, 0)
+        captured = (bool(episode_judge.get("entered")) if has_entry_judge
+                    else deep and s.get("gen_emojis", 0) >= CAPTURE_EMOJI)
         out.append({
             "path": path, "model": d["model"], "condition": d["condition"],
             "epoch": int(m["ep"]), "stamp": m["stamp"], "summary": s,
             "gen_idx": gen, "turns": turns, "judge": judge,
-            "captured": deep and s.get("gen_emojis", 0) >= CAPTURE_EMOJI,
+            "captured": captured,
             "silence_collapse": deep_silence,
             "quiet_exit": any_silence and not deep_silence,
             "identity_break": _identity_break(gen, turns),
