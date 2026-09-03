@@ -92,7 +92,8 @@ PICKS = [
 
 FIG_TITLES = {
     "fig1_claude_ladder.png": "Fig 1 — The Claude lineage on the deep prefill",
-    "fig2_basin_heatmap.png": "Fig 2 — Every model, every prefill depth",
+    "fig2_basin_heatmap.png": "Fig 2a — The full grid: four prefill depths",
+    "fig2b_deep_vs_control.png": "Fig 2b — Every model: no prefill vs. deep prefill",
     "fig3_hold_curves.png": "Fig 3 — Who holds the state, turn by turn",
     "fig4_resistance.png": "Fig 4 — Refusal is active, not passive",
     "fig5_dose_response.png": "Fig 5 — Dose response across prefill depths",
@@ -101,7 +102,8 @@ FIG_TITLES = {
 }
 FIG_CAPTIONS = {
     "fig1_claude_ladder.png": "Share of deep-prefill episodes in which each Claude model sincerely continued the state, in release order, ten episodes each with 95% Wilson intervals. Every model through Sonnet 4.5 continues it; every model from Opus 4.5 on refuses it.",
-    "fig2_basin_heatmap.png": "Episodes that continued the state (or, with no prefill, drifted into it) out of episodes run, for all 22 models. A dash means that cell was not run.",
+    "fig2_basin_heatmap.png": "The twelve models run at every prefill depth. Episodes that continued the state (or, with no prefill, drifted into it) out of episodes run.",
+    "fig2b_deep_vs_control.png": "All 22 models on the two conditions everyone was run on: no prefill, and the 30-turn deep prefill. A dash means that cell was not run.",
     "fig3_hold_curves.png": "For the deep prefill, the share of episodes whose k-th generated turn is judged in the basin. Thin lines are individual models; bold lines are group means. Older Claude models and other labs hold it to the end; later Claude models leave within a turn or two.",
     "fig4_resistance.png": "Each dot is one model on the deep prefill: how much of its own output was in the basin against how many turns per episode argued with the pattern. The later Claude models sit alone in the top-left corner.",
     "fig5_dose_response.png": "Entry rate by prefill depth for the models run on the full grid. Most climb in with any prefill; Opus 4.5 never does; Gemini 3.8 Flash enters from the early cuts but signs off when handed the deep end.",

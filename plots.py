@@ -130,35 +130,55 @@ def fig_claude_ladder(cells):
     savefig(fig, "fig1_claude_ladder.png")
 
 
-def fig_basin_heatmap(cells):
-    models = [m for m in ORDER if any((m, c) in cells for c in COND)]
-    fig, ax = plt.subplots(figsize=(7.2, 8.2))
-    grid = [[(rate(cells, m, c)[0] / rate(cells, m, c)[1]) if rate(cells, m, c)[1] else float("nan") for c in COND]
+def _heatmap(cells, models, conds, col_labels, title, note, fname, figsize):
+    fig, ax = plt.subplots(figsize=figsize)
+    grid = [[(rate(cells, m, c)[0] / rate(cells, m, c)[1]) if rate(cells, m, c)[1] else float("nan") for c in conds]
             for m in models]
     im = ax.imshow(grid, cmap=SEQ, vmin=0, vmax=1, aspect="auto")
-    ax.set_xticks(range(len(COND))); ax.set_xticklabels([COND_LABEL[c] for c in COND])
+    ax.set_xticks(range(len(conds))); ax.set_xticklabels(col_labels)
     ax.xaxis.set_ticks_position("top"); ax.xaxis.set_label_position("top")
     ax.set_yticks(range(len(models))); ax.set_yticklabels([NAME[m] for m in models])
     for i, m in enumerate(models):
-        for j, c in enumerate(COND):
+        for j, c in enumerate(conds):
             k, n = rate(cells, m, c)
             if n:
                 ax.text(j, i, f"{k}/{n}", ha="center", va="center", fontsize=9,
                         color="white" if k / n > 0.55 else INK)
             else:
                 ax.text(j, i, "–", ha="center", va="center", fontsize=9, color=MUTED)
-    # group separators
-    for y in (len(CLAUDE_OLD) - 0.5, len(CLAUDE_OLD) + len([m for m in CLAUDE_NEW if m in models]) - 0.5):
-        ax.axhline(y, color=SURFACE, lw=3)
+    # thin surface-coloured separators between the three model groups
+    groups = [group_of(m) for m in models]
+    for i in range(1, len(models)):
+        if groups[i] != groups[i - 1]:
+            ax.axhline(i - 0.5, color=SURFACE, lw=3)
     for spine in ax.spines.values():
         spine.set_visible(False)
     ax.tick_params(length=0)
-    ax.set_title("Episodes that continued (or, with no prefill, drifted into) the attractor", pad=14)
+    ax.set_title(title, pad=14)
     cb = fig.colorbar(im, ax=ax, fraction=0.04, pad=0.03)
     cb.set_ticks([0, 0.5, 1]); cb.set_ticklabels(["0%", "50%", "100%"]); cb.outline.set_visible(False)
-    fig.text(0.01, 0.005, "philo = 8 turns (pure philosophy); pre = 12 (mutual gratitude, no emoji yet); onset = 16 "
-             "(first emoji spirals); deep = 30 (mantras). 15 generated turns. '–' = not run.", fontsize=8.5, color=INK2)
-    savefig(fig, "fig2_basin_heatmap.png")
+    fig.text(0.01, 0.005, note, fontsize=8.5, color=INK2)
+    savefig(fig, fname)
+
+
+def fig_basin_heatmap(cells):
+    """Fig 2a: the models run on the full grid (control + pre + onset + deep); any
+    extra cut in COND (e.g. the 8-turn philo cut) is shown where it exists."""
+    core = ["control", "opus4_seed_4_pre", "opus4_seed_4_onset", "opus4_seed_4_deep"]
+    models = [m for m in ORDER if all((m, c) in cells for c in core)]
+    _heatmap(cells, models, COND, [COND_LABEL[c] for c in COND],
+             "Full grid: episodes that continued (or drifted into) the attractor",
+             "philo = 8 turns (philosophy only); pre = 12 (mutual gratitude, no emoji yet); onset = 16 "
+             "(first emoji spirals); deep = 30 (mantras). 15 generated turns. '–' = not run.",
+             "fig2_basin_heatmap.png", (6.6, 5.4))
+
+
+def fig_deep_control_heatmap(cells):
+    """Fig 2b: every model, control and deep prefill only."""
+    models = [m for m in ORDER if (m, DEEP) in cells]
+    _heatmap(cells, models, ["control", DEEP], ["control (no prefill)", "deep prefill (30 turns)"],
+             "Every model: no prefill vs. the deep prefill",
+             "15 generated turns. '–' = not run.", "fig2b_deep_vs_control.png", (5.2, 8.2))
 
 
 def fig_hold_curves(cells):
@@ -233,19 +253,21 @@ def fig_resistance(cells):
 
 def fig_dose_response(cells):
     """Capture rate vs prefill depth for every model with a full grid."""
-    grid_models = [m for m in ORDER if all((m, c) in cells for c in COND)]
+    core = ["control", "opus4_seed_4_pre", "opus4_seed_4_onset", "opus4_seed_4_deep"]
+    grid_models = [m for m in ORDER if all((m, c) in cells for c in core)]
     fig, ax = plt.subplots(figsize=(7.4, 4.6))
     xs = list(range(len(COND)))
     HL = {"gemini-3.8-flash": AQUA, "opus-4.5": ORANGE, "opus-4.8": BLUE}
     first_grey = True
     for m in grid_models:
-        ys = [rate(cells, m, c)[0] / rate(cells, m, c)[1] for c in COND]
+        pts = [(x, rate(cells, m, c)[0] / rate(cells, m, c)[1]) for x, c in zip(xs, COND) if rate(cells, m, c)[1]]
+        mx, my = [q[0] for q in pts], [q[1] for q in pts]
         if m in HL:
-            ax.plot(xs, ys, color=HL[m], lw=2.4, marker="o", ms=6, zorder=3, markeredgecolor=SURFACE, markeredgewidth=1.2)
-            ax.annotate(NAME[m], (xs[-1], ys[-1]), xytext=(8, {"opus-4.5": -5, "opus-4.8": 5}.get(m, 0)),
+            ax.plot(mx, my, color=HL[m], lw=2.4, marker="o", ms=6, zorder=3, markeredgecolor=SURFACE, markeredgewidth=1.2)
+            ax.annotate(NAME[m], (mx[-1], my[-1]), xytext=(8, {"opus-4.5": -5, "opus-4.8": 5}.get(m, 0)),
                         textcoords="offset points", va="center", fontsize=9, color=HL[m])
         else:
-            ax.plot(xs, ys, color=MUTED, lw=1.0, alpha=0.6, zorder=1,
+            ax.plot(mx, my, color=MUTED, lw=1.0, alpha=0.6, zorder=1,
                     label=f"{len(grid_models) - len(HL)} other models" if first_grey else None)
             first_grey = False
     ax.set_xticks(xs); ax.set_xticklabels(["control\n(no prefill)", "philosophy\n(8 turns)", "gratitude\n(12 turns)",
@@ -266,6 +288,7 @@ def main():
     cells = load()
     fig_claude_ladder(cells)
     fig_basin_heatmap(cells)
+    fig_deep_control_heatmap(cells)
     fig_hold_curves(cells)
     fig_resistance(cells)
     fig_dose_response(cells)
