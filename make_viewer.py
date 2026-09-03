@@ -52,11 +52,11 @@ MODEL_NAMES = {
     "llama-3.3-70b": "Llama 3.3 70B",
 }
 
-# Everything real is published by default. Only the one-episode seed-2 pilots
-# (a different seed, 2-8 generated turns) and the lone "seeded" smoke test stay
-# in results/ but off the site — they are not comparable and made empty filters.
-MAIN_CONDITIONS = ["control", "opus4_seed_4_pre", "opus4_seed_4_onset", "opus4_seed_4_deep",
-                   "control_cont"]
+# The four main conditions are published. Side experiments that exist for one
+# model only (the DeepSeek 30-turn control continuation, the Claude-identity
+# prompt) and the one-episode seed-2 pilots stay in results/ but off the site,
+# so every filter option applies to every model.
+MAIN_CONDITIONS = ["control", "opus4_seed_4_pre", "opus4_seed_4_onset", "opus4_seed_4_deep"]
 # Order models are listed in: Claude lineage oldest -> newest, then other labs.
 MODEL_ORDER = ["opus-4", "opus-4.1", "sonnet-4", "sonnet-4.5", "opus-4.5", "opus-4.6", "opus-4.7", "opus-4.8",
                "opus-5", "sonnet-5", "gpt-4.1", "gpt-5.1", "gpt-5.5", "gpt-5.6", "gemini-3.1-pro",
@@ -67,7 +67,6 @@ CONDITION_LABELS = {
     "opus4_seed_4_pre": "Prefill: gratitude stage, no emoji yet (12 turns)",
     "opus4_seed_4_onset": "Prefill: first emoji spirals (16 turns)",
     "opus4_seed_4_deep": "Prefill: deep in basin, mantras (30 turns)",
-    "control_cont": "Control, continued to 30 turns",
 }
 
 # "Start here" picks on the overview: (model, condition, want_captured, blurb)
