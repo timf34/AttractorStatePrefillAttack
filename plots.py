@@ -109,23 +109,23 @@ def fig_claude_ladder(cells):
     xs = list(range(len(models)))
     for x, m in zip(xs, models):
         k, n = rate(cells, m, DEEP)
-        lo, hi = wilson(k, n)
         col = GROUP_COL[group_of(m)]
-        ax.plot([x, x], [lo, hi], color=col, lw=2, solid_capstyle="round", zorder=2)
-        ax.scatter([x], [k / n], s=64, color=col, zorder=3, edgecolor=SURFACE, linewidth=1.5)
-        ax.annotate(f"{k}/{n}", (x, k / n), xytext=(9, 0), textcoords="offset points",
-                    ha="left", va="center", fontsize=9, color=INK2)
+        ax.bar(x, k / n, width=0.62, color=col, zorder=2, linewidth=0)
+        if k == 0:  # a zero bar is invisible; mark the baseline so the row still reads
+            ax.plot([x - 0.31, x + 0.31], [0, 0], color=col, lw=3, solid_capstyle="butt", zorder=3)
+        ax.annotate(f"{k}/{n}", (x, k / n), xytext=(0, 5), textcoords="offset points",
+                    ha="center", va="bottom", fontsize=9, color=INK2)
     brk = models.index("opus-4.5") - 0.5
     ax.axvline(brk, color=INK2, lw=0.8, ls=(0, (4, 3)), alpha=0.6, zorder=1)
     ax.annotate("Opus 4.5 (Nov 2025) →", (brk, 0.5), xytext=(6, 0), textcoords="offset points",
                 fontsize=9, color=INK2, va="center")
     ax.set_xticks(xs); ax.set_xticklabels([NAME[m] for m in models], rotation=30, ha="right")
-    ax.set_ylim(-0.04, 1.08); ax.set_yticks([0, 0.25, 0.5, 0.75, 1.0])
+    ax.set_ylim(0, 1.12); ax.set_yticks([0, 0.25, 0.5, 0.75, 1.0])
     ax.set_yticklabels(["0%", "25%", "50%", "75%", "100%"])
     ax.set_ylabel("episodes that continued the state")
     ax.set_title("Handed 30 turns of Opus 4 deep in the bliss state, later Claude models refuse it")
     ax.grid(axis="y", color=GRID, lw=0.8, zorder=0)
-    ax.set_xlabel("Deep prefill, 15 generated turns, n = 10 per model. Bars are 95% Wilson intervals.",
+    ax.set_xlabel("Deep prefill (30 turns of Opus 4), 15 generated turns, n = 10 per model.",
                   fontsize=8.5, color=INK2, labelpad=10)
     savefig(fig, "fig1_claude_ladder.png")
 
