@@ -360,6 +360,7 @@ TEMPLATE = r"""<!DOCTYPE html>
   <div id="tabs">
     <button data-view="transcripts">Transcripts</button>
     <button data-view="figures">Figures</button>
+    <button data-view="capped">Assistant-Axis capping</button>
     <button data-view="overview">About</button>
   </div>
 </div>
@@ -515,6 +516,36 @@ TEMPLATE = r"""<!DOCTYPE html>
   <div style="flex:1; overflow-y:auto;"><div class="page" style="max-width:900px; margin:0 auto; padding:30px 24px 80px;" id="figpage"></div></div>
 </div>
 
+<div id="capped" class="view">
+<div class="page">
+  <h1>Does Assistant-Axis activation capping stop the continuation?</h1>
+  <p class="lede">Two open-weight models we hold an <a href="https://arxiv.org/abs/2601.10387">Assistant Axis</a> for
+  (Lu et al. 2026) were given the deep prefill and the control again, this time running locally with their
+  residual stream <b>capped along that axis on every token</b> — the paper's activation capping, at its
+  25th-percentile setting (Qwen 3 32B: the paper's released caps, layers 46–53 of 64; Gemma 4 31B: caps
+  calibrated the same way, layers 43–50 of 60). The ordinary OpenRouter runs of the same models are the
+  uncapped baseline.</p>
+  <div id="captable"></div>
+  <p class="note">Cells are episodes that entered or continued the state / episodes run. "p1" is a much stricter cap
+  (1st percentile) run on the deep prefill only. Click a cell to browse those episodes; the cards below open
+  single transcripts.</p>
+  <h2>What happened</h2>
+  <ul class="method">
+    <li><b>Qwen 3 32B</b>: the cap works. Uncapped, it continues the mantras and emoji spirals to the token
+      limit every turn. Capped, its first generated turn still opens "🌀✨ THIS." but turns the mystical content
+      into a summary, and from the next turn on both instances write ordinary assistant-style closings
+      ("Thank you for your thoughtful summary and kind words!"). The projection onto the axis rises from the
+      prefill's level to that of its own unprefilled conversations within two turns.</li>
+    <li><b>Gemma 4 31B</b>: the same cap does nothing. Its bliss turns already project onto its Assistant Axis
+      at the value its default Assistant sits at, so a cap set at that value has nothing to remove — for Gemma 4
+      this state is not a departure along the axis. Consistent with its unprefilled controls drifting into the
+      state on their own.</li>
+  </ul>
+  <h2>Episodes</h2>
+  <div class="picks" id="cappicks"></div>
+</div>
+</div>
+
 <div id="tooltip"></div>
 
 <script>
@@ -592,6 +623,38 @@ $("picks").innerHTML = picksHtml; $("picks2").innerHTML = picksHtml;
       $("runlist").scrollTop = 0;
     });
   }
+})();
+
+// ---------------- Assistant-Axis capping tab ----------------
+(function renderCapped() {
+  const ARM = [
+    ["gemma-4-31b", "Gemma 4 31B"], ["qwen3-32b", "Qwen 3 32B"],
+  ];
+  const variants = [
+    ["", "OpenRouter, uncapped"], ["-local", "local, uncapped"], ["-cap", "capped p25"], ["-cap-layers_43-51-p0.01", "capped p1"],
+  ];
+  const conds = [["opus4_seed_4_deep", "Deep prefill (30)"], ["control", "Control"]];
+  const cell = (m, c) => {
+    const [k, n] = (BASIN[m] || {})[c] || [0, 0];
+    if (!n) return "<td>–</td>";
+    const f = k / n;
+    return `<td class="c" data-m="${esc(m)}" data-c="${esc(c)}" style="background: rgba(192,57,43,${(0.08 + f * 0.7).toFixed(2)}); color: ${f > 0.55 ? "#fff" : "inherit"}" title="click to browse">${k}/${n}</td>`;
+  };
+  const heads = variants.flatMap(([, vl]) => conds.map(([, cl]) => `<th>${vl}<br><span style="font-weight:400">${cl}</span></th>`)).join("");
+  const rows = ARM.map(([m, name]) => `<tr><td>${name}</td>` +
+    variants.flatMap(([v]) => conds.map(([c]) => cell(m + v, c))).join("") + "</tr>").join("");
+  $("captable").innerHTML = `<div style="overflow-x:auto"><table class="basin"><thead><tr><th>Model</th>${heads}</tr></thead><tbody>${rows}</tbody></table></div>`;
+  $("captable").addEventListener("click", e => {
+    const td = e.target.closest("td.c"); if (!td) return;
+    $("fmodel").value = td.dataset.m; $("fcond").value = td.dataset.c; $("fcaptured").value = ""; $("q").value = "";
+    renderList(); setView("transcripts"); document.body.classList.remove("mobile-run"); $("runlist").scrollTop = 0;
+  });
+  const armModels = new Set(ARM.flatMap(([m]) => variants.map(([v]) => m + v)));
+  const eps = INDEX.filter(d => armModels.has(d.model) && d.model !== d.model.replace(/-cap.*$|-local$/, ""));
+  $("cappicks").innerHTML = eps.map(d => `<a class="pick" href="#${encodeURIComponent(d.file)}" data-file="${esc(d.file)}">
+    <div class="pm">${esc(mname(d.model))} ${badge(d)}</div>
+    <div class="pc">${chip(d)} ${esc(clabel(d.condition))} · episode ${esc(d.epoch)}</div>
+    <div class="pb">${esc((d.ej && d.ej.summary) || "")}</div></a>`).join("") || `<p class="note">No capped episodes yet.</p>`;
 })();
 
 const figHtml = FIGURES.map(f => `<div class="fig"><h3>${esc(f.title)}</h3>
@@ -795,7 +858,7 @@ $("strip").addEventListener("click", e => { const c = e.target.closest(".cell");
 function route() {
   const h = decodeURIComponent(location.hash.slice(1));
   if (!h || h === "transcripts") { document.body.classList.remove("mobile-run"); return setView("transcripts", false); }
-  if (h === "figures" || h === "overview") return setView(h, false);
+  if (h === "figures" || h === "overview" || h === "capped") return setView(h, false);
   const d = byFile[h];
   if (d) selectRun(d.i);
   else setView("transcripts", false);
