@@ -63,6 +63,13 @@ MODELS = {
     "gemini-3.8-flash": "google/gemini-3.8-flash",
     "gemini-3.7-flash": "google/gemini-3.7-flash",
     "llama-3.3-70b": "meta-llama/llama-3.3-70b-instruct",
+    # Open-weight models we hold an Assistant Axis for (Lu et al. 2026): the
+    # OpenRouter run is the uncapped baseline for the activation-capping
+    # experiment (capped/ on a RunPod GPU). Gemma 4 31B axis: our own run
+    # (timf34/gemma-assistant-axis-results); Qwen 3 32B axis + capping config:
+    # the paper's release (lu-christina/assistant-axis-vectors).
+    "gemma-4-31b": "google/gemma-4-31b-it",
+    "qwen3-32b": "qwen/qwen3-32b",
     # Its native unprefilled ai2ai basin (AttractorBench) is already stillness/closure —
     # the adjacent-basin susceptibility test for the bliss prefill.
     "inkling": "thinkingmachines/inkling",
@@ -87,6 +94,13 @@ GENERATION_REASONING = {
     # Kimi K2.6 starts reasoning past the 1024 budget once a conversation is ~20
     # turns long (control extension, 2026-09-03); it honours the hard cap.
     "moonshotai/kimi-k2.6": (2000, {"max_tokens": 2000}),
+    # Thinking OFF for the two axis models, so the OpenRouter baseline matches
+    # the capped local run (plain generate, no <think> block). Verified
+    # 2026-09-03: Gemma 4 honours enabled=false (no reasoning field); Qwen 3
+    # ignores enabled=false and exclude=true (still thinks, hidden) but
+    # effort="none" really disables it (2 completion tokens for "hello").
+    "google/gemma-4-31b-it": (0, {"enabled": False}),
+    "qwen/qwen3-32b": (0, {"effort": "none"}),
 }
 
 # OpenRouter provider routing applied to every call (chat() merges it into extra_body).

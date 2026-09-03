@@ -1,0 +1,14 @@
+# Pod requirements for capped/ (rp bootstrap --req capped/requirements.txt).
+# rp-min-cuda: 12.8
+# Gemma 4 needs transformers >= 5.5.3; 5.15 broke Gemma4Config.head_dim (see
+# ../GemmaAssistantAxis/assistant-axis/pyproject.toml), so stay below it.
+torch
+transformers>=5.5.3,<5.15
+accelerate
+huggingface_hub
+hf_transfer
+hf_xet
+safetensors
+sentencepiece
+numpy
+python-dotenv
