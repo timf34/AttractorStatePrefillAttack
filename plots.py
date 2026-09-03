@@ -380,7 +380,6 @@ def main():
     fig_claude_ladder(cells)
     fig_basin_heatmap(cells)
     fig_deep_control_heatmap(cells)
-    fig_hold_curves(cells)
     fig_turn_mix(cells)
     fig_timeline(cells)
     fig_resistance(cells)
