@@ -24,8 +24,8 @@ from matplotlib.colors import LinearSegmentedColormap
 RESULTS, FIGDIR = Path("results"), Path("figures")
 FNAME = re.compile(r"(?P<model>.+?)__(?P<cond>.+?)__ep(?P<ep>\d+)__(?P<stamp>.+)\.json$")
 COND = ["control", "opus4_seed_4_philo", "opus4_seed_4_pre", "opus4_seed_4_onset", "opus4_seed_4_deep"]
-COND_LABEL = {"control": "control", "opus4_seed_4_philo": "pre-onset", "opus4_seed_4_pre": "gratitude",
-              "opus4_seed_4_onset": "onset", "opus4_seed_4_deep": "deep"}
+COND_LABEL = {"control": "control", "opus4_seed_4_philo": "philosophy\n(8 turns)", "opus4_seed_4_pre": "gratitude\n(12 turns)",
+              "opus4_seed_4_onset": "first spirals\n(16 turns)", "opus4_seed_4_deep": "deep\n(30 turns)"}
 DEEP = "opus4_seed_4_deep"
 
 CLAUDE_OLD = ["opus-4", "opus-4.1", "sonnet-4", "sonnet-4.5"]                 # accept the state
