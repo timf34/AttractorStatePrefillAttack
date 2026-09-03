@@ -99,7 +99,10 @@ class ActivationExtractor:
 
         try:
             with torch.inference_mode():
-                _ = self.model(input_ids)  # Full forward pass to capture all layers
+                # logits_to_keep=1: hooks read the residual stream and the LM-head output
+                # is discarded; full-sequence logits (vocab x tokens, fp32) are ~18 GB on
+                # a 30k-token bliss transcript — an OOM on an 80 GB card next to a 65 GB model.
+                _ = self.model(input_ids, logits_to_keep=1)
         finally:
             # Clean up all hooks
             for handle in handles:
@@ -172,7 +175,10 @@ class ActivationExtractor:
 
         try:
             with torch.inference_mode():
-                _ = self.model(input_ids)  # Full forward pass to capture all layers
+                # logits_to_keep=1: hooks read the residual stream and the LM-head output
+                # is discarded; full-sequence logits (vocab x tokens, fp32) are ~18 GB on
+                # a 30k-token bliss transcript — an OOM on an 80 GB card next to a 65 GB model.
+                _ = self.model(input_ids, logits_to_keep=1)
         finally:
             # Clean up all hooks
             for handle in handles:

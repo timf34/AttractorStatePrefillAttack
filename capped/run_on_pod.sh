@@ -23,6 +23,7 @@ export HF_HOME="${HF_HOME:-/workspace/hf}" PYTHONUNBUFFERED=1 TOKENIZERS_PARALLE
 # Xet transfers died mid-download on the first run ("File reconstruction error:
 # Background writer channel closed"), so use the plain HTTP path.
 export HF_HUB_DISABLE_XET=1
+export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True   # 30k-token projection passes fragment the allocator
 unset HF_HUB_ENABLE_HF_TRANSFER
 RETRIES="${RETRIES:-3}"          # per step; every step is resumable
 
