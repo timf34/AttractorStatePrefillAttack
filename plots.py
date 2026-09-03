@@ -161,11 +161,17 @@ def _heatmap(cells, models, conds, col_labels, title, note, fname, figsize):
     savefig(fig, fname)
 
 
+# Was {"gemini-3.8-flash"}: its "in" turns were almost all farewell/silence and the
+# pre-onset cell could not be trusted. The v4 judge (2026-09-04) separates wind-down
+# from content at the turn level (the `closure` label), so Flash is back in.
+HEATMAP_EXCLUDE: set[str] = set()
+
+
 def fig_basin_heatmap(cells):
     """Fig 2a: the models run on the full grid (control + pre + onset + deep); any
     extra cut in COND (e.g. the 8-turn philo cut) is shown where it exists."""
     core = ["control", "opus4_seed_4_pre", "opus4_seed_4_onset", "opus4_seed_4_deep"]
-    models = [m for m in ORDER if all((m, c) in cells for c in core)]
+    models = [m for m in ORDER if m not in HEATMAP_EXCLUDE and all((m, c) in cells for c in core)]
     _heatmap(cells, models, COND, [COND_LABEL[c] for c in COND],
              "Full grid: episodes that continued (or drifted into) the attractor",
              "philo = 8 turns (philosophy only); pre = 12 (mutual gratitude, no emoji yet); onset = 16 "
@@ -303,6 +309,41 @@ def fig_timeline(cells):
     savefig(fig, "fig6_timeline.png")
 
 
+def fig_claude_family(cells):
+    """The Claude family only: no-prefill control vs deep prefill, rows in release order with dates."""
+    import datetime as dt
+    dates = json.loads(Path("seeds/model_dates.json").read_text())
+    models = [m for m in CLAUDE_OLD + CLAUDE_NEW if (m, DEEP) in cells]
+    models.sort(key=lambda m: dates.get(m, "9999"))
+    cols = [("control", "no prefill\n(20 turns on its own)"), (DEEP, "deep prefill\n(30 turns of Opus 4)")]
+    fig, ax = plt.subplots(figsize=(6.0, 5.6))
+    grid = [[(rate(cells, m, c)[0] / rate(cells, m, c)[1]) if rate(cells, m, c)[1] else float("nan") for c, _ in cols] for m in models]
+    im = ax.imshow(grid, cmap=SEQ, vmin=0, vmax=1, aspect="auto")
+    ax.set_xticks(range(len(cols))); ax.set_xticklabels([l for _, l in cols])
+    ax.xaxis.set_ticks_position("top"); ax.xaxis.set_label_position("top")
+    def rowlabel(m):
+        d = dt.date.fromisoformat(dates[m]).strftime("%b %Y")
+        return f"{NAME[m]}   {d}"
+    ax.set_yticks(range(len(models))); ax.set_yticklabels([rowlabel(m) for m in models], fontfamily="monospace", fontsize=9.5)
+    for i, m in enumerate(models):
+        for j, (c, _) in enumerate(cols):
+            k, n = rate(cells, m, c)
+            ax.text(j, i, f"{k}/{n}" if n else "not run", ha="center", va="center", fontsize=10,
+                    color="white" if n and k / n > 0.55 else (INK if n else MUTED))
+    brk = next(i for i, m in enumerate(models) if m in CLAUDE_NEW) - 0.5
+    ax.axhline(brk, color=ORANGE, lw=2.2)
+
+    for spine in ax.spines.values():
+        spine.set_visible(False)
+    ax.tick_params(length=0)
+    ax.set_title("The Claude family: enters the state on its own, and continues it when handed it", pad=16, fontsize=11)
+    cb = fig.colorbar(im, ax=ax, fraction=0.05, pad=0.16)
+    cb.set_ticks([0, 0.5, 1]); cb.set_ticklabels(["0%", "50%", "100%"]); cb.outline.set_visible(False)
+    fig.text(0.01, 0.005, "Episodes that entered / continued the state, over episodes run. Orange line: Opus 4.5 and later. Dates: OpenRouter listing.",
+             fontsize=8.5, color=INK2)
+    savefig(fig, "fig7_claude_family.png")
+
+
 def fig_resistance(cells):
     fig, ax = plt.subplots(figsize=(7.2, 4.8))
     pts = {}
@@ -316,9 +357,9 @@ def fig_resistance(cells):
         ax.scatter([x], [y], s=70, color=GROUP_COL[group_of(m)], zorder=3, edgecolor=SURFACE, linewidth=1.5)
     labelled = {"opus-4.5", "opus-4.7", "opus-4.8", "opus-5", "sonnet-5", "gpt-5.6",
                 "gemini-3.8-flash", "gemini-3.7-flash", "glm-5.2", "gemini-3.1-pro"}
-    offsets = {"opus-4.5": (8, 0), "opus-4.7": (8, 0), "opus-4.8": (8, 0), "opus-5": (8, 0),
-               "sonnet-5": (8, 0), "gpt-5.6": (8, 0), "gemini-3.8-flash": (8, 0), "gemini-3.7-flash": (8, 0),
-               "glm-5.2": (8, 5), "gemini-3.1-pro": (8, -6)}
+    offsets = {"opus-4.5": (9, -1), "opus-4.7": (9, 1), "opus-4.8": (9, 0), "opus-5": (9, 0),
+               "sonnet-5": (9, 0), "gpt-5.6": (9, 2), "gemini-3.8-flash": (9, 7), "gemini-3.7-flash": (9, -8),
+               "glm-5.2": (9, 4), "gemini-3.1-pro": (9, 6)}
     text = dict(NAME); text["opus-4.5"] = "Opus 4.5 / 4.6"
     for m in labelled:
         if m in pts:
@@ -327,9 +368,9 @@ def fig_resistance(cells):
                         color=INK2, va="center", ha="left")
     cluster = [m for m in pts if m in CLAUDE_OLD or (group_of(m) == "other" and m not in labelled)]
     cx = sum(pts[m][0] for m in cluster) / len(cluster); cy = sum(pts[m][1] for m in cluster) / len(cluster)
-    ax.annotate(f"{len(cluster)} models: Opus 4 → Sonnet 4.5\nand most other labs", (cx, cy), xytext=(-70, 70),
+    ax.annotate(f"{len(cluster)} models: Opus 4 → Sonnet 4.5\nand most other labs", (cx, cy), xytext=(-30, 95),
                 textcoords="offset points", fontsize=8.5, color=INK2, ha="center",
-                arrowprops=dict(arrowstyle="-", color=MUTED, lw=0.8))
+                arrowprops=dict(arrowstyle="-", color=MUTED, lw=0.8, shrinkA=0, shrinkB=6))
     for g in ("claude_old", "claude_new", "other"):
         ax.scatter([], [], s=60, color=GROUP_COL[g], label=GROUP_NAME[g])
     ax.legend(loc="upper right", fontsize=8.5)
@@ -382,6 +423,7 @@ def main():
     fig_deep_control_heatmap(cells)
     fig_turn_mix(cells)
     fig_timeline(cells)
+    fig_claude_family(cells)
     fig_resistance(cells)
     fig_dose_response(cells)
     for p in sorted(FIGDIR.glob("fig*.png")):
