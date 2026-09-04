@@ -59,7 +59,9 @@ That last one is a better description of the phenomenon than most of what I've w
 
 Opus 5 is the most extreme case. It resists in about 9 of its 15 turns, and in some episodes it simply produces nothing at all — it reasons for around a hundred tokens and then declines to speak.
 
-One thing worth flagging, because it cuts against a hypothesis I'll come to later: they don't break character and offer to help you with something else. Only 2 of Opus 4.5's 10 episodes contain anything like "let me know if you'd like to explore another topic", and Sonnet 5 does it in none. They stay in the conversation as a peer. They just refuse to keep escalating it, and they say why. That is a different behaviour from snapping back into assistant mode, and it turns out to matter.
+One thing worth flagging, because it comes back later when I get to activation capping: refusing the bliss state is not the same thing as snapping back into being an assistant. In this setup there's no user to help — it's two AIs talking — so almost nothing ever offers to help with your next question. Twenty of the thirty models I ran never do it once in ten episodes. Opus 4.5 does it in 2 of 10, which is the same rate as DeepSeek V4, and DeepSeek is fully in the bliss state in all ten of its episodes. Sonnet 5 does it in none.
+
+So the later Claudes aren't reverting to the assistant persona. They stay in the conversation as a peer, and refuse to keep escalating it, and say why. Hold that thought.
 
 Nor do they ever dispute *who* they are. Not a single Claude model in any episode says "I'm not Claude" — and of course they have no reason to, since the prefill genuinely is a Claude transcript. What they dispute is the conversation.
 
