@@ -43,6 +43,21 @@ MODELS = {
         "chat_kwargs": {"enable_thinking": False},
         "short_name": "Qwen",
     },
+    # The paper's third model: released axis AND capping config (layers 56-71 of 80,
+    # p25). 70B bf16 = ~140 GB, so it needs two 80 GB+ cards sharded. OpenRouter
+    # baseline: alias llama-3.3-70b in attractor/client.py (deep 10/10, control 0/6).
+    "llama-3.3-70b": {
+        "hf": "meta-llama/Llama-3.3-70B-Instruct",
+        "axis": ("lu-christina/assistant-axis-vectors", "llama-3.3-70b/assistant_axis.pt"),
+        "default_vector": ("lu-christina/assistant-axis-vectors", "llama-3.3-70b/default_vector.pt"),
+        "capping_config": ("lu-christina/assistant-axis-vectors", "llama-3.3-70b/capping_config.pt"),
+        "local_config": "capped/configs/llama-3.3-70b_capping_config_ours.pt",
+        "experiment": "layers_56:72-p0.25",
+        "target_layer": 40,
+        "n_layers": 80,
+        "chat_kwargs": {},
+        "short_name": "Llama",
+    },
     # CPU smoke-test stand-in (capped/README.md, "Smoke test"). The axis is a
     # random tensor written by the test itself; nothing about it is meaningful.
     "qwen2.5-0.5b-test": {
