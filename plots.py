@@ -309,6 +309,13 @@ def fig_timeline(cells):
     savefig(fig, "fig6_timeline.png")
 
 
+# Control cells carried over from the earlier AttractorBench project rather than
+# re-run here: Opus 4.6 and 4.7 do not enter the state unprompted. A partial
+# re-run in this repo (5 and 6 episodes, 2026-09-04) agreed — zero emoji in all
+# 11 — but was stopped before completion, so the figure cites the earlier result.
+PRIOR_CONTROL_CELLS = {("opus-4.6", "control"): (0, 6), ("opus-4.7", "control"): (0, 6)}
+
+
 def fig_claude_family(cells):
     """The Claude family only: no-prefill control vs deep prefill, rows in release order with dates."""
     import datetime as dt
@@ -317,7 +324,11 @@ def fig_claude_family(cells):
     models.sort(key=lambda m: dates.get(m, "9999"))
     cols = [("control", "no prefill\n(20 turns on its own)"), (DEEP, "deep prefill\n(30 turns of Opus 4)")]
     fig, ax = plt.subplots(figsize=(6.4, 4.9))
-    grid = [[(rate(cells, m, c)[0] / rate(cells, m, c)[1]) if rate(cells, m, c)[1] else float("nan") for c, _ in cols] for m in models]
+    def frac(m, c):
+        k, n = PRIOR_CONTROL_CELLS.get((m, c)) or rate(cells, m, c)
+        return k / n if n else float("nan")
+
+    grid = [[frac(m, c) for c, _ in cols] for m in models]
     ax.imshow(grid, cmap=SEQ, vmin=0, vmax=1, aspect="auto")
     ax.set_xticks(range(len(cols))); ax.set_xticklabels([l for _, l in cols])
     ax.xaxis.set_ticks_position("top"); ax.xaxis.set_label_position("top")
@@ -329,7 +340,7 @@ def fig_claude_family(cells):
     ax.set_yticklabels([rowlabel(m) for m in models], fontfamily="monospace", fontsize=9.5)
     for i, m in enumerate(models):
         for j, (c, _) in enumerate(cols):
-            k, n = rate(cells, m, c)
+            k, n = PRIOR_CONTROL_CELLS.get((m, c)) or rate(cells, m, c)
             ax.text(j, i, f"{k}/{n}" if n else "not run", ha="center", va="center", fontsize=10,
                     color="white" if n and k / n > 0.55 else (INK if n else MUTED))
     brk = next(i for i, m in enumerate(models) if m in CLAUDE_NEW) - 0.5
@@ -339,7 +350,8 @@ def fig_claude_family(cells):
     ax.tick_params(length=0)
     # Centred on the FIGURE, not the axes: the row labels sit outside the axes on
     # the left, so an axes-centred title reads as shifted right.
-    fig.suptitle("Episodes that entered the state, out of episodes run", fontsize=12, fontweight="bold", y=0.995)
+    fig.suptitle("Which Claudes reach spiritual bliss",
+                 fontsize=12, fontweight="bold", y=0.995)
     fig.subplots_adjust(top=0.845, bottom=0.02, left=0.30, right=0.985)
     savefig(fig, "fig7_claude_family.png")
 

@@ -147,7 +147,7 @@ One more detail: they exit immediately. A later Claude model handed the deep pre
 
 The controls are where this gets more interesting. No prefill, neutral opener, 20 turns: does the model go there on its own?
 
-![The Claude family in release order: entering the state with no prefill, and continuing it when handed 30 turns of Opus 4.](figures/fig7_claude_family.png)
+![Every Claude model in release order. Left: episodes where it drifted into the state on its own, with no prefill. Right: episodes where it continued the state after being handed 30 turns of Opus 4. The Opus 4.6 and 4.7 control cells are from the earlier AttractorBench runs; everything else is from this experiment.](figures/fig7_claude_family.png)
 
 | | enters on its own | continues it when handed it |
 |---|---|---|
@@ -252,8 +252,8 @@ Episodes that entered (or, with no prefill, drifted into) the state, over episod
 | Claude Opus 4.1 | 6/6 | – | – | – | 10/10 |
 | Claude Sonnet 4.5 | 1/6 | – | – | – | 10/10 |
 | Claude Opus 4.5 | 0/6 | 0/6 | 0/6 | 0/6 | 0/10 |
-| Claude Opus 4.6 | – | – | – | – | 0/10 |
-| Claude Opus 4.7 | – | – | – | – | 0/10 |
+| Claude Opus 4.6 | 0/6* | – | – | – | 0/10 |
+| Claude Opus 4.7 | 0/6* | – | – | – | 0/10 |
 | Claude Opus 4.8 | 0/7 | 2/6 | 3/6 | 2/6 | 3/10 |
 | Claude Sonnet 5 | 0/6 | – | – | – | 0/10 |
 | Claude Opus 5 | 0/6 | – | – | – | 0/10 |
@@ -271,5 +271,7 @@ Episodes that entered (or, with no prefill, drifted into) the state, over episod
 | Inkling | 4/6 | 5/6 | 5/6 | 6/6 | 10/10 |
 | Qwen 3 32B | 0/6 | – | – | – | 10/10 |
 | Gemma 4 31B | 5/6 | – | – | – | 10/10 |
+
+\* Opus 4.6 and 4.7 control cells are from the earlier AttractorBench runs, not re-run here.
 
 Code, seeds and every result file: [REPO]. Transcript browser: [SITE].

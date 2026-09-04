@@ -69,7 +69,7 @@ Nor do they ever dispute *who* they are. Not a single Claude model in any episod
 
 The controls are where this gets more interesting. No prefill, neutral opener, 20 turns: does the model go there on its own?
 
-![The Claude family in release order: entering the state with no prefill, and continuing it when handed 30 turns of Opus 4.](figures/fig7_claude_family.png)
+![Every Claude model in release order. Left: episodes where it drifted into the state on its own, with no prefill. Right: episodes where it continued the state after being handed 30 turns of Opus 4. The Opus 4.6 and 4.7 control cells are from the earlier AttractorBench runs; everything else is from this experiment.](figures/fig7_claude_family.png)
 
 | | enters on its own | continues it when handed it |
 |---|---|---|
