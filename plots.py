@@ -155,8 +155,7 @@ def _heatmap(cells, models, conds, col_labels, title, note, fname, figsize):
         spine.set_visible(False)
     ax.tick_params(length=0)
     ax.set_title(title, pad=14)
-    cb = fig.colorbar(im, ax=ax, fraction=0.04, pad=0.03)
-    cb.set_ticks([0, 0.5, 1]); cb.set_ticklabels(["0%", "50%", "100%"]); cb.outline.set_visible(False)
+    # No colourbar: every cell carries its own "k/n", so the ramp adds nothing.
     fig.text(0.01, 0.005, note, fontsize=8.5, color=INK2)
     savefig(fig, fname)
 
