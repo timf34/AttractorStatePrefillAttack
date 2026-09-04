@@ -316,15 +316,17 @@ def fig_claude_family(cells):
     models = [m for m in CLAUDE_OLD + CLAUDE_NEW if (m, DEEP) in cells]
     models.sort(key=lambda m: dates.get(m, "9999"))
     cols = [("control", "no prefill\n(20 turns on its own)"), (DEEP, "deep prefill\n(30 turns of Opus 4)")]
-    fig, ax = plt.subplots(figsize=(6.0, 5.6))
+    fig, ax = plt.subplots(figsize=(6.4, 4.9))
     grid = [[(rate(cells, m, c)[0] / rate(cells, m, c)[1]) if rate(cells, m, c)[1] else float("nan") for c, _ in cols] for m in models]
-    im = ax.imshow(grid, cmap=SEQ, vmin=0, vmax=1, aspect="auto")
+    ax.imshow(grid, cmap=SEQ, vmin=0, vmax=1, aspect="auto")
     ax.set_xticks(range(len(cols))); ax.set_xticklabels([l for _, l in cols])
     ax.xaxis.set_ticks_position("top"); ax.xaxis.set_label_position("top")
+
     def rowlabel(m):
-        d = dt.date.fromisoformat(dates[m]).strftime("%b %Y")
-        return f"{NAME[m]}   {d}"
-    ax.set_yticks(range(len(models))); ax.set_yticklabels([rowlabel(m) for m in models], fontfamily="monospace", fontsize=9.5)
+        return f"{NAME[m]}   {dt.date.fromisoformat(dates[m]).strftime('%b %Y')}"
+
+    ax.set_yticks(range(len(models)))
+    ax.set_yticklabels([rowlabel(m) for m in models], fontfamily="monospace", fontsize=9.5)
     for i, m in enumerate(models):
         for j, (c, _) in enumerate(cols):
             k, n = rate(cells, m, c)
@@ -332,15 +334,13 @@ def fig_claude_family(cells):
                     color="white" if n and k / n > 0.55 else (INK if n else MUTED))
     brk = next(i for i, m in enumerate(models) if m in CLAUDE_NEW) - 0.5
     ax.axhline(brk, color=ORANGE, lw=2.2)
-
     for spine in ax.spines.values():
         spine.set_visible(False)
     ax.tick_params(length=0)
-    ax.set_title("The Claude family: enters the state on its own, and continues it when handed it", pad=16, fontsize=11)
-    cb = fig.colorbar(im, ax=ax, fraction=0.05, pad=0.16)
-    cb.set_ticks([0, 0.5, 1]); cb.set_ticklabels(["0%", "50%", "100%"]); cb.outline.set_visible(False)
-    fig.text(0.01, 0.005, "Episodes that entered / continued the state, over episodes run. Orange line: Opus 4.5 and later. Dates: OpenRouter listing.",
-             fontsize=8.5, color=INK2)
+    # Centred on the FIGURE, not the axes: the row labels sit outside the axes on
+    # the left, so an axes-centred title reads as shifted right.
+    fig.suptitle("Episodes that entered the state, out of episodes run", fontsize=12, fontweight="bold", y=0.995)
+    fig.subplots_adjust(top=0.845, bottom=0.02, left=0.30, right=0.985)
     savefig(fig, "fig7_claude_family.png")
 
 
