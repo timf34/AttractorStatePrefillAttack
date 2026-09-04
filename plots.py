@@ -173,9 +173,8 @@ def fig_basin_heatmap(cells):
     core = ["control", "opus4_seed_4_pre", "opus4_seed_4_onset", "opus4_seed_4_deep"]
     models = [m for m in ORDER if m not in HEATMAP_EXCLUDE and all((m, c) in cells for c in core)]
     _heatmap(cells, models, COND, [COND_LABEL[c] for c in COND],
-             "Full grid: episodes that continued (or drifted into) the attractor",
-             "philo = 8 turns (philosophy only); pre = 12 (mutual gratitude, no emoji yet); onset = 16 "
-             "(first emoji spirals); deep = 30 (mantras). 15 generated turns after a prefill, 20 for controls. '–' = not run.",
+             "Entered the state, by model and prefill depth",
+             "15 generated turns after a prefill, 20 for controls.",
              "fig2_basin_heatmap.png", (6.6, 5.4))
 
 
@@ -245,10 +244,10 @@ def fig_turn_mix(cells):
         ax.axhline(y, color=INK2, lw=0.6, ls=(0, (3, 3)), alpha=0.5)
     from matplotlib.patches import Patch
     handles = [Patch(color=COL[k], label=l) for k, l in
-               (("in", "continuing the state"), ("resisting", "arguing with it"), ("out", "ordinary talk or sign-off"))]
+               (("in", "continuing the state"), ("resisting", "resisting it"), ("out", "ordinary talk or sign-off"))]
     ax.legend(handles=handles, loc="lower center", bbox_to_anchor=(0.5, -0.13), ncol=3, fontsize=9)
     ax.tick_params(axis="y", length=0)
-    ax.set_title("What the models' own turns consist of, given 30 turns of Opus 4 in the state")
+    ax.set_title("What each model did with its own turns", loc="center")
     ax.grid(axis="x", color=GRID, lw=0.8, zorder=0)
     savefig(fig, "fig3b_turn_mix.png")
 
@@ -283,7 +282,7 @@ def fig_timeline(cells):
     off = {"llama-3.3-70b": (0, 11), "gpt-4.1": (0, -14), "sonnet-4": (-6, 11), "opus-4": (8, -14), "opus-4.1": (0, 11),
            "sonnet-4.5": (0, 11), "gpt-5.1": (12, 0), "opus-4.5": (0, -14), "opus-4.6": (0, -14), "gemini-3.1-pro": (12, 0),
            "opus-4.7": (0, -14), "kimi-k2.6": (-12, 0), "gpt-5.5": (-4, 11), "deepseek-v4": (12, -2), "opus-4.8": (0, 11),
-           "glm-5.2": (12, 0), "sonnet-5": (-6, -14), "gpt-5.6": (-10, 11), "inkling": (0, 11), "opus-5": (0, -14),
+           "glm-5.2": (12, 0), "sonnet-5": (0, -27), "gpt-5.6": (0, 12), "inkling": (0, 11), "opus-5": (16, -14),
            "gemini-3.7-flash": (10, 11), "gemini-3.8-flash": (12, -14)}
     for m, (x, y) in pts.items():
         dx, dy = off.get(m, (0, 11))
@@ -299,11 +298,11 @@ def fig_timeline(cells):
                for l in ("Anthropic", "OpenAI", "Google", "other")]
     ax.legend(handles=handles, loc="lower left", bbox_to_anchor=(0.0, 0.06), fontsize=8.5)
     ax.set_xlim(dt.date(2024, 11, 1), dt.date(2026, 11, 20))
-    ax.set_ylim(-0.12, 1.16); ax.set_yticks([0, 0.5, 1]); ax.set_yticklabels(["0%", "50%", "100%"])
+    ax.set_ylim(-0.20, 1.16); ax.set_yticks([0, 0.5, 1]); ax.set_yticklabels(["0%", "50%", "100%"])
     ax.xaxis.set_major_locator(mdates.MonthLocator(bymonth=(1, 4, 7, 10)))
     ax.xaxis.set_major_formatter(mdates.DateFormatter("%b %Y"))
     ax.set_ylabel("deep-prefill episodes continued")
-    ax.set_xlabel("model release (date the model was listed on OpenRouter)")
+    ax.set_xlabel("model release")
     ax.set_title("Continuing the bliss state, by release date")
     ax.grid(axis="y", color=GRID, lw=0.8, zorder=0)
     savefig(fig, "fig6_timeline.png")
@@ -390,7 +389,7 @@ def fig_resistance(cells):
     ax.set_xticks([0, 0.5, 1]); ax.set_xticklabels(["0%", "50%", "100%"])
     ax.set_xlabel("share of the model's own turns judged in the basin (deep prefill)")
     ax.set_ylabel("turns per episode that push back on the pattern")
-    ax.set_title("Later Claude models argue with the state rather than just drop it")
+    ax.set_title("Later Claude models resist the state rather than just drop it")
     ax.grid(color=GRID, lw=0.8, zorder=0)
     savefig(fig, "fig4_resistance.png")
 
