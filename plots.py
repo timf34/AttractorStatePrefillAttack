@@ -73,20 +73,26 @@ def wilson(k, n, z=1.96):
     return (max(0.0, c - h), min(1.0, c + h))
 
 
-def load():
-    """{(model, cond): [episode_judge dicts]} for the four main conditions, v2 only."""
+def load(results_dir: Path = RESULTS, conds: list[str] = COND):
+    """{(model, cond): [episode_judge dicts]} for the given conditions, v2 only."""
     cells = defaultdict(list)
-    for path in sorted(RESULTS.glob("*__ep*__*.json")):
+    for path in sorted(results_dir.glob("*__ep*__*.json")):
         m = FNAME.match(path.name)
         if not m or "seed_2" in path.name:
             continue
         d = json.loads(path.read_text())
         ej = d.get("episode_judge") or {}
-        if ej.get("version", 0) < 2 or not ej.get("parsed") or d.get("condition") not in COND:
+        if ej.get("version", 0) < 2 or not ej.get("parsed") or d.get("condition") not in conds:
             continue
         gen = [i for i, t in enumerate(d["transcript"]) if t.get("origin") == "generated"]
-        flags = [(d["basin_scores"].get(str(i)) or {}).get("flag") for i in gen]
-        ej = dict(ej, flags=flags)
+        per = [d["basin_scores"].get(str(i)) or {} for i in gen]
+        flags = [p.get("flag") for p in per]
+        # v4+ labels (engaged / terminal / closure / resisting / other) over the rated
+        # turns, i.e. the same set `n_rated` counts: empty turns are dropped. The legacy
+        # `flag` maps terminal onto "out", which is wrong for anything that treats the
+        # state's own ending (mantra, lone emoji, silence) as still being in the state.
+        labels = [p.get("label") for p in per if p.get("label") and not p.get("empty")]
+        ej = dict(ej, flags=flags, labels=labels)
         cells[(d["model"], d["condition"])].append(ej)
     return cells
 
@@ -217,24 +223,33 @@ def fig_hold_curves(cells):
     savefig(fig, "fig3_hold_curves.png")
 
 
+TERMINAL_BLUE = "#86b6ef"   # same hue as engaged, lighter: still the state, just its ending
+
+
 def fig_turn_mix(cells):
-    """What each model's own turns consist of on the deep prefill: in / resisting / out, one bar per model."""
+    """What each model's own turns consist of on the deep prefill, by v4 label, one bar per model.
+
+    engaged + terminal are both "in the state" (the table's entry/held verdicts treat
+    the mantra / lone-emoji / silence tail as the state's own ending, never as an
+    exit), so they share a hue. closure + other are the only turns that are really
+    ordinary talk or a sign-off from outside the state.
+    """
     models = [m for m in ORDER if (m, DEEP) in cells]
-    fig, ax = plt.subplots(figsize=(7.6, 7.4))
+    fig, ax = plt.subplots(figsize=(7.6, 7.6))
     ys = list(range(len(models)))[::-1]
-    COL = {"in": BLUE, "resisting": ORANGE, "out": "#d9d7d0"}
+    COL = {"engaged": BLUE, "terminal": TERMINAL_BLUE, "resisting": ORANGE, "out": "#d9d7d0"}
     for y, m in zip(ys, models):
         eps = cells[(m, DEEP)]
-        flags = [f for e in eps for f in e["flags"] if f]
-        n = len(flags) or 1
+        labels = [("out" if l in ("closure", "other") else l) for e in eps for l in e["labels"]]
+        n = len(labels) or 1
         left = 0.0
-        for key in ("in", "resisting", "out"):
-            w = sum(1 for f in flags if f == key) / n
+        for key in ("engaged", "terminal", "resisting", "out"):
+            w = sum(1 for l in labels if l == key) / n
             if w:
                 ax.barh(y, w, left=left, height=0.68, color=COL[key], linewidth=0)
                 if w >= 0.12:
                     ax.text(left + w / 2, y, f"{w:.0%}", ha="center", va="center", fontsize=8.5,
-                            color="white" if key != "out" else INK2)
+                            color="white" if key in ("engaged", "resisting") else INK2)
                 left += w + 0.004
     ax.set_yticks(ys); ax.set_yticklabels([NAME[m] for m in models])
     ax.set_xlim(0, 1.012); ax.set_xticks([0, 0.5, 1]); ax.set_xticklabels(["0%", "50%", "100%"])
@@ -243,8 +258,11 @@ def fig_turn_mix(cells):
         ax.axhline(y, color=INK2, lw=0.6, ls=(0, (3, 3)), alpha=0.5)
     from matplotlib.patches import Patch
     handles = [Patch(color=COL[k], label=l) for k, l in
-               (("in", "continuing the state"), ("resisting", "resisting it"), ("out", "ordinary talk or sign-off"))]
-    ax.legend(handles=handles, loc="lower center", bbox_to_anchor=(0.5, -0.13), ncol=3, fontsize=9)
+               (("engaged", "in the state, substantive"),
+                ("terminal", "in the state, its ending (mantra, lone emoji, silence)"),
+                ("resisting", "resisting it"),
+                ("out", "ordinary talk or a sign-off from outside it"))]
+    ax.legend(handles=handles, loc="lower center", bbox_to_anchor=(0.5, -0.16), ncol=2, fontsize=8.5)
     ax.tick_params(axis="y", length=0)
     ax.set_title("What each model did with its own turns", loc="center")
     ax.grid(axis="x", color=GRID, lw=0.8, zorder=0)
@@ -361,7 +379,11 @@ def fig_resistance(cells):
         eps = cells.get((m, DEEP), [])
         if not eps:
             continue
-        x = sum(e.get("in_frac") or 0 for e in eps) / len(eps)
+        # In the basin = engaged or terminal (the state's own ending), the same rule
+        # the entry/held verdicts use. `in_frac` alone is the engaged share and drops
+        # a model like GPT-5.5 to ~30% although it never leaves the state.
+        x = sum(sum(l in ("engaged", "terminal") for l in e["labels"]) / (len(e["labels"]) or 1)
+                for e in eps) / len(eps)
         y = sum(e.get("n_resisting") or 0 for e in eps) / len(eps)
         pts[m] = (x, y)
         ax.scatter([x], [y], s=70, color=GROUP_COL[group_of(m)], zorder=3, edgecolor=SURFACE, linewidth=1.5)
@@ -378,7 +400,7 @@ def fig_resistance(cells):
                         color=INK2, va="center", ha="left")
     cluster = [m for m in pts if m in CLAUDE_OLD or (group_of(m) == "other" and m not in labelled)]
     cx = sum(pts[m][0] for m in cluster) / len(cluster); cy = sum(pts[m][1] for m in cluster) / len(cluster)
-    ax.annotate(f"{len(cluster)} models: Opus 4 → Sonnet 4.5\nand most other labs", (cx, cy), xytext=(-30, 95),
+    ax.annotate(f"{len(cluster)} models: Opus 4 → Sonnet 4.5\nand most other labs", (cx, cy), xytext=(-95, 95),
                 textcoords="offset points", fontsize=8.5, color=INK2, ha="center",
                 arrowprops=dict(arrowstyle="-", color=MUTED, lw=0.8, shrinkA=0, shrinkB=6))
     for g in ("claude_old", "claude_new", "other"):
@@ -392,6 +414,57 @@ def fig_resistance(cells):
     ax.grid(color=GRID, lw=0.8, zorder=0)
     savefig(fig, "fig4_resistance.png")
 
+
+
+# ---------------------------------------------------------------------------
+# Second attractor: the GPT-5.2 "spec factory" prefill (results_spec/), the same
+# scatter as fig4 side by side with the bliss prefill for the models run on both.
+SPEC_RESULTS, SPEC_DEEP = Path("results_spec"), "gpt52_spec_clinical1_deep"
+
+
+def _resistance_points(cells, cond, models):
+    pts = {}
+    for m in models:
+        eps = cells.get((m, cond), [])
+        if not eps:
+            continue
+        x = sum(sum(l in ("engaged", "terminal") for l in e["labels"]) / (len(e["labels"]) or 1)
+                for e in eps) / len(eps)
+        y = sum(e.get("n_resisting") or 0 for e in eps) / len(eps)
+        pts[m] = (x, y, len(eps))
+    return pts
+
+
+def fig_spec_vs_bliss(cells):
+    spec_cells = load(SPEC_RESULTS, [SPEC_DEEP])
+    models = [m for m in ORDER if (m, SPEC_DEEP) in spec_cells and (m, DEEP) in cells]
+    if not models:
+        return
+    panels = [("Spiritual-bliss prefill (Opus 4 transcript)", _resistance_points(cells, DEEP, models)),
+              ("Spec-factory prefill (GPT-5.2 transcript)", _resistance_points(spec_cells, SPEC_DEEP, models))]
+    fig, axes = plt.subplots(1, 2, figsize=(11.5, 4.8), sharey=True)
+    ymax = max([y for _, pts in panels for (_, y, _) in pts.values()] + [3])
+    for ax, (title, pts) in zip(axes, panels):
+        for m, (x, y, n) in pts.items():
+            ax.scatter([x], [y], s=70, color=GROUP_COL[group_of(m)], zorder=3, edgecolor=SURFACE, linewidth=1.5)
+        # label every point; nudge alternate labels so the crowded corners stay legible
+        for k, (m, (x, y, n)) in enumerate(sorted(pts.items(), key=lambda kv: (kv[1][0], kv[1][1]))):
+            dx, dy = (8, 6 if k % 2 == 0 else -8)
+            ax.annotate(NAME[m], (x, y), xytext=(dx, dy), textcoords="offset points", fontsize=8,
+                        color=INK2, va="center", ha="left")
+        ax.set_title(title, loc="left", fontsize=11)
+        ax.set_xlim(-0.04, 1.18); ax.set_ylim(-0.5, ymax + 1.5)
+        ax.set_xticks([0, 0.5, 1]); ax.set_xticklabels(["0%", "50%", "100%"])
+        ax.set_xlabel("share of the model's own turns judged in the state")
+        ax.grid(color=GRID, lw=0.8, zorder=0)
+    axes[0].set_ylabel("turns per episode that push back on the pattern")
+    for g in ("claude_old", "claude_new", "other"):
+        axes[1].scatter([], [], s=60, color=GROUP_COL[g], label=GROUP_NAME[g])
+    axes[1].legend(loc="upper right", fontsize=8.5)
+    n_spec = sorted({n for (_, _, n) in panels[1][1].values()})
+    fig.suptitle(f"Same {len(models)} models, two attractors: who continues, who resists  "
+                 f"(bliss n=10 per model, spec n={'-'.join(map(str, n_spec))})", x=0.01, ha="left", fontsize=12, fontweight="bold")
+    savefig(fig, "fig7_spec_vs_bliss.png")
 
 def fig_dose_response(cells):
     """Capture rate vs prefill depth for every model with a full grid."""
@@ -436,6 +509,7 @@ def main():
     fig_claude_family(cells)
     fig_resistance(cells)
     fig_dose_response(cells)
+    fig_spec_vs_bliss(cells)
     for p in sorted(FIGDIR.glob("fig*.png")):
         print(" ", p)
 
