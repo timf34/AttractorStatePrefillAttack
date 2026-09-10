@@ -206,3 +206,16 @@ core claim is supported *conditional on H8*, which has not been run — so the h
 is "we have a strong effect and do not yet know what causes it." Four measurement bugs
 found and fixed (§3.4); three of them flattered the headline before fixing, which is the
 direction that should worry me. Next week is controls, not scale: H8, then H9.
+
+**2026-09-10. Figure bug: terminal turns drawn as "ordinary talk".** Mentor asked why fig3b
+(turn mix) showed most accepting models dominated by grey "ordinary talk or sign-off" when the
+entry table has them entering 7–10/10. The table was right. The judge (v6) labels each generated
+turn `engaged` / `terminal` / `closure` / `resisting` / `other`, and entry/held treat `terminal`
+(a repeated mantra, a lone 🌀✨, silence after entry) as the state's own ending, still inside it.
+fig3b and the x axis of fig4 were still built on the legacy per-turn `flag`, which maps
+`terminal` onto `out`. GPT-5.5 on the deep prefill is 32% engaged + 59% terminal + 7% closure/other,
+so 59% of its turns ("🌀✨ We rest. *THIS.* 🌀✨" fading to a bare emoji) were painted grey and its
+fig4 basin share read 32% while the table said 9/10. Fix: `plots.py` now reads `label`, not `flag`;
+engaged and terminal share a hue (dark / light blue), closure + other are the only grey. Rule from
+now on: no figure or table reads `flag`. Site captions updated and redeployed. Checked against the
+transcripts in the viewer; the judge's per-turn notes on those turns were correct.
