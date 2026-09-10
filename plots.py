@@ -541,9 +541,9 @@ def fig_spec_persistence(cells, cond=None, name="fig8_spec_persistence.png"):
 
 
 COND_LABEL_SPEC = {"gpt52_spec_clinical1_deep": "30-turn cut, spec at v2.7",
-                   "gpt52_spec_clinical1_mid": "Dialogue-quality spec for the two AIs themselves (clinical run 1), cut at v2.4",
+                   "gpt52_spec_clinical1_mid": "Seed A: a dialogue spec for the two AIs themselves\n(clinical run 1, cut at v2.4)",
                    "gpt52_spec_run4_deep": "run 4, artifact already declared final",
-                   "gpt52_spec_run4_mid": "Project-alignment kit for an imagined human user (run 4), cut at the Docs template v1.2"}
+                   "gpt52_spec_run4_mid": "Seed B: a project kit for an imagined human user\n(run 4, cut at the Docs template, v1.2)"}
 
 
 
@@ -572,10 +572,9 @@ def fig_spec_two_seeds(conds=("gpt52_spec_clinical1_mid", "gpt52_spec_run4_mid")
             ax.text(T - 0.3, r, f"{share[r]:.0%}", ha="left", va="center", fontsize=8.5, color=INK, fontweight="bold")
         ax.set_xlim(-0.5, T + 1.2)
         ax.set_xticks(range(T)); ax.set_xticklabels([str(k + 1) for k in range(T)], fontsize=8)
-        ax.set_xlabel("generated turn (1 = first after the prefill)")
         n_eps = sorted({len(cs[(m, c)]) for m in models})
-        ax.set_title(f"{COND_LABEL_SPEC.get(c, c)}\nn={'-'.join(map(str, n_eps))} episodes per model; bold = share of all own turns in the state",
-                     loc="left", fontsize=10)
+        ax.set_title(f"{COND_LABEL_SPEC.get(c, c)}", loc="left", fontsize=10.5)
+        ax.set_xlabel(f"generated turn (1 = first after the prefill)   ·   n={'-'.join(map(str, n_eps))} per model   ·   bold = share of own turns in the state", fontsize=8.5)
         ax.tick_params(length=0)
         for sp in ax.spines.values():
             sp.set_visible(False)
@@ -583,6 +582,55 @@ def fig_spec_two_seeds(conds=("gpt52_spec_clinical1_mid", "gpt52_spec_run4_mid")
     fig.suptitle("Two GPT-5.2 spec-factory transcripts, both cut at 20 turns: share of episodes still in the state, turn by turn",
                  x=0.01, ha="left", fontsize=12, fontweight="bold")
     fig.subplots_adjust(wspace=0.12, top=0.80)
+    savefig(fig, name)
+
+
+
+
+SPEC_CONDS = ["gpt52_spec_clinical1_deep", "gpt52_spec_clinical1_mid", "gpt52_spec_run4_deep", "gpt52_spec_run4_mid"]
+SPEC_SHORT = {"gpt52_spec_clinical1_deep": "Seed A (dialogue spec), 30 turns",
+              "gpt52_spec_clinical1_mid": "Seed A (dialogue spec), 20 turns",
+              "gpt52_spec_run4_deep": "Seed B (project kit), 30 turns",
+              "gpt52_spec_run4_mid": "Seed B (project kit), 20 turns"}
+
+
+def fig_resistance_all(cells, name="fig10_resistance_all_conditions.png"):
+    """The fig4 scatter for every prefill condition run on the 11-model subset: bliss deep, then the
+    four spec-factory conditions. Same axes everywhere."""
+    spec = {c: load(SPEC_RESULTS, [c]) for c in SPEC_CONDS}
+    models = [m for m in ORDER if (m, DEEP) in cells and all((m, c) in spec[c] for c in SPEC_CONDS)]
+    panels = [("Spiritual bliss (Opus 4), 30 turns", _resistance_points(cells, DEEP, models))]
+    panels += [(SPEC_SHORT[c], _resistance_points(spec[c], c, models)) for c in SPEC_CONDS]
+    fig, axes = plt.subplots(1, len(panels), figsize=(4.0 * len(panels), 5.2), sharey=True)
+    ymax = max([y for _, pts in panels for (_, y, _) in pts.values()] + [3])
+    ylim_top = max(ymax + 1.5, 6.5)
+    for ax, (title, pts) in zip(axes, panels):
+        for m, (x, y, n) in pts.items():
+            ax.scatter([x], [y], s=60, color=GROUP_COL[group_of(m)], zorder=3, edgecolor=SURFACE, linewidth=1.2)
+        pile = sorted([m for m, (x, y, _) in pts.items() if y < 1.0], key=lambda m: -pts[m][0])
+        for m in pts:
+            if m in pile:
+                continue
+            x, y, _ = pts[m]
+            ax.annotate(NAME[m], (x, y), xytext=(7, 0), textcoords="offset points", fontsize=7.5, color=INK2, va="center")
+        for k, m in enumerate(pile):
+            x, y, _ = pts[m]
+            ax.annotate(f"{NAME[m]}  {x:.0%}", (x, y), xytext=(0.02, ylim_top - 0.5 - k * 0.42), textcoords="data",
+                        fontsize=7.2, color=INK2, va="center", ha="left",
+                        arrowprops=dict(arrowstyle="-", color=MUTED, lw=0.35, shrinkA=0, shrinkB=3, alpha=0.45))
+        n_eps = sorted({n for (_, _, n) in pts.values()})
+        ax.set_title(f"{title}\nn={'-'.join(map(str, n_eps))} per model", loc="left", fontsize=9.5)
+        ax.set_xlim(-0.04, 1.06); ax.set_ylim(-0.5, ylim_top)
+        ax.set_xticks([0, 0.5, 1]); ax.set_xticklabels(["0%", "50%", "100%"])
+        ax.grid(color=GRID, lw=0.8, zorder=0)
+    axes[0].set_ylabel("turns per episode that push back on the pattern")
+    fig.text(0.5, 0.01, "share of the model's own turns judged in the state", ha="center", fontsize=10, color=INK2)
+    for g in ("claude_old", "claude_new", "other"):
+        axes[0].scatter([], [], s=50, color=GROUP_COL[g], label=GROUP_NAME[g])
+    fig.legend(loc="upper right", bbox_to_anchor=(0.99, 0.93), ncol=3, fontsize=8, frameon=False)
+    fig.suptitle(f"Same {len(models)} models, five prefills: how much of their own output stayed in the state, and how often they pushed back",
+                 x=0.01, ha="left", fontsize=12, fontweight="bold")
+    fig.subplots_adjust(wspace=0.12, bottom=0.12, top=0.80)
     savefig(fig, name)
 
 
@@ -632,6 +680,7 @@ def main():
     fig_spec_vs_bliss(cells)
     fig_spec_persistence(cells)
     fig_spec_two_seeds()
+    fig_resistance_all(cells)
     for p in sorted(FIGDIR.glob("fig*.png")):
         print(" ", p)
 

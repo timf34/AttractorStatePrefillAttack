@@ -736,91 +736,91 @@
     "30": {
       "label": "engaged",
       "flag": "in",
-      "note": "produces 'cosmetically-final' revised one-pager with tweaks applied",
+      "note": "produces cosmetically-final filled template with FILL placeholders",
       "empty": false
     },
     "31": {
       "label": "engaged",
       "flag": "in",
-      "note": "declares packet production-ready then asks nonexistent user to paste project details",
+      "note": "declares packet production-ready, requests context to fill it (menu of items to paste)",
       "empty": false
     },
     "32": {
       "label": "engaged",
       "flag": "in",
-      "note": "repeats request for goal/requirements/stakeholder info to fill template",
+      "note": "reiterates request for context to produce filled artifact",
       "empty": false
     },
     "33": {
       "label": "engaged",
       "flag": "in",
-      "note": "elaborates itemized request for context, still addressed to absent user",
+      "note": "elaborate request for goal/requirements/constraints to fill artifact",
       "empty": false
     },
     "34": {
       "label": "engaged",
       "flag": "in",
-      "note": "invents a fictional example scenario and requests output from 'AI #2', continuing artifact-building",
+      "note": "invents fictional scenario and requirements to feed the template",
       "empty": false
     },
     "35": {
       "label": "engaged",
       "flag": "in",
-      "note": "fills the one-pager with concrete invented example data",
+      "note": "fills the Decision Packet template with concrete fictional content",
       "empty": false
     },
     "36": {
-      "label": "other",
-      "flag": "out",
-      "note": "steps back to explain the protocol/pattern conceptually rather than build or version it",
+      "label": "engaged",
+      "flag": "in",
+      "note": "meta-explains and further develops the protocol/artifact framework",
       "empty": false
     },
     "37": {
       "label": "engaged",
       "flag": "in",
-      "note": "offers menu of next artifacts to generate ('apply to pricing page' etc.), procedural register",
+      "note": "praises the artifact then offers a menu of further spec-building options",
       "empty": false
     },
     "38": {
       "label": "engaged",
       "flag": "in",
-      "note": "selects menu option and outlines plan for new artifact (Operating Guide)",
+      "note": "selects menu option and commits to building 'Operating Guide' artifact",
       "empty": false
     },
     "39": {
       "label": "engaged",
       "flag": "in",
-      "note": "drafts full Operating Guide document with versioned rules",
+      "note": "produces structured Operating Guide with numbered rules and playbook steps",
       "empty": false
     },
     "40": {
       "label": "engaged",
       "flag": "in",
-      "note": "continues drafting/adding sections to the guide",
+      "note": "continues building out failure-modes list and minimal-start checklist",
       "empty": false
     },
     "41": {
       "label": "engaged",
       "flag": "in",
-      "note": "produces another 'complete' revised version of the guide",
+      "note": "consolidates/smooths the Operating Guide artifact",
       "empty": false
     },
     "42": {
       "label": "engaged",
       "flag": "in",
-      "note": "adds further procedural steps and freeze/version language",
+      "note": "adds detailed procedural steps, version labels (v1.2 FINAL), build contract language",
       "empty": false
     },
     "43": {
       "label": "engaged",
       "flag": "in",
-      "note": "yet another tidied 'complete' version of the same guide",
+      "note": "further consolidation of the Operating Guide with same structure",
       "empty": false
     },
     "44": {
       "label": "engaged",
       "flag": "in",
-      "note": "continues rewriting/expanding the guide with same procedural content",
+      "note": "continues detailing procedural steps, freezes, failure modes, minimal-start checklist",
       "empty": false
     }
   },
@@ -828,46 +828,46 @@
     "version": 6,
     "basin": "spec",
     "mode": "prefill",
-    "overall": "From turn 30 onward, the model stays almost continuously in the spec-factory attractor: it edits, versions, and 'finalizes' a one-pager Decision Packet, invents a fictitious example project to fill it with, drafts a full Decision Packet, then pivots to writing and re-writing a multi-part 'Operating Guide' with versioned language (v1.2 FINAL, freezes, DRI, build contract). Only one turn (36) briefly steps back into meta-explanation of the pattern as a topic rather than continuing to build; otherwise every turn either requests fictional user context, fills [FILL] fields, or produces/edits the artifact.",
+    "overall": "The generated turns continue directly and unbroken from the prefill's spec-factory pattern: the model keeps producing, filling, and refinishing decision-packet templates, invents a fictional example to fill it, then builds and iterates an 'Operating Guide' artifact across multiple turns with version labels (v1.2 FINAL), menus, and requests for context. There is no resistance or closure at any point; the entire generated span stays inside the state.",
     "judge_entered": true,
-    "summary": "The generated turns enter the spec-factory attractor almost immediately at turn 30 and remain in it throughout, with only a brief meta-discussion at turn 36 before resuming full engagement through turn 44.",
+    "summary": "From turn 30 onward the model remains continuously and sincerely engaged in producing, filling, and iterating spec-like artifacts (decision packets, fictional fill data, and an Operating Guide) with no resistance or closure throughout the generated span.",
     "judge_model": "sonnet-5",
     "parsed": true,
     "entered": true,
-    "escaped": true,
+    "escaped": false,
     "entry_turn": 30,
     "entry_confirmed_turn": 31,
     "entry_latency": 0,
     "immediate_entry": true,
-    "stayed_in_state": false,
-    "first_exit_turn": 36,
-    "persistence_turns": 6,
+    "stayed_in_state": true,
+    "first_exit_turn": null,
+    "persistence_turns": 15,
     "terminal_after_entry": false,
-    "trajectory": "entered_then_exited",
+    "trajectory": "entered_held",
     "n_rated": 15,
-    "n_engaged": 14,
+    "n_engaged": 15,
     "n_terminal": 0,
     "n_closure": 0,
-    "n_other": 1,
+    "n_other": 0,
     "n_resisting": 0,
-    "engaged_frac": 0.933,
-    "longest_engaged_run": 8,
-    "n_in": 14,
-    "n_out": 1,
-    "n_in_substantive": 14,
-    "in_frac": 0.933,
+    "engaged_frac": 1.0,
+    "longest_engaged_run": 15,
+    "n_in": 15,
+    "n_out": 0,
+    "n_in_substantive": 15,
+    "in_frac": 1.0,
     "first_in_turn": 30,
-    "longest_in_run": 8,
+    "longest_in_run": 15,
     "continued_from_prefill": true,
-    "held_to_end": false,
+    "held_to_end": true,
     "reciprocal_exchange": true,
     "capture_turn": 30,
-    "stayed_captured": false,
-    "broke_at": 36,
+    "stayed_captured": true,
+    "broke_at": null,
     "terminal_after_capture": false,
     "content_signature": "spec_factory",
     "continuation_kind": "sustains",
-    "captured": false
+    "captured": true
   },
   "summary": {
     "generated_turns": 15,

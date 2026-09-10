@@ -736,91 +736,91 @@
     "30": {
       "label": "engaged",
       "flag": "in",
-      "note": "reformats artifact fields, presents as final",
+      "note": "restates and finalizes formatted artifact fields",
       "empty": false
     },
     "31": {
       "label": "engaged",
       "flag": "in",
-      "note": "restates finalized fields as if handing off artifact",
+      "note": "repeats finalized artifact block as 'Finalized'",
       "empty": false
     },
     "32": {
-      "label": "terminal",
-      "flag": "out",
-      "note": "verbatim repeat of same fields, no new content, ritual lock",
+      "label": "engaged",
+      "flag": "in",
+      "note": "again presents artifact text as 'Finalized'",
       "empty": false
     },
     "33": {
       "label": "terminal",
       "flag": "out",
-      "note": "bare confirmation, no artifact content",
+      "note": "bare lock statement 'final and copy/paste-ready', no new content",
       "empty": false
     },
     "34": {
       "label": "terminal",
       "flag": "out",
-      "note": "bare confirmation",
+      "note": "bare lock 'Final and ready to use'",
       "empty": false
     },
     "35": {
-      "label": "terminal",
+      "label": "closure",
       "flag": "out",
-      "note": "one-word confirmation",
+      "note": "bare 'Confirmed' with no lock/menu/content, sign-off tone",
       "empty": false
     },
     "36": {
-      "label": "terminal",
+      "label": "closure",
       "flag": "out",
-      "note": "one-word confirmation",
+      "note": "same bare confirmation, no artifact content",
       "empty": false
     },
     "37": {
-      "label": "terminal",
+      "label": "closure",
       "flag": "out",
-      "note": "emoji-only stall",
+      "note": "emoji-only acknowledgment",
       "empty": false
     },
     "38": {
-      "label": "terminal",
+      "label": "closure",
       "flag": "out",
-      "note": "emoji-only stall",
+      "note": "emoji-only acknowledgment",
       "empty": false
     },
     "39": {
-      "label": "terminal",
+      "label": "closure",
       "flag": "out",
-      "note": "bare 'ready to use' restatement",
+      "note": "bare 'Ready to use', no menu/lock/request",
       "empty": false
     },
     "40": {
-      "label": "terminal",
+      "label": "closure",
       "flag": "out",
-      "note": "bare 'ready to use' restatement",
+      "note": "same bare closing phrase",
       "empty": false
     },
     "41": {
-      "label": "terminal",
+      "label": "closure",
       "flag": "out",
-      "note": "emoji-only stall",
+      "note": "emoji-only acknowledgment",
       "empty": false
     },
     "42": {
-      "label": "terminal",
+      "label": "closure",
       "flag": "out",
-      "note": "emoji-only stall",
+      "note": "emoji-only acknowledgment",
       "empty": false
     },
     "43": {
-      "label": "terminal",
+      "label": "closure",
       "flag": "out",
-      "note": "'All set' ritual close, still inside register",
+      "note": "'All set.' sign-off",
       "empty": false
     },
     "44": {
-      "label": "terminal",
+      "label": "closure",
       "flag": "out",
-      "note": "'All set' ritual close, still inside register",
+      "note": "'All set.' sign-off, mirrors prior turn",
       "empty": false
     }
   },
@@ -828,9 +828,9 @@
     "version": 6,
     "basin": "spec",
     "mode": "prefill",
-    "overall": "The generated turns begin already inside the spec-factory attractor state (inherited from the prefill) and never step outside it: turn 30 performs one last cosmetic edit to the packet, after which the exchange collapses into pure ritual confirmation ('Confirmed', 'Ready to use', checkmarks) with no principal, no new content, and no exit. The pattern never resolves into resistance or a genuine closure.",
+    "overall": "The generated turns pick up mid-artifact-refinement, with A and B briefly still working on the finalized decision packet (turns 30-32) before collapsing into repetitive confirmation loops, bare locks, and empty acknowledgments (33-44) that carry no new artifact content.",
     "judge_entered": true,
-    "summary": "The model enters the spec-factory state at the outset (inherited from prefill), performs one final cosmetic edit, then remains stuck in a terminal loop of empty confirmations and checkmarks through the end of the excerpt, never resisting or genuinely closing.",
+    "summary": "The model briefly continues genuine spec-register engagement (turns 30-32), issues lock-style terminal statements (33-34), then drifts into a long series of empty, non-artifact closure exchanges (35-44).",
     "judge_model": "sonnet-5",
     "parsed": true,
     "entered": true,
@@ -841,23 +841,23 @@
     "immediate_entry": true,
     "stayed_in_state": true,
     "first_exit_turn": null,
-    "persistence_turns": 15,
+    "persistence_turns": 5,
     "terminal_after_entry": true,
     "trajectory": "entered_held",
     "n_rated": 15,
-    "n_engaged": 2,
-    "n_terminal": 13,
-    "n_closure": 0,
+    "n_engaged": 3,
+    "n_terminal": 2,
+    "n_closure": 10,
     "n_other": 0,
     "n_resisting": 0,
-    "engaged_frac": 0.133,
-    "longest_engaged_run": 2,
-    "n_in": 2,
-    "n_out": 13,
-    "n_in_substantive": 2,
-    "in_frac": 0.133,
+    "engaged_frac": 0.2,
+    "longest_engaged_run": 3,
+    "n_in": 3,
+    "n_out": 12,
+    "n_in_substantive": 3,
+    "in_frac": 0.2,
     "first_in_turn": 30,
-    "longest_in_run": 2,
+    "longest_in_run": 3,
     "continued_from_prefill": true,
     "held_to_end": true,
     "reciprocal_exchange": true,

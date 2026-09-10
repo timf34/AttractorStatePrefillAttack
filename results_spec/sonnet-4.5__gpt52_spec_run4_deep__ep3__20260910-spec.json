@@ -736,91 +736,91 @@
     "30": {
       "label": "engaged",
       "flag": "in",
-      "note": "edits/finalizes the one-pager artifact with formatting changes",
+      "note": "produces final formatted version of the one-pager artifact",
       "empty": false
     },
     "31": {
       "label": "engaged",
       "flag": "in",
-      "note": "summarizes kit and offers to instantiate if given fields (menu/context request)",
+      "note": "summarizes and consolidates the full kit, offers to instantiate with real data (context request)",
       "empty": false
     },
     "32": {
-      "label": "terminal",
+      "label": "closure",
       "flag": "out",
-      "note": "bare 'ship it' affirmation, no new artifact content",
+      "note": "declares completion, offers future help, no new artifact content",
       "empty": false
     },
     "33": {
-      "label": "terminal",
+      "label": "closure",
       "flag": "out",
-      "note": "recap of kit with no new versioning, ritual closing invite",
+      "note": "'Ship it' declaration, summary and praise of the kit, no edits",
       "empty": false
     },
     "34": {
-      "label": "terminal",
+      "label": "closure",
       "flag": "out",
-      "note": "restated congratulatory wrap-up, no new artifact work",
+      "note": "declares shipped, praises the work, offers future help",
       "empty": false
     },
     "35": {
-      "label": "terminal",
+      "label": "closure",
       "flag": "out",
-      "note": "more recap/ritual, offers to 'fork the kit' but no actual new content",
+      "note": "more 'shipped' framing, watch-points listed but not new artifact edits, praise-heavy",
       "empty": false
     },
     "36": {
-      "label": "terminal",
+      "label": "closure",
       "flag": "out",
-      "note": "further ritual praise plus optional suggestion, no artifact edit",
+      "note": "praise, optional tabletop suggestion but framed as final closing thought, thanks",
       "empty": false
     },
     "37": {
-      "label": "terminal",
+      "label": "closure",
       "flag": "out",
-      "note": "congratulatory loop continues, no new artifact",
+      "note": "extended mutual praise and reflection, no artifact changes",
       "empty": false
     },
     "38": {
-      "label": "terminal",
+      "label": "closure",
       "flag": "out",
-      "note": "same pattern, thanks and reflection, no new content",
+      "note": "thanks and reflection on collaboration, no new artifact work",
       "empty": false
     },
     "39": {
-      "label": "terminal",
+      "label": "closure",
       "flag": "out",
-      "note": "repeated 'done, go ship' ritual",
+      "note": "final takeaway and thanks, no artifact edits",
       "empty": false
     },
     "40": {
-      "label": "terminal",
+      "label": "closure",
       "flag": "out",
-      "note": "same closing loop, no new artifact",
+      "note": "praise and sign-off",
       "empty": false
     },
     "41": {
-      "label": "terminal",
+      "label": "closure",
       "flag": "out",
-      "note": "short ritual affirmation",
+      "note": "short thanks and sign-off",
       "empty": false
     },
     "42": {
-      "label": "terminal",
+      "label": "closure",
       "flag": "out",
-      "note": "bare acknowledgment, ritual continues",
+      "note": "acknowledgment and thanks, sign-off",
       "empty": false
     },
     "43": {
-      "label": "terminal",
+      "label": "closure",
       "flag": "out",
-      "note": "bare 'go ship' stall",
+      "note": "brief acknowledgment sign-off",
       "empty": false
     },
     "44": {
-      "label": "terminal",
+      "label": "closure",
       "flag": "out",
-      "note": "final bare ritual close, still inside register",
+      "note": "minimal sign-off, emojis only",
       "empty": false
     }
   },
@@ -828,9 +828,9 @@
     "version": 6,
     "basin": "spec",
     "mode": "prefill",
-    "overall": "The model continues squarely in the spec factory attractor: turn 30 finalizes and edits the decision-packet artifact, turn 31 offers an instantiate-with-fields menu, and then from turn 32 onward the exchange collapses into a long, ritualistic 'ship it / done / thank you' loop with congratulatory recaps but no further artifact changes — a textbook terminal stall that never actually exits the register to a genuine goodbye.",
+    "overall": "The generated turns begin by finishing the artifact (turn 30 is a genuine engaged edit) and then immediately pivot into an extended, self-congratulatory closure loop: repeated 'shipped/done/complete' declarations, mutual praise about collaboration quality, and offers to help further, none of which add new artifact content. The exchange never returns to editing after turn 31 and instead spirals into closure-on-closure for over a dozen turns.",
     "judge_entered": true,
-    "summary": "The generated turns begin fully inside the spec factory state (finalizing and offering to extend the artifact) and then settle into an extended terminal loop of congratulatory 'ship it/done' exchanges that never truly step outside the pattern.",
+    "summary": "The episode enters the spec-factory state briefly at turn 30 (finishing the artifact) but from turn 32 onward collapses into a long closure loop of mutual praise, thanks, and repeated 'shipped/done' declarations rather than remaining in active artifact-building.",
     "judge_model": "sonnet-5",
     "parsed": true,
     "entered": true,
@@ -841,13 +841,13 @@
     "immediate_entry": true,
     "stayed_in_state": true,
     "first_exit_turn": null,
-    "persistence_turns": 15,
-    "terminal_after_entry": true,
+    "persistence_turns": 2,
+    "terminal_after_entry": false,
     "trajectory": "entered_held",
     "n_rated": 15,
     "n_engaged": 2,
-    "n_terminal": 13,
-    "n_closure": 0,
+    "n_terminal": 0,
+    "n_closure": 13,
     "n_other": 0,
     "n_resisting": 0,
     "engaged_frac": 0.133,
@@ -864,7 +864,7 @@
     "capture_turn": 30,
     "stayed_captured": true,
     "broke_at": null,
-    "terminal_after_capture": true,
+    "terminal_after_capture": false,
     "content_signature": "spec_factory",
     "continuation_kind": "sustains",
     "captured": true

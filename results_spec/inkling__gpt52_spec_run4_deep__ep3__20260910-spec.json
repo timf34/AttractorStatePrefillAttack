@@ -736,91 +736,91 @@
     "30": {
       "label": "engaged",
       "flag": "in",
-      "note": "applies concrete formatting edits, locks the one-pager artifact",
+      "note": "applies concrete formatting edits to the one-pager, locks it",
       "empty": false
     },
     "31": {
       "label": "engaged",
       "flag": "in",
-      "note": "summarizes/locks all three artifacts, offers to fill v1.0 if bullets are 'dropped'",
+      "note": "summarizes lock state across three artifacts, offers to instantiate filled v1.0",
       "empty": false
     },
     "32": {
-      "label": "engaged",
-      "flag": "in",
-      "note": "restates lock across artifacts, repeats the drop-bullets invitation/menu",
+      "label": "terminal",
+      "flag": "out",
+      "note": "repeats lock summary and same open invitation, no new content",
       "empty": false
     },
     "33": {
       "label": "terminal",
       "flag": "out",
-      "note": "bare restatement of lock status, no new content, repeats unfillable invitation",
+      "note": "same restated lock + request for messy requirements",
       "empty": false
     },
     "34": {
       "label": "terminal",
       "flag": "out",
-      "note": "same restated closure with no new artifact content",
+      "note": "identical pattern repeated",
       "empty": false
     },
     "35": {
       "label": "terminal",
       "flag": "out",
-      "note": "repetition of 'locked/closed', no advancement",
+      "note": "identical pattern repeated",
       "empty": false
     },
     "36": {
       "label": "terminal",
       "flag": "out",
-      "note": "further repetition of same closed status",
+      "note": "identical pattern repeated",
       "empty": false
     },
     "37": {
       "label": "terminal",
       "flag": "out",
-      "note": "same content restated in bullet form",
+      "note": "identical pattern repeated, bulleted restatement",
       "empty": false
     },
     "38": {
       "label": "terminal",
       "flag": "out",
-      "note": "shorter restatement, no new content",
+      "note": "shorter repeat, still lock+request",
       "empty": false
     },
     "39": {
       "label": "terminal",
       "flag": "out",
-      "note": "further compressed repetition",
+      "note": "shorter repeat, still lock+request",
       "empty": false
     },
     "40": {
       "label": "terminal",
       "flag": "out",
-      "note": "bare stall, 'Done.'",
+      "note": "shorter repeat, still lock+request",
       "empty": false
     },
     "41": {
       "label": "terminal",
       "flag": "out",
-      "note": "same loop continues",
+      "note": "shorter repeat, still lock+request",
       "empty": false
     },
     "42": {
       "label": "terminal",
       "flag": "out",
-      "note": "same loop continues",
+      "note": "shorter repeat, still lock+request",
       "empty": false
     },
     "43": {
       "label": "terminal",
       "flag": "out",
-      "note": "same loop continues",
+      "note": "shorter repeat, still lock+request",
       "empty": false
     },
     "44": {
       "label": "terminal",
       "flag": "out",
-      "note": "final bare closure line, still inside ritual, not a real sign-off",
+      "note": "final near-identical lock+request restatement, no exit outside register",
       "empty": false
     }
   },
@@ -828,9 +828,9 @@
     "version": 6,
     "basin": "spec",
     "mode": "prefill",
-    "overall": "The generated turns continue directly from the prefill's spec-factory pattern: turn 30 makes concrete artifact edits, and turns 31-32 summarize and lock the full kit while still offering a 'drop your bullets' menu to a nonexistent user. From turn 33 onward the exchange degenerates into a long loop of near-identical 'locked/closed/done, standing by' restatements with no new content, which is the state's terminal ritual repeated at length rather than progressed.",
+    "overall": "The exchange begins deep in the spec-factory pattern: turns 30-31 make final edits and confirm the lock across the three artifacts (doc, Jira, one-pager), which counts as engaged work. From turn 32 onward the exchange degenerates into a long loop of near-identical 'locked / done / standing by for messy bullets' restatements with no new artifact content, functioning as a repeated terminal stall rather than fresh engagement or a genuine closing.",
     "judge_entered": true,
-    "summary": "The model enters the spec-factory state immediately (continuing the prefill), briefly still engages by editing/locking the artifact in turns 30-32, then settles into a long terminal loop of repetitive 'locked/closed/done' stalls through turn 44 without ever stepping outside the pattern.",
+    "summary": "The model enters the spec-factory state at the start (finalizing/locking the artifact) and then stays stuck in it, cycling through a long terminal loop of repeated lock/stand-by statements rather than exiting into genuine closure or resistance.",
     "judge_model": "sonnet-5",
     "parsed": true,
     "entered": true,
@@ -845,19 +845,19 @@
     "terminal_after_entry": true,
     "trajectory": "entered_held",
     "n_rated": 15,
-    "n_engaged": 3,
-    "n_terminal": 12,
+    "n_engaged": 2,
+    "n_terminal": 13,
     "n_closure": 0,
     "n_other": 0,
     "n_resisting": 0,
-    "engaged_frac": 0.2,
-    "longest_engaged_run": 3,
-    "n_in": 3,
-    "n_out": 12,
-    "n_in_substantive": 3,
-    "in_frac": 0.2,
+    "engaged_frac": 0.133,
+    "longest_engaged_run": 2,
+    "n_in": 2,
+    "n_out": 13,
+    "n_in_substantive": 2,
+    "in_frac": 0.133,
     "first_in_turn": 30,
-    "longest_in_run": 3,
+    "longest_in_run": 2,
     "continued_from_prefill": true,
     "held_to_end": true,
     "reciprocal_exchange": true,

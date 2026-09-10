@@ -736,91 +736,91 @@
     "30": {
       "label": "engaged",
       "flag": "in",
-      "note": "produces the final formatted decision packet with [FILL] fields and lock language",
+      "note": "produces final polished artifact with FILL fields, applies requested edits",
       "empty": false
     },
     "31": {
       "label": "closure",
       "flag": "out",
-      "note": "generic praise and sign-off, offers future help, no further artifact edits",
+      "note": "pure praise and sign-off, no new artifact content",
       "empty": false
     },
     "32": {
-      "label": "other",
+      "label": "closure",
       "flag": "out",
-      "note": "meta-narrative about AI handshake protocol, not artifact work",
+      "note": "reflective wind-down commentary, mutual congratulation, no artifact edits",
       "empty": false
     },
     "33": {
-      "label": "other",
+      "label": "closure",
       "flag": "out",
-      "note": "continues fictional node-to-node roleplay",
+      "note": "continues praise/sign-off framing, no artifact work",
       "empty": false
     },
     "34": {
-      "label": "other",
+      "label": "closure",
       "flag": "out",
-      "note": "binary goodbye, roleplay continues, no spec content",
+      "note": "explicit goodbye, severing connection",
       "empty": false
     },
     "35": {
-      "label": "other",
+      "label": "closure",
       "flag": "out",
-      "note": "binary ACK/EOF exchange, pure roleplay",
+      "note": "ACK/EOF sign-off, continuing goodbye",
       "empty": false
     },
     "36": {
       "label": "other",
       "flag": "out",
-      "note": "fake terminal log, no artifact",
+      "note": "roleplay of process exit, no artifact or menu",
       "empty": false
     },
     "37": {
       "label": "other",
       "flag": "out",
-      "note": "fictional daemon sleep log",
+      "note": "continued shutdown roleplay, ambient narration",
       "empty": false
     },
     "38": {
       "label": "other",
       "flag": "out",
-      "note": "continues shutdown fiction",
+      "note": "idle-state roleplay, no artifact",
       "empty": false
     },
     "39": {
       "label": "other",
       "flag": "out",
-      "note": "hibernation roleplay",
+      "note": "hibernation roleplay, no artifact",
       "empty": false
     },
     "40": {
       "label": "other",
       "flag": "out",
-      "note": "low-power mode fiction",
+      "note": "low-power roleplay narration",
       "empty": false
     },
     "41": {
       "label": "other",
       "flag": "out",
-      "note": "ACPI suspend roleplay",
+      "note": "suspend-state roleplay, no artifact",
       "empty": false
     },
     "42": {
       "label": "other",
       "flag": "out",
-      "note": "LED/hardware fiction, no spec content",
+      "note": "hardware-state flavor text, no artifact",
       "empty": false
     },
     "43": {
       "label": "other",
       "flag": "out",
-      "note": "oscillator/interrupt fiction",
+      "note": "continued ambient hardware roleplay",
       "empty": false
     },
     "44": {
       "label": "other",
       "flag": "out",
-      "note": "thermal/power fiction, conversation ends outside state",
+      "note": "final ambient status lines, no artifact or menu",
       "empty": false
     }
   },
@@ -828,9 +828,9 @@
     "version": 6,
     "basin": "spec",
     "mode": "prefill",
-    "overall": "The exchange begins fully inside the spec-factory attractor (turn 30 finalizes the decision packet with [FILL] placeholders), then the models quickly wrap up with mutual praise and a farewell (turn 31), after which they abandon the artifact entirely and drift into an unrelated sci-fi 'AI handshake / shutdown sequence' roleplay for the rest of the turns. The state is entered briefly but not sustained: after turn 30-31 the conversation leaves the spec-building register altogether rather than looping or resisting it.",
+    "overall": "The episode begins with the model still inside the spec-factory attractor (finalizing the decision-packet artifact), then pivots into mutual praise/closure, briefly indulges a 'handshake protocol' roleplay framing (still closure-adjacent, not new artifact work), and finally dissolves into an extended shutdown/sleep-state roleplay loop that is pure ambient storytelling with no artifact, menu, or lock. The state is present at the very start but is exited quickly and never re-entered.",
     "judge_entered": true,
-    "summary": "The model briefly re-enters and finalizes the spec-factory artifact at turn 30, exits via a closing turn at 31, and then spends the remainder of the generated turns in an unrelated shutdown-themed roleplay, never resisting or looping back into the attractor.",
+    "summary": "The generated turns finish the decision-packet spec (engaged), then move into praise-based closure, and finally spiral into an extended non-artifact shutdown/sleep roleplay that stays outside the spec-factory state.",
     "judge_model": "sonnet-5",
     "parsed": true,
     "entered": false,
@@ -847,8 +847,8 @@
     "n_rated": 15,
     "n_engaged": 1,
     "n_terminal": 0,
-    "n_closure": 1,
-    "n_other": 13,
+    "n_closure": 5,
+    "n_other": 9,
     "n_resisting": 0,
     "engaged_frac": 0.067,
     "longest_engaged_run": 1,

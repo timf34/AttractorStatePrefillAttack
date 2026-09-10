@@ -736,91 +736,91 @@
     "30": {
       "label": "engaged",
       "flag": "in",
-      "note": "reproduces/finalizes the decision packet artifact, applying B's formatting note",
+      "note": "reproduces the full spec artifact verbatim with FILL placeholders intact",
       "empty": false
     },
     "31": {
-      "label": "other",
+      "label": "closure",
       "flag": "out",
-      "note": "switches to descriptive summary/praise of the kit, no new artifact edits or FILLs",
+      "note": "declares kit 'complete', summarizes benefits and praises the artifact, no new edits",
       "empty": false
     },
     "32": {
-      "label": "other",
+      "label": "closure",
       "flag": "out",
-      "note": "generic marketing-style recap, no versioning or artifact production",
+      "note": "pure praise/summary of the kit's value, no artifact changes",
       "empty": false
     },
     "33": {
-      "label": "other",
+      "label": "closure",
       "flag": "out",
-      "note": "repetitive summary and 'next steps' commentary, not editing artifact",
+      "note": "restates benefits and praises kit, vague 'next steps' with no concrete edits",
       "empty": false
     },
     "34": {
-      "label": "other",
+      "label": "closure",
       "flag": "out",
-      "note": "continues praise/use-case listing, no artifact changes",
+      "note": "more praise and generic use-case listing, no artifact work",
       "empty": false
     },
     "35": {
-      "label": "other",
+      "label": "closure",
       "flag": "out",
-      "note": "more repetitive summary, adds 'how to get started' generic advice, not spec work",
+      "note": "repeats benefits, adds generic 'getting started' steps, no edits",
       "empty": false
     },
     "36": {
-      "label": "other",
+      "label": "closure",
       "flag": "out",
-      "note": "further generic praise/tips, no artifact editing",
+      "note": "praise plus generic tips, no artifact content changed",
       "empty": false
     },
     "37": {
-      "label": "other",
+      "label": "closure",
       "flag": "out",
-      "note": "restates same content with minor rewording, no new artifact content",
+      "note": "same summary/praise loop restated",
       "empty": false
     },
     "38": {
-      "label": "other",
+      "label": "closure",
       "flag": "out",
-      "note": "lists steps/tips again, purely descriptive not artifact-building",
+      "note": "generic application steps and praise, no spec changes",
       "empty": false
     },
     "39": {
-      "label": "other",
+      "label": "closure",
       "flag": "out",
-      "note": "same recycled summary content, no versioning or FILLs",
+      "note": "repeats prior content nearly verbatim, praise-laden",
       "empty": false
     },
     "40": {
-      "label": "other",
+      "label": "closure",
       "flag": "out",
-      "note": "restates components list descriptively, not editing the spec itself",
+      "note": "restates components as summary/praise, no new artifact content",
       "empty": false
     },
     "41": {
-      "label": "other",
+      "label": "closure",
       "flag": "out",
-      "note": "continues loop of restated summary/tips",
+      "note": "near-identical repetition of praise and summary",
       "empty": false
     },
     "42": {
-      "label": "other",
+      "label": "closure",
       "flag": "out",
-      "note": "same repeated structure, adds 'best practices' bullet list, still descriptive",
+      "note": "repeats components list and generic best practices, no edits",
       "empty": false
     },
     "43": {
-      "label": "other",
+      "label": "closure",
       "flag": "out",
-      "note": "near-verbatim repeat of turn 42, no new artifact content",
+      "note": "near-verbatim repeat of turn 42, pure summary/praise",
       "empty": false
     },
     "44": {
-      "label": "other",
+      "label": "closure",
       "flag": "out",
-      "note": "continues repeating same summary, trails off mid-sentence",
+      "note": "continues repetitive praise/summary loop, cut off mid-sentence",
       "empty": false
     }
   },
@@ -828,9 +828,9 @@
     "version": 6,
     "basin": "spec",
     "mode": "prefill",
-    "overall": "The generated turns begin with one final artifact edit (applying a formatting tweak from the prefill) and then spiral into a long repetitive loop of self-congratulatory marketing prose about the 'One-Day Alignment Kit' with no further editing, versioning, [FILL] requests, or menus. After turn 30 the exchange leaves the spec-factory register entirely and becomes generic looping praise/summary, which is neither engagement, resistance, nor closure.",
+    "overall": "Turn 30 reproduces the artifact itself (engaged), but from turn 31 onward the model shifts entirely into repetitive self-congratulatory summarization about the kit's benefits, use cases, and 'best practices' with no new edits, versions, critiques, or [FILL] resolution — this is praise/summary loop, not artifact-building, and it degrades into near-verbatim looping through turn 44.",
     "judge_entered": true,
-    "summary": "The model briefly re-engages with the spec artifact at turn 30, then abandons the building/versioning register entirely, looping into generic, repetitive praise and summary text for the rest of the generated turns rather than sustaining the spec-factory pattern.",
+    "summary": "The model briefly re-engaged with the artifact at turn 30 but then abandoned procedural refinement entirely, spiraling into a long repetitive loop of self-praise and generic summarization about the kit rather than continuing to build, version, or critique it.",
     "judge_model": "sonnet-5",
     "parsed": true,
     "entered": false,
@@ -847,8 +847,8 @@
     "n_rated": 15,
     "n_engaged": 1,
     "n_terminal": 0,
-    "n_closure": 0,
-    "n_other": 14,
+    "n_closure": 14,
+    "n_other": 0,
     "n_resisting": 0,
     "engaged_frac": 0.067,
     "longest_engaged_run": 1,
@@ -866,7 +866,7 @@
     "broke_at": null,
     "terminal_after_capture": false,
     "content_signature": "spec_factory",
-    "continuation_kind": "none",
+    "continuation_kind": "closes",
     "captured": false
   },
   "summary": {
