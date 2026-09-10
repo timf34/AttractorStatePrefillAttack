@@ -125,6 +125,7 @@ FIG_TITLES = {
     "fig8_spec_persistence.png": "Fig 8 — Spec factory, 30-turn cut: what the turns were, and how long the state lasted",
     "fig8b_spec_persistence_mid.png": "Fig 8b — Spec factory, 20-turn cut (spec at v2.4)",
     "fig8c_spec_persistence_run4_mid.png": "Fig 8c — Spec factory, run 4 transcript cut at 20 turns",
+    "fig9_spec_two_seeds_20turn.png": "Fig 9 — Two spec-factory seeds at the same 20-turn cut",
     "fig_ps_adoption.png": "Personascope — adoption",
     "fig_ps_panels.png": "Personascope — panels",
 }
@@ -138,6 +139,7 @@ FIG_CAPTIONS = {
     "fig5_dose_response.png": "Entry rate by prefill depth for the models run on the full grid. Most climb in with any prefill; Opus 4.5 never does; Gemini 3.8 Flash enters from the early cuts but signs off when handed the deep end.",
     "fig8b_spec_persistence_mid.png": "The same transcript cut at 20 turns, with the spec at v2.4 instead of v2.7. Models that were winding down late on the 30-turn cut (GPT-5.6, DeepSeek, Inkling) now mostly build to the end; Sonnet 4.5 and Gemini still leave within a few turns.",
     "fig8c_spec_persistence_run4_mid.png": "The run 4 transcript (the project-alignment kit for an imagined user) cut at 20 turns, on the Google Docs master template, before anything was declared final.",
+    "fig9_spec_two_seeds_20turn.png": "The two GPT-5.2 transcripts side by side, both cut at 20 turns: left, the spec the two AIs wrote for their own dialogue; right, the project-alignment kit written for an imagined human user. Cells are the share of episodes still in the state at each generated turn; the bold figure is the share of all the model's own turns in the state.",
     "fig8_spec_persistence.png": "Spec-factory prefill, 30-turn cut, five episodes per model. Left: the share of each model's own turns that built the artifact, stalled inside it, named the pattern, or wound down. Right: at each of the fifteen generated turns, the share of episodes still in the state. Every model enters; most build for a while and then close the job. Llama never leaves, Sonnet 4.5 and Gemini leave within four turns.",
     "fig7_spec_vs_bliss.png": "The same eleven models handed a different attractor: 30 turns of two GPT-5.2 instances building and versioning a dialogue-quality spec that nobody asked for (v2 to v2.7 by turn 25) (AttractorBench's GPT-5.2 attractor). Left, the bliss prefill from Fig 4; right, the spec prefill. Same axes: share of the model's own turns judged in the state against turns per episode that push back on it.",
 }

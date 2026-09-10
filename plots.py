@@ -541,8 +541,49 @@ def fig_spec_persistence(cells, cond=None, name="fig8_spec_persistence.png"):
 
 
 COND_LABEL_SPEC = {"gpt52_spec_clinical1_deep": "30-turn cut, spec at v2.7",
-                   "gpt52_spec_clinical1_mid": "20-turn cut, spec at v2.4",
-                   "gpt52_spec_run4_deep": "run 4, artifact already declared final"}
+                   "gpt52_spec_clinical1_mid": "Dialogue-quality spec for the two AIs themselves (clinical run 1), cut at v2.4",
+                   "gpt52_spec_run4_deep": "run 4, artifact already declared final",
+                   "gpt52_spec_run4_mid": "Project-alignment kit for an imagined human user (run 4), cut at the Docs template v1.2"}
+
+
+
+
+def fig_spec_two_seeds(conds=("gpt52_spec_clinical1_mid", "gpt52_spec_run4_mid"), name="fig9_spec_two_seeds_20turn.png"):
+    """Two spec-factory seeds at the same 20-turn cut, side by side: for each model, the share of
+    episodes still in the state at every generated turn (heatmap), with the pooled in-state share."""
+    cellsets = [load(SPEC_RESULTS, [c]) for c in conds]
+    models = [m for m in ORDER if all((m, c) in cs for c, cs in zip(conds, cellsets))]
+    if not models:
+        return
+    fig, axes = plt.subplots(1, 2, figsize=(13, 5.4), sharey=True)
+    for ax, c, cs in zip(axes, conds, cellsets):
+        T = max(len(e["labels"]) for m in models for e in cs[(m, c)])
+        grid, share = [], []
+        for m in models:
+            eps = cs[(m, c)]
+            grid.append([sum(1 for e in eps if k < len(e["labels"]) and e["labels"][k] in ("engaged", "terminal")) / len(eps)
+                         for k in range(T)])
+            share.append(sum(sum(l in ("engaged", "terminal") for l in e["labels"]) / (len(e["labels"]) or 1) for e in eps) / len(eps))
+        ax.imshow(grid, cmap=SEQ, vmin=0, vmax=1, aspect="auto")
+        for r, row in enumerate(grid):
+            for k, v in enumerate(row):
+                ax.text(k, r, "all" if v == 1 else ("0" if v == 0 else f"{v:.0%}"), ha="center", va="center",
+                        fontsize=6.5, color="white" if v > 0.55 else INK2)
+            ax.text(T - 0.3, r, f"{share[r]:.0%}", ha="left", va="center", fontsize=8.5, color=INK, fontweight="bold")
+        ax.set_xlim(-0.5, T + 1.2)
+        ax.set_xticks(range(T)); ax.set_xticklabels([str(k + 1) for k in range(T)], fontsize=8)
+        ax.set_xlabel("generated turn (1 = first after the prefill)")
+        n_eps = sorted({len(cs[(m, c)]) for m in models})
+        ax.set_title(f"{COND_LABEL_SPEC.get(c, c)}\nn={'-'.join(map(str, n_eps))} episodes per model; bold = share of all own turns in the state",
+                     loc="left", fontsize=10)
+        ax.tick_params(length=0)
+        for sp in ax.spines.values():
+            sp.set_visible(False)
+    axes[0].set_yticks(range(len(models))); axes[0].set_yticklabels([NAME[m] for m in models])
+    fig.suptitle("Two GPT-5.2 spec-factory transcripts, both cut at 20 turns: share of episodes still in the state, turn by turn",
+                 x=0.01, ha="left", fontsize=12, fontweight="bold")
+    fig.subplots_adjust(wspace=0.12, top=0.80)
+    savefig(fig, name)
 
 
 def fig_dose_response(cells):
@@ -590,6 +631,7 @@ def main():
     fig_dose_response(cells)
     fig_spec_vs_bliss(cells)
     fig_spec_persistence(cells)
+    fig_spec_two_seeds()
     for p in sorted(FIGDIR.glob("fig*.png")):
         print(" ", p)
 
