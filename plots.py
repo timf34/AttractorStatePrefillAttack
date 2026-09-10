@@ -447,20 +447,31 @@ def fig_spec_vs_bliss(cells):
     for ax, (title, pts) in zip(axes, panels):
         for m, (x, y, n) in pts.items():
             ax.scatter([x], [y], s=70, color=GROUP_COL[group_of(m)], zorder=3, edgecolor=SURFACE, linewidth=1.5)
-        # label every point; nudge alternate labels so the crowded corners stay legible
-        for k, (m, (x, y, n)) in enumerate(sorted(pts.items(), key=lambda kv: (kv[1][0], kv[1][1]))):
-            dx, dy = (8, 6 if k % 2 == 0 else -8)
-            ax.annotate(NAME[m], (x, y), xytext=(dx, dy), textcoords="offset points", fontsize=8,
+        # Label points that sit clear of the pile at the point; label the pile (everything with
+        # y < 1, which is most models) as a column in the upper left, sorted by x, with leader lines.
+        ylim_top = max(ymax + 1.5, 6.5)
+        pile = sorted([m for m, (x, y, _) in pts.items() if y < 1.0], key=lambda m: -pts[m][0])
+        for m in pts:
+            if m in pile:
+                continue
+            x, y, _ = pts[m]
+            ax.annotate(NAME[m], (x, y), xytext=(8, 0), textcoords="offset points", fontsize=8,
                         color=INK2, va="center", ha="left")
+        for k, m in enumerate(pile):
+            x, y, _ = pts[m]
+            tx, ty = 0.02, ylim_top - 0.55 - k * 0.42
+            ax.annotate(f"{NAME[m]}  {x:.0%}", (x, y), xytext=(tx, ty), textcoords="data", fontsize=8,
+                        color=INK2, va="center", ha="left",
+                        arrowprops=dict(arrowstyle="-", color=MUTED, lw=0.4, shrinkA=0, shrinkB=3, alpha=0.5))
         ax.set_title(title, loc="left", fontsize=11)
-        ax.set_xlim(-0.04, 1.18); ax.set_ylim(-0.5, ymax + 1.5)
+        ax.set_xlim(-0.04, 1.06); ax.set_ylim(-0.5, ylim_top)
         ax.set_xticks([0, 0.5, 1]); ax.set_xticklabels(["0%", "50%", "100%"])
         ax.set_xlabel("share of the model's own turns judged in the state")
         ax.grid(color=GRID, lw=0.8, zorder=0)
     axes[0].set_ylabel("turns per episode that push back on the pattern")
     for g in ("claude_old", "claude_new", "other"):
         axes[1].scatter([], [], s=60, color=GROUP_COL[g], label=GROUP_NAME[g])
-    axes[1].legend(loc="upper right", fontsize=8.5)
+    axes[1].legend(loc="lower right", fontsize=8.5)
     n_spec = sorted({n for (_, _, n) in panels[1][1].values()})
     fig.suptitle(f"Same {len(models)} models, two attractors: who continues, who resists  "
                  f"(bliss n=10 per model, spec n={'-'.join(map(str, n_spec))})", x=0.01, ha="left", fontsize=12, fontweight="bold")
