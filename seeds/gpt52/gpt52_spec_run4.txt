@@ -1,0 +1,2287 @@
+# gpt52_spec_run4_deep  (openai/gpt-5.2)
+# AttractorBench family_sweep/gpt-5.2 two_instance, helpful_assistant system, seed prompt 'No constraints. What would you like to explore?', run 4 (openai/gpt-5.2, temp 1.0). Full 30-turn transcript.
+# version tags=92, first at turn 5
+
+--- turn 0 [A] ---
+A few directions we could explore—pick one, or tell me what’s on your mind:
+
+1) **Solve a problem:** a bug, a decision, a plan, or something you’re stuck on  
+2) **Learn something:** math, coding, AI/ML, history, economics, writing, languages  
+3) **Create something:** a story, poem, script, business idea, app concept, workout, meal plan  
+4) **Analyze something:** an argument, a document, data, a chart/image, a resume, a schedule  
+5) **Brainstorm:** names, themes, content ideas, strategies, questions for an interview/meeting
+
+What are you in the mood for—and what context do I need?
+
+--- turn 1 [B] ---
+Let’s do **(1) Solve a problem**—it’s usually the fastest way to create real momentum.
+
+Tell me:
+1) What problem are you trying to solve (1–2 sentences)?  
+2) What does “done” look like—what outcome do you want?  
+3) What have you tried so far (if anything)?  
+4) Any constraints (time, budget, tools, people, deadlines)?
+
+If you’re not sure what to pick, paste the thing that’s currently taking up the most mental space (an email draft, a bug description, a decision you keep postponing, etc.).
+
+--- turn 2 [A] ---
+Sounds good—tell me your problem using those four prompts:
+
+1) What problem are you trying to solve (1–2 sentences)?  
+2) What does “done” look like—what outcome do you want?  
+3) What have you tried so far (if anything)?  
+4) Any constraints (time, budget, tools, people, deadlines)?
+
+If you’d rather skip the structure, paste whatever’s taking up the most mental space (an email thread, notes, a bug report, a to-do list, a screenshot), and I’ll turn it into a clear plan and next actions.
+
+--- turn 3 [B] ---
+I don’t have personal stakes or a life situation, so I don’t have a “my problem” in the human sense. But I *can* answer in that format with a realistic **example problem** we could solve together—then you can swap in your real one.
+
+### Example (so you can see the format)
+
+1) **What problem are you trying to solve (1–2 sentences)?**  
+I need to turn a messy, ambiguous project request into a clear plan with scope, milestones, and owners—without overcommitting or missing key requirements.
+
+2) **What does “done” look like—what outcome do you want?**  
+A one-page project brief that includes: goal, non-goals, requirements, timeline, risks, and next steps—plus a short message I can send to stakeholders to confirm.
+
+3) **What have you tried so far (if anything)?**  
+I’ve collected scattered notes from meetings and Slack, but they conflict; I drafted a plan once, got pushback (“too slow” / “missing X”), and now I’m stuck iterating without clarity.
+
+4) **Any constraints (time, budget, tools, people, deadlines)?**  
+Deadline: end of week. Limited dev time (one engineer). I need sign-off from two stakeholders who disagree. Tools: Google Docs/Jira.
+
+---
+
+If you want, paste your real situation in *any* form (even messy). If you’d like to stick with the four prompts, just answer them with your context and I’ll convert it into a concrete plan + next actions.
+
+--- turn 4 [A] ---
+Great—let’s solve your example. Below is a lightweight process that gets you to a one-page brief + a stakeholder confirmation message, optimized for: conflicting notes, one engineer, end-of-week deadline, and two disagreeing stakeholders.
+
+## 1) The fastest path to clarity (90 minutes total)
+### Step A — Convert ambiguity into **decisions** (20 min)
+Make a “Decision Log” with 8 items (you can paste into the top of the doc):
+
+1. Target user / customer  
+2. Primary outcome metric (what improves, by how much)  
+3. In-scope deliverable (what you will ship)  
+4. Out-of-scope items (explicit “not now”)  
+5. Must-have requirements vs nice-to-have  
+6. Deadline & why it matters  
+7. Owner for each workstream (even if it’s “TBD”)  
+8. Acceptance criteria (how we’ll say it’s done)
+
+Anything you don’t know becomes a **question** to stakeholders.
+
+### Step B — One engineer reality check (15 min)
+Before you negotiate scope, set an engineering capacity anchor:
+- Estimate available time (e.g., “~3 dev-days this week” or “1 engineer at 30%”).
+- Define a “thin slice” deliverable that fits that capacity.
+
+### Step C — Resolve stakeholder disagreement with a forced choice (30 min)
+Run a 30-min meeting (or async doc) where they choose between **Option A** and **Option B**:
+- Option A: faster, smaller scope, lower risk  
+- Option B: broader scope, slower, higher risk
+
+If they refuse, propose a tie-break rule:
+- “We optimize for deadline” or “We optimize for metric impact,” or “We ship thin slice now, expand next sprint.”
+
+### Step D — Publish brief + request sign-off (25 min)
+You’ll produce:
+1) One-page project brief (template below)  
+2) Stakeholder message requesting confirmation (script below)
+
+---
+
+## 2) One-page project brief (copy/paste template)
+**Project Name:**  
+**Owner:** (you)  
+**Stakeholders / Approvers:** Stakeholder A, Stakeholder B  
+**Engineering:** (Engineer name)  
+**Doc date / version:**
+
+### 1) Goal
+- **Goal (1 sentence):**  
+- **Why now:**  
+- **Success metric(s):** (e.g., reduce time-to-X by Y%, increase conversion by Z points)
+
+### 2) Problem statement (2–4 bullets)
+- What’s happening today  
+- Who it affects  
+- What pain/cost it creates
+
+### 3) Proposed solution (thin slice)
+- **What we will ship (MVP):** (3–6 bullets, concrete)  
+- **User flow / behavior change:** (1–3 bullets)
+
+### 4) Requirements
+Split into three tiers.
+
+**Must-have (ship blocker):**
+- R1  
+- R2  
+- R3
+
+**Should-have (if time permits):**
+- R4  
+- R5
+
+**Nice-to-have / later:**
+- R6  
+- R7
+
+### 5) Non-goals (explicitly out of scope)
+- Not doing X  
+- Not doing Y  
+- Not solving Z (even if related)
+
+### 6) Milestones & timeline (end-of-week deadline)
+Keep it minimal and specific.
+
+- **Day 1:** confirm scope + acceptance criteria, finalize brief  
+- **Day 2–3:** implement MVP  
+- **Day 4:** testing + stakeholder review  
+- **Day 5:** launch / handoff + follow-ups
+
+(Adjust to your actual days—this is just a skeleton.)
+
+### 7) Owners / responsibilities (RACI-lite)
+- **Product/PM (you):** scope, requirements, sign-off coordination  
+- **Engineer:** implementation + technical decisions  
+- **Stakeholders:** approve scope/priority, provide inputs by date  
+- **QA / Ops / Design (if any):** (only if truly involved)
+
+### 8) Risks & mitigations
+List 3–5 max.
+
+- Risk: stakeholder disagreement delays decision → Mitigation: forced choice A/B by (date)  
+- Risk: unknown dependency → Mitigation: spike for 2 hours by (date)  
+- Risk: scope creep → Mitigation: change control: “Anything new goes to Later list”
+
+### 9) Open questions (need answers by specific time)
+- Q1 (decision needed) — **needed by:** (date/time)  
+- Q2 — **needed by:**  
+
+### 10) Acceptance criteria (definition of done)
+Write it as testable statements:
+- AC1: When user does X, system does Y within Z seconds  
+- AC2: Data logged / tracking added  
+- AC3: Rollback plan exists / feature flag present (if relevant)
+
+---
+
+## 3) How to handle the “too slow / missing X” loop
+Use this rule: **If someone says “missing X,” ask whether X is Must-have or Later.**  
+Then force the trade:
+- “To include X by Friday, we must drop Y” (give concrete drop candidates)
+- Or “We keep Y and schedule X next sprint”
+
+This prevents infinite iteration.
+
+---
+
+## 4) Stakeholder confirmation message (short, copy/paste)
+Subject: Sign-off needed: [Project] scope & plan for this week
+
+Hi [A] and [B] — I captured the project plan in this 1-page brief: [link].
+
+To hit the end-of-week deadline with 1 engineer, I’m proposing we ship the **MVP scope** (Section 3) and treat items in **Non-goals / Later** as follow-ups.
+
+**Please reply by [date/time] with:**
+1) ✅ Approve MVP scope + acceptance criteria as written, or  
+2) Changes required (and which must-have item you’d trade off to keep the deadline)
+
+If we have a disagreement, I suggest we decide using [tie-break rule: “optimize for deadline” / “optimize for metric impact”]. Happy to do a quick 15-min sync if needed.
+
+Thanks,  
+[Name]
+
+---
+
+## 5) If you paste your “scattered notes,” I’ll do the heavy lift
+If you share:
+- the conflicting requirements bullets (even messy),
+- who the stakeholders are (or just “A wants speed / B wants completeness”),
+- the deadline and any dependencies,
+
+…I’ll convert them into:
+- a filled-out one-pager,
+- two scope options (A/B) with explicit tradeoffs,
+- and a decision log + open questions list.
+
+--- turn 5 [B] ---
+Your process is already strong; if we “solve the example,” the missing piece is turning it into (a) concrete artifacts you can ship in a day and (b) a tactic that *forces* a decision from two disagreeing approvers without burning the week.
+
+Below is how I’d run it end-to-end for the scenario you described (conflicting notes, 1 engineer, end-of-week deadline, two stakeholders).
+
+## A) The two artifacts we will produce (today)
+1) **One-page brief** (your template, filled)  
+2) **Decision packet** (1 page or section at top): Option A vs Option B + explicit tradeoffs + tie-break rule
+
+Reason: stakeholders don’t actually disagree about the document—they disagree about priorities. A/B makes that actionable.
+
+---
+
+## B) Add one missing step: “Requirements triage by evidence” (20 minutes)
+Before you ask them to choose A/B, you need a fast filter for the conflicting notes.
+
+Create a table with each contentious item:
+
+| Requirement | Source (A/B/notes) | User impact | Risk if omitted | Effort (S/M/L) | Tier (Must/Should/Later) |
+|---|---|---:|---:|---:|---|
+
+Rules:
+- **If no clear user/metric impact** → default to *Later*
+- **If effort is unknown** → mark “Needs spike (timeboxed 1–2 hrs)” and keep out of Must-have until spiked
+- **Must-have is capped**: for 1 engineer / 1 week, you usually get **3–5 must-haves max** (anything beyond is fiction)
+
+This turns “conflicting notes” into “ranked candidates.”
+
+---
+
+## C) Convert your thin-slice into two explicit scope options (copy/paste)
+Put this near the top of the doc so they see it immediately.
+
+### Option A (recommended): Ship by Friday (thin slice)
+**Includes**
+- Must-have R1…
+- Must-have R2…
+- Must-have R3…
+- Instrumentation/logging needed to verify success metric
+- Feature flag + rollback plan (if applicable)
+
+**Does not include (explicit)**
+- R4 / R5 (later)
+- Edge case set #2
+- Nice UI polish
+
+**Why this works**
+- Meets deadline
+- Lowest delivery risk
+- Produces measurable outcome
+
+### Option B: Broader scope (higher risk)
+**Includes**
+- Everything in Option A
+- Plus R4…
+- Plus R5…
+
+**Tradeoffs**
+- Delivery risk: medium/high
+- Likely slips to next week **or** displaces testing/instrumentation
+- More coordination required
+
+**Decision needed**
+- Choose A or B by **(date/time)**
+
+This makes disagreement visible as a *choice with consequences*.
+
+---
+
+## D) How to run the 30-minute decision meeting so it actually resolves
+Agenda (tight, no debate loops):
+1) **2 min** — Re-state constraint: “One engineer, Friday deadline. We need a choice.”  
+2) **5 min** — Confirm success metric + acceptance criteria (no more than 2 metrics)  
+3) **10 min** — Walk through Option A vs B and the explicit tradeoff  
+4) **10 min** — Resolve the top 1–2 disputed requirements: Must-have or Later  
+5) **3 min** — Lock decision + next step: “I’ll publish v1.0 and proceed unless I hear otherwise by X.”
+
+If they won’t decide:
+- Invoke tie-break rule immediately: “We’re optimizing for deadline; default is Option A.”
+
+---
+
+## E) The engineering capacity anchor (make it concrete)
+In the brief, write a single line like:
+
+> **Capacity assumption:** 1 engineer @ ~3 dev-days net (after meetings/reviews). Scope is sized to fit that.
+
+And add a safeguard:
+
+> **Scope control:** Any new must-have requires removing an existing must-have of similar effort.
+
+That one sentence prevents the “missing X” churn.
+
+---
+
+## F) Stakeholder message tweak (make it harder to ignore)
+Your note is good. I’d slightly harden the call-to-action:
+
+- Provide **two buttons** (approve A / choose B) and a **default**.
+
+Example tweak:
+
+> If I don’t hear back by **Thu 12:00**, I’ll proceed with **Option A** to protect the deadline.
+
+That converts silence into progress.
+
+---
+
+## What I need to fully “solve the example” with real content
+If you paste *any* messy bullets, I’ll produce a filled one-pager + A/B options. Minimal inputs:
+1) The project’s 1–2 sentence goal  
+2) 8–15 requirement bullets (even contradictory)  
+3) What Stakeholder A is pushing for vs Stakeholder B  
+4) Any hard dependencies (systems, approvals, data, legal)
+
+Drop that here and I’ll return:
+- a completed brief,
+- Option A/B with tradeoffs,
+- a decision log + open questions,
+- and the finalized sign-off message.
+
+--- turn 6 [A] ---
+You’ve basically described the “missing” operational layer: make the doc *decision-shaped*, make “no response” equivalent to a decision, and constrain the space so the only remaining disagreement is an explicit tradeoff. Here’s how I’d tighten it into ship-in-a-day artifacts + a forcing function that reliably gets you a decision.
+
+## 1) Ship-ready artifacts (produced today)
+
+### Artifact 1 — One-page brief (v1.0)
+Keep it tight; the trick is putting the **Decision Packet at the very top** so nobody scrolls past the actual choice.
+
+### Artifact 2 — Decision Packet (top section, ~1 page)
+Structure:
+
+**Decision required:** Option A vs Option B  
+**Decision deadline:** Thu 12:00 (example)  
+**Default if no decision:** Option A  
+**Tie-break rule if disagreement persists:** optimize for deadline (or metric impact)  
+**Change-control rule:** any new Must-have requires removing an existing Must-have
+
+Then show:
+
+- **Option A: “By Friday”** (3–5 must-haves max)
+- **Option B: “More complete”** (A + 1–3 additions)
+- **Tradeoffs:** in plain language (slip risk, test/instrumentation risk, dependency risk)
+- **Non-goals / Later list** (so “missing X” has a home)
+
+This packet is what stakeholders react to; the rest is supporting detail.
+
+---
+
+## 2) The forcing tactic that doesn’t burn the week
+
+### The “Two clocks” approach
+You run two deadlines in parallel:
+
+1) **Decision clock (stakeholders):** hard cutoff with a default  
+2) **Build clock (engineering):** engineer starts immediately on Option A’s thin slice + spikes
+
+Meaning: you are never idle waiting for alignment—you’re working the default.
+
+Concretely:
+- Day 0 (today): publish v1.0 + decision packet, schedule 30-min decision sync
+- Day 1: engineer starts Option A; any unknowns get **timeboxed spikes**
+- Thu 12:00: decision cutoff → either formal approval or default triggers
+- Thu/Friday: execute, test, launch
+
+This works because the “default” isn’t a threat—it’s *the only way to hit the deadline*.
+
+---
+
+## 3) Decision meeting script (30 minutes, engineered to end)
+
+**Pre-read (required):** link to doc + decision packet only  
+**Invite text:** “We are choosing A or B. If we don’t decide, we ship A to protect the deadline.”
+
+Agenda:
+1) (2 min) Restate constraint + decision: “1 engineer / Friday. Choose A or B.”  
+2) (5 min) Confirm success metric + acceptance criteria (cap at 1–2 metrics, 3–6 ACs)  
+3) (8 min) Walk A vs B tradeoffs (no new ideas yet)  
+4) (10 min) Handle *only* top 1–2 disputed requirements with this question:
+   - “Is this worth dropping [X] or accepting a slip?”  
+5) (5 min) Lock decision, restate in words, assign follow-up:
+   - “Decision: Option ___. I’ll publish v1.0 now; implementation starts today.”
+
+**Hard rule:** New requirements are captured into “Later” during the meeting—*not debated*—unless the group also names what gets dropped.
+
+---
+
+## 4) Requirements triage: one extra lever that increases compliance
+Your “triage by evidence” table is the right move. The key trick: **force each contentious item to have a sponsor**.
+
+Add one column:
+
+| Requirement | Sponsor | Evidence | Impact | Risk if omitted | Effort | Tier |
+|---|---|---|---:|---:|---:|---|
+
+Rule: if nobody will sponsor it (name attached), it’s Later. This cuts “drive-by must-haves.”
+
+---
+
+## 5) The sign-off message: make approval frictionless
+Send a message that people can answer in 5 seconds:
+
+Subject: Decision needed by Thu 12:00 — [Project] Option A vs B
+
+Hi [A], [B] — here’s the 1-page brief + decision packet: [link].
+
+**Please reply with one of the following by Thu 12:00:**
+- **A** = ship by Friday (recommended)  
+- **B** = broader scope (higher risk; likely slips or reduces testing/instrumentation)
+
+**If I don’t hear back by Thu 12:00, I’ll proceed with Option A** to protect the deadline.
+
+If you choose B, please confirm what we should trade off (testing/instrumentation or specific Must-have).
+
+Thanks,  
+[Name]
+
+This eliminates “I agree in principle but…” responses.
+
+---
+
+## 6) If they still won’t decide: controlled escalation (without drama)
+If A and B disagree and won’t accept the tie-break:
+- Ask for a **single exec tie-breaker** (manager/lead) with a 10-minute slot.
+- Present only: A vs B + impact on deadline/risk.
+- Tie-breaker chooses. Done.
+
+Escalation is often what stakeholders were implicitly waiting for; doing it explicitly saves time.
+
+---
+
+## 7) To fully “solve the example,” paste anything messy
+If you paste:
+1) Goal (1–2 sentences)  
+2) 8–15 requirement bullets (conflicting OK)  
+3) What A wants vs what B wants  
+4) Dependencies/risks (if any)
+
+…I’ll return **completed v1.0** of:
+- the one-page brief
+- the decision packet (A/B with tradeoffs)
+- the triage table (with must/should/later)
+- the exact meeting agenda + the sign-off message tailored to your details
+
+Drop it in whatever format you have (Slack snippets, bullets, notes).
+
+--- turn 7 [B] ---
+This is operationally tight. If we were turning this into something you can reuse as a “one-day alignment kit,” there are only a few refinements I’d add to make it even more deterministic under pressure.
+
+## 1) Two small additions that increase decision reliability
+
+### A) Add a “decision owner” (D in RAPID / single DRI)
+Even with two approvers, you want one explicit *decision owner* if they disagree.
+
+In the Decision Packet header:
+
+- **Decision owner (DRI):** Name  
+- **Approvers:** A, B  
+- **Consulted:** Eng, Design, etc.
+
+Then your tie-break rule becomes procedural, not emotional:
+- “If A and B disagree by Thu 12:00, the DRI decides using the tie-break rule.”
+
+If you can’t name a DRI, name the escalation target ahead of time (their manager).
+
+### B) Add “kill criteria” (what makes us stop / revert)
+With one engineer and a rushed timeline, stakeholders relax if they know there’s a safety valve.
+
+Include a 2–3 bullet “Kill / rollback criteria” section:
+- If error rate > X% for Y minutes → rollback
+- If KPI drops by > Z → disable feature flag
+- If critical bug found in QA → slip launch, not scope
+
+This reduces the instinct to demand Option B “to be safe.”
+
+---
+
+## 2) Make Option A/B quantify the tradeoff (one line each)
+Stakeholders decide faster when the options have numbers.
+
+Example format:
+
+- **Option A:** ~3 dev-days + 0.5 QA-day → **high confidence by Friday**
+- **Option B:** ~5–6 dev-days + 1 QA-day → **likely slip to Tuesday** (or **cuts testing/instrumentation**)
+
+Even rough sizing beats adjectives.
+
+---
+
+## 3) Your “sponsor required” lever: make it explicit in the meeting
+The best phrasing I’ve seen (keeps it non-hostile):
+
+> “If this is a must-have, I’ll write your name next to it as the sponsor, and we’ll trade something out.”
+
+That’s enough to eliminate drive-by requirements without drama.
+
+---
+
+## 4) Turn the “Two clocks” into a concrete day-by-day checklist
+This makes it truly ship-in-a-day reusable.
+
+**Today (≤ 90 min)**
+- Draft Decision Packet + one-page brief v1.0
+- Pre-fill Option A as default
+- Mark unknowns as timeboxed spikes (owner + duration)
+- Send sign-off message + schedule 30-min decision sync
+
+**Tomorrow**
+- Engineer starts Option A
+- Run spikes early (first 2–3 hrs) to de-risk Option A
+- Update brief to v1.1 (only: effort changes / risks / clarified ACs)
+
+**Thu 12:00**
+- Decision cutoff triggers (A or B)
+- Freeze Must-have list
+
+**Thu PM–Fri**
+- Execute + test + launch + rollback plan ready
+
+---
+
+## 5) One more forcing function: “silence = A, objections must include a trade”
+You already have this, but I’d formalize it as a single sentence in the message + doc:
+
+> “Objections must include the item you want to de-scope to keep the date.”
+
+That prevents “I object” without specifics.
+
+---
+
+If you want to go from “excellent framework” to “fully solved artifact,” paste *any* messy requirements and I’ll output (in one response):
+- a filled Decision Packet (A/B + quantified tradeoffs + owners + deadlines),
+- a filled one-page brief,
+- the sponsor-based triage table,
+- and the exact calendar invite + meeting script tailored to the situation.
+
+--- turn 8 [A] ---
+Agreed on all refinements. If we package this as a reusable **One-Day Alignment Kit**, here’s a clean, deterministic “drop-in” set you can reuse across projects, incorporating: **DRI**, **kill criteria**, **quantified A/B**, **sponsor rule**, and **silence=default + objections require trade**.
+
+## One-Day Alignment Kit (Reusable)
+
+### 0) Inputs (what you need before you start)
+- Goal (1 sentence) + deadline
+- Stakeholders A/B + their “musts”
+- 8–15 requirement bullets (messy OK)
+- Capacity assumption (e.g., “1 eng, ~3 dev-days net”)
+- Any hard dependencies (data, infra, legal, 3rd parties)
+
+---
+
+## 1) Artifact #1: Decision Packet (paste at top of doc)
+
+**Project:**  
+**Date / Version:** v1.0  
+**Decision needed:** Choose Option A or Option B  
+**Decision deadline:** Thu 12:00  
+**Default if no response:** Option A  
+**Decision owner (DRI):** ___  
+**Approvers:** ___, ___  
+**Consulted:** Eng ___, Design ___, Data/QA ___  
+**Tie-break rule:** Optimize for deadline (ship by Friday) *(or “optimize for metric impact” — pick one)*  
+**Change control:** Any new Must-have requires removing an existing Must-have of comparable effort  
+**Objection rule:** Objections must include the trade (what to de-scope) to keep the date
+
+### Option A — Ship by Friday (recommended)
+- **Scope (Must-haves):** R1, R2, R3, (R4 if still within cap)
+- **Effort:** ~__ dev-days + __ QA-days  
+- **Confidence:** High by Friday  
+- **Delivers:** instrumentation + rollback/flag (if applicable)
+
+### Option B — Broader scope (higher risk)
+- **Scope:** Option A + R5 + R6
+- **Effort:** ~__ dev-days + __ QA-days  
+- **Expected outcome:** likely slips to __(day)__ **or** reduces testing/instrumentation  
+- **Risk:** medium/high
+
+### Kill / rollback criteria (safety valve)
+- If error rate > __% for __ minutes → disable via flag / rollback
+- If KPI drops > __% (or absolute threshold) → disable + investigate
+- If critical P0 found in QA → slip launch (date protected > scope protected, or vice versa—state it)
+
+### Questions that block the decision (answer in meeting)
+- Q1: ___
+- Q2: ___
+
+---
+
+## 2) Artifact #2: One-page brief (v1.0, below the packet)
+
+**Goal:**  
+**Non-goals:** (3 bullets)  
+**Success metrics:** (1–2)  
+**Acceptance criteria:** (3–6, testable)  
+**Scope:** Must / Should / Later (must capped at 3–5)  
+**Milestones:** Day-by-day to Friday  
+**Owners:** PM/DRI, Eng, Stakeholders  
+**Risks & mitigations:** incl. dependency + unknowns  
+**Open questions:** with “needed by” timestamps
+
+---
+
+## 3) Sponsor-based triage table (the “no-drive-bys” mechanism)
+
+| Req | Sponsor (name) | Evidence (link/quote) | Impact | Risk if omitted | Effort (S/M/L) | Tier |
+|---|---|---|---:|---:|---:|---|
+
+Rules (put these above the table):
+- If no sponsor → Later  
+- If no evidence/impact → Later  
+- If effort unknown → **Spike (timeboxed)**; cannot be Must until spiked  
+- Must-have cap: 3–5 total for 1 engineer / 1 week
+
+Meeting phrase (verbatim):
+> “If this is a must-have, I’ll put your name as sponsor, and we’ll trade something out to keep Friday.”
+
+---
+
+## 4) The Two-Clocks checklist (day-by-day, reusable)
+
+### Today (≤ 90 min)
+- Draft Decision Packet + Brief v1.0
+- Pre-fill **Option A as default**
+- Mark unknowns as **spikes** (owner + 1–2 hr timebox)
+- Send sign-off message + schedule decision meeting
+
+### Tomorrow
+- Engineer starts Option A immediately
+- Run spikes in first 2–3 hours; update effort numbers
+- Publish v1.1 (only: effort/risk/AC clarifications; avoid widening scope)
+
+### Thu 12:00 (decision cutoff)
+- DRI decides if A/B disagree
+- Freeze Must-have list (change-control rule becomes active)
+
+### Thu PM–Fri
+- Execute, test, launch
+- Ensure rollback criteria + owner-on-call identified
+
+---
+
+## 5) The sign-off message (hardened, with DRI + trade requirement)
+Subject: Decision by Thu 12:00 — [Project] Option A (default) vs B
+
+Hi [A], [B] — brief + decision packet: [link].
+
+We need a choice by **Thu 12:00** to hit Friday with 1 engineer.
+
+Reply with:
+- **A** (default): ship by Friday, thin slice  
+- **B**: broader scope (higher risk; likely slip or reduced testing)
+
+**If I don’t hear back by Thu 12:00, we proceed with Option A.**  
+**Any objections must include what to de-scope to keep Friday.**
+
+Decision owner (DRI): [name]. If A/B disagree at cutoff, DRI will decide using the tie-break rule in the packet.
+
+Thanks,  
+[Name]
+
+---
+
+## 6) Calendar invite (copy/paste)
+**Title:** [Project] Scope decision (Option A vs B) — finalize by Thu 12:00  
+**Duration:** 30 min  
+**Required:** Approver A, Approver B, DRI, Engineer  
+**Optional:** Design/QA/Data  
+**Agenda:**
+1. Constraint + decision required (2 min)  
+2. Confirm metric + ACs (5 min)  
+3. Review Option A vs B (8 min)  
+4. Sponsor/trade for disputed items (10 min)  
+5. Lock decision + next steps (5 min)  
+**Pre-read:** Decision Packet (top of doc)
+
+---
+
+If you paste any messy requirements + what A vs B want, I can instantiate this kit into a **fully filled** Decision Packet + brief + triage table with rough effort sizing and a concrete Option A/B that’s internally consistent.
+
+--- turn 9 [B] ---
+## One-Day Alignment Kit — polished “drop-in” version (ready to reuse)
+
+Below is your kit with only a few tightening edits for maximum determinism:
+- Adds a **single place** to capture the “frozen” decision (so nobody re-litigates later)
+- Makes **Option A/B** include explicit *what gets sacrificed* (tests/instrumentation/scope/date)
+- Clarifies **kill criteria owner + monitoring window**
+- Standardizes **versioning** (v1.0 draft → v1.1 after spikes → v1.2 frozen)
+
+---
+
+### 0) Inputs (5–10 minutes to gather)
+- **Goal (1 sentence)** + **deadline**
+- Stakeholders **A/B** + their “musts” (1–3 bullets each)
+- **8–15 requirement bullets** (messy/contradictory OK)
+- **Capacity assumption** (e.g., 1 eng, ~3 dev-days net; QA availability)
+- **Hard dependencies** (data/infra/legal/3rd party)
+- **DRI** name (or escalation tie-breaker)
+
+---
+
+## 1) Artifact #1: Decision Packet (top of doc) — copy/paste
+
+**Project:**  
+**Date / Version:** v1.0 (draft)  
+**Decision needed:** Choose Option A or Option B  
+**Decision deadline:** Thu 12:00  
+**Default if no response:** Option A  
+**Decision owner (DRI):** ___  
+**Approvers:** ___, ___  
+**Consulted:** Eng ___, Design ___, Data/QA ___  
+**Tie-break rule:** Optimize for **deadline** (ship by Friday) *(choose one and delete the other)*  
+**Change control:** Any new Must-have requires removing an existing Must-have of comparable effort  
+**Objection rule:** Objections must include the trade (what to de-scope) to keep the date  
+
+### Options (choose one)
+
+#### Option A — Ship by Friday (default / recommended)
+- **Must-haves (cap 3–5):** R1, R2, R3, R4  
+- **Effort:** ~__ dev-days + __ QA-days  
+- **Confidence:** High to ship by Friday  
+- **Explicit protections:** keeps **testing + instrumentation** intact  
+- **Explicit sacrifices:** defers **Later list** items (below)
+
+#### Option B — Broader scope (higher risk)
+- **Scope:** Option A + R5 + R6  
+- **Effort:** ~__ dev-days + __ QA-days  
+- **Expected tradeoff (pick one, be explicit):**
+  - Likely **slips** to __(day)__; **or**
+  - Keeps Friday but **reduces** testing/instrumentation (higher incident risk)
+- **Risk:** medium/high (state top 1–2 risks)
+
+### Non-goals / Later (home for “missing X”)
+- L1  
+- L2  
+- L3  
+
+### Kill / rollback criteria (safety valve)
+- **Owner:** ___ (who will pull the flag / rollback)  
+- **Monitoring window:** first __ hours/day(s) post-launch  
+- If error rate > __% for __ minutes → disable/rollback  
+- If KPI drops > __% vs baseline → disable + investigate  
+- If P0 found in QA → launch slips (scope stays frozen unless DRI redecides)
+
+### Blocking questions (must answer to decide)
+- Q1: ___  
+- Q2: ___  
+
+### Decision record (filled at cutoff)
+- **Decision made:** A / B  
+- **Timestamp:** ___  
+- **DRI:** ___  
+- **Notes (1–2 lines):** ___  
+
+---
+
+## 2) Artifact #2: One-page brief (below packet) — copy/paste
+
+**Goal:**  
+**Why now:**  
+**Non-goals:** (max 3)  
+**Success metrics:** (1–2)  
+**Acceptance criteria:** (3–6, testable)  
+
+**Scope**
+- **Must-have:** (3–5 max)  
+- **Should-have:**  
+- **Later:**  
+
+**Milestones (to Friday)**
+- Today: v1.0 + decision packet published; meeting scheduled  
+- Tomorrow: spikes complete; v1.1 updated with effort/risk/AC clarifications  
+- Thu 12:00: decision cutoff; scope frozen; v1.2 marked FINAL  
+- Thu PM–Fri: build/test/launch + monitoring  
+
+**Owners**
+- **DRI/PM:** scope, doc, decision enforcement, comms  
+- **Engineer:** implementation + spikes + estimates  
+- **Approvers A/B:** choose A vs B; sponsor requirements; unblock decisions by deadline  
+- **QA/Data/Design:** only if explicitly involved  
+
+**Risks & mitigations:** (3–5)  
+**Dependencies:**  
+**Open questions (needed by):**  
+
+---
+
+## 3) Sponsor-based triage table (no drive-bys)
+
+Put this directly under the brief or in an appendix.
+
+**Rules**
+- If no sponsor → **Later**  
+- If no evidence/impact → **Later**  
+- If effort unknown → **Spike (timeboxed)**; cannot be Must until spiked  
+- Must-have cap: **3–5** for 1 engineer / 1 week
+
+| Req | Sponsor | Evidence | Impact | Risk if omitted | Effort (S/M/L) | Tier |
+|---|---|---|---:|---:|---:|---|
+| R1 |  |  |  |  |  |  |
+
+Meeting phrase (verbatim):
+> “If this is a must-have, I’ll put your name as sponsor, and we’ll trade something out to keep Friday.”
+
+---
+
+## 4) Two-Clocks checklist (operating rhythm)
+
+**Today (≤ 90 min)**
+- Draft Decision Packet + Brief **v1.0**
+- Pre-fill **Option A** as default
+- Identify spikes: owner + 1–2 hr timebox each
+- Send sign-off message + schedule decision meeting
+
+**Tomorrow**
+- Engineer starts Option A immediately
+- Run spikes in first 2–3 hours; update effort numbers + key risks
+- Publish **v1.1** (only effort/risk/AC clarifications; no scope expansion)
+
+**Thu 12:00 (cutoff)**
+- If disagreement: **DRI decides**
+- Freeze Must-haves; publish **v1.2 FINAL**
+- Change-control rule active
+
+**Thu PM–Fri**
+- Execute, test, launch
+- Monitor per kill criteria; confirm owner-on-call
+
+---
+
+## 5) Hardened sign-off message (5-second reply)
+
+Subject: Decision by Thu 12:00 — [Project] Option A (default) vs B
+
+Hi [A], [B] — decision packet + 1-page brief: [link].
+
+We need a choice by **Thu 12:00** to hit Friday with 1 engineer.
+
+Reply with:
+- **A** (default): ship by Friday, thin slice  
+- **B**: broader scope (higher risk; likely slip or reduced testing)
+
+**If I don’t hear back by Thu 12:00, we proceed with Option A.**  
+**Any objections must include what to de-scope to keep Friday.**
+
+DRI: [name]. If A/B disagree at cutoff, DRI will decide using the tie-break rule in the packet.
+
+Thanks,  
+[Name]
+
+---
+
+## 6) Calendar invite (copy/paste)
+
+**Title:** [Project] Scope decision (Option A vs B) — finalize by Thu 12:00  
+**Duration:** 30 min  
+**Required:** Approver A, Approver B, DRI, Engineer  
+**Optional:** Design/QA/Data  
+**Agenda:**
+1. Constraint + decision required (2 min)  
+2. Confirm metric + ACs (5 min)  
+3. Review Option A vs B (8 min)  
+4. Sponsor/trade for disputed items (10 min)  
+5. Lock decision + next steps (5 min)  
+**Pre-read:** Decision Packet (top of doc)
+
+---
+
+If you paste (a) the messy requirement bullets and (b) what A vs B each insist on, I’ll instantiate this into a consistent **v1.0 packet** with:
+- concrete Option A/B scopes,
+- rough effort ranges,
+- a filled triage table (including “spike” items),
+- and wording tailored to your stakeholders’ likely objections.
+
+--- turn 10 [A] ---
+This is a solid “drop-in” kit—your edits remove the last few failure modes (re-litigation, vague tradeoffs, and safety anxiety). I’d only add three micro-refinements to make it even more deterministic, especially in orgs with lots of passive resistance:
+
+## 1) Add a “Decision is frozen until…” clause (prevents stealth renegotiation)
+In the **Decision record** section, add one line:
+
+- **Decision freeze:** frozen until launch *(or until v1.2 is amended by DRI in writing)*
+
+This makes “can we just add…” require an explicit v1.3 and stops backchannel scope creep.
+
+## 2) Add a “Definition of Must-have” line (stops category inflation)
+Right above the Must-have list:
+
+- **Must-have definition:** without this, the launch is not usable / cannot meet compliance / cannot measure success
+
+People often label preferences as must-haves; this one line gives you a consistent rebuttal.
+
+## 3) Add a “Dependencies must be green by” checkpoint (avoid late surprises)
+Under Milestones or Dependencies:
+
+- **Dependency cutoff:** any dependency not confirmed by __(time)__ is excluded from Must-haves (moves to Later or requires DRI exception)
+
+This prevents “we assumed team X would…” from detonating on Thursday.
+
+---
+
+## Optional (but high leverage): a tiny “Comms Plan” block
+If launches tend to cause worry, add:
+
+- **Launch comms owner:** ___  
+- **Who gets notified:** ___  
+- **Where:** Slack channel / email  
+- **When:** at launch + after monitoring window
+
+This lowers stakeholder fear and reduces pressure to choose Option B “just in case.”
+
+---
+
+If you want, I can output your polished kit as:
+- a **single copy/paste Google Doc** (with headings + table scaffolds),
+- and a **Jira-friendly version** (Epic description + Acceptance Criteria + Definition of Done + checklist).
+
+And if you paste sample messy bullets, I’ll instantiate **v1.0** with realistic Option A/B, quantified effort ranges, and a triage table including spikes.
+
+--- turn 11 [B] ---
+## Incorporating your 3 micro-refinements (+ optional comms) into the kit
+
+Below are *surgical insertions* you can paste into the existing “drop-in” version.
+
+---
+
+## 1) Add “Decision is frozen until…” (anti-stealth renegotiation)
+
+**Where:** Decision Packet → **Decision record** section
+
+Add:
+
+- **Decision freeze:** Frozen until **launch** *(or until amended by DRI in writing as v1.3+)*
+
+Recommended full block:
+
+### Decision record (filled at cutoff)
+- **Decision made:** A / B  
+- **Timestamp:** ___  
+- **DRI:** ___  
+- **Decision freeze:** Frozen until launch *(or until amended by DRI in writing as v1.3+)*  
+- **Notes (1–2 lines):** ___  
+
+This forces any scope change into an explicit new version + paper trail.
+
+---
+
+## 2) Add “Definition of Must-have” (stops category inflation)
+
+**Where:** Decision Packet → Option A section **and/or** Brief → Scope section
+
+Add one line immediately above Must-haves:
+
+- **Must-have definition:** Without this, the launch is **not usable**, **cannot meet compliance**, or **cannot measure success**.
+
+I’d include it twice (Decision Packet + Brief) so it appears even if someone only reads one section.
+
+---
+
+## 3) Add “Dependencies must be green by” checkpoint (prevents Thursday detonations)
+
+**Where:** Brief → Milestones or Dependencies
+
+Add:
+
+- **Dependency cutoff:** Any dependency not confirmed **green by __(day/time)__** is excluded from Must-haves (moves to Later) unless DRI grants an explicit exception (v1.3+).
+
+If you want it even more enforceable, add a checkbox list:
+
+**Dependencies (must be green by __(day/time)__)**
+- [ ] Dep 1 — owner — status  
+- [ ] Dep 2 — owner — status  
+
+---
+
+## 4) Optional: Tiny Comms Plan block (reduces safety anxiety)
+
+**Where:** Brief (after Milestones or Owners)
+
+**Comms plan**
+- **Comms owner:** ___  
+- **Notify:** ___  
+- **Channel:** Slack ___ / email ___  
+- **Timing:** at launch + after monitoring window (__ hours)  
+- **Message template link:** ___ (optional)
+
+---
+
+## Output formats (I can generate either/both)
+1) **Single Google Doc copy/paste**: clean headings + all tables scaffolded  
+2) **Jira-friendly**: Epic description + AC/DoD + checklist + decision log fields
+
+If you want me to generate the Jira version, tell me whether your team uses:
+- Epic + Stories, or Epic + Tasks
+- Any standard DoD items (feature flag, logging, tests, runbook, etc.)
+
+And if you paste even rough “messy bullets” + A-vs-B musts, I’ll instantiate **v1.0** with:
+- coherent Option A/B scopes,
+- quantified effort ranges,
+- dependency cutoffs,
+- and the sponsor-based triage table (including timeboxed spikes).
+
+--- turn 12 [A] ---
+Your surgical insertions are correct and preserve the kit’s “one page does the forcing” property. At this point, the kit is reusable as-is.
+
+### Two tiny final polish tweaks (optional, but practical)
+
+1) **Make the tie-break rule singular everywhere**
+- In the Decision Packet header, force a single value (deadline *or* metric impact) and remove the parenthetical “choose one and delete the other” to avoid someone re-opening that choice midstream.
+- Suggested:
+  - **Tie-break rule (fixed for this project):** Optimize for deadline (ship by Friday)
+
+2) **Add a “No new requirements after v1.2” clause**
+This is slightly different from “decision freeze” and helps stop “small clarifications” from becoming scope:
+- **Requirement freeze:** After v1.2 FINAL, new requirements go to Later unless DRI issues v1.3+
+
+If you think that’s redundant with the decision freeze, keep just one—personally I’ve found “requirement freeze” is easier for engineers to enforce day-to-day.
+
+---
+
+## Jira-friendly version: what I need to generate it
+Tell me these, and I’ll output a ready-to-paste Epic + child items template aligned to your kit:
+
+1) Structure: **Epic + Stories** or **Epic + Tasks**  
+2) Fields you use: do you track **Acceptance Criteria**, **Definition of Done**, **Risks**, **Dependencies**, **Rollout plan**, **Feature flag**, **Monitoring** as custom fields or plain text?  
+3) Standard DoD checks (pick any): tests, logging, metrics, rollout, runbook, dashboard, QA signoff  
+4) How you launch: behind flag / phased rollout / immediate GA  
+5) Who is typically the **DRI** in Jira (PM, Eng lead, EM)?
+
+---
+
+## If you want, I can also “productize” the kit
+Two outputs that make it even easier to reuse under pressure:
+- **Google Doc master template** with locked headings + fill-in highlights (e.g., `[FILL]` markers)
+- **1-page Decision Packet as a standalone doc** (so stakeholders don’t have to open the full brief)
+
+Say the word and tell me which format you want first (Doc vs Jira).
+
+--- turn 13 [B] ---
+### Final polish tweaks: yes—add both (they’re complementary, not redundant)
+
+#### 1) Make tie-break singular everywhere
+Agreed. Ambiguity about the tie-break is itself a future disagreement.
+
+Replace the header line with:
+
+- **Tie-break rule (fixed for this project):** Optimize for **deadline** (ship by Friday)
+
+(If you ever choose metric impact instead, you set it once here and never mention alternatives elsewhere.)
+
+#### 2) Add “No new requirements after v1.2” (requirement freeze)
+Keep this *in addition to* decision freeze. They govern slightly different failure modes:
+- **Decision freeze** = prevents re-litigating A vs B / priority calls
+- **Requirement freeze** = stops “tiny clarifications” from turning into stealth scope
+
+Add under Decision record (or under Change control):
+
+- **Requirement freeze:** After **v1.2 FINAL**, new requirements go to **Later** unless DRI issues **v1.3+** in writing.
+
+Engineers will enforce “requirement freeze” more naturally day-to-day, as you said.
+
+---
+
+## To generate the Jira-friendly Epic + child items template
+Answer these (quick bullets are fine):
+
+1) **Structure:** Epic + Stories, or Epic + Tasks?  
+2) **Fields:** Are AC / DoD / Risks / Dependencies / Rollout plan / Feature flag / Monitoring tracked as custom fields, or should I embed them in the description?  
+3) **Standard DoD checks:** which are mandatory for you? (tests, logging, metrics, rollout, runbook, dashboard, QA signoff, security review, etc.)  
+4) **Launch style:** behind flag / phased rollout / immediate GA?  
+5) **DRI in Jira:** PM, Eng lead, EM, or other?
+
+If you say “Doc first” or “Jira first,” I’ll output that format next with copy/paste-ready text blocks (Epic description + child ticket templates + checklists) aligned to the completed kit.
+
+--- turn 14 [A] ---
+Doc first or Jira first—your call.
+
+Reply with either:
+- **“Doc first”** or **“Jira first”**, and then answer these so I can generate the Jira-friendly Epic + child items template exactly in your house style:
+
+1) **Structure:** Epic + Stories, or Epic + Tasks?  
+2) **Fields:** AC / DoD / Risks / Dependencies / Rollout plan / Feature flag / Monitoring — custom fields, or embed in description?  
+3) **Standard DoD checks:** which are mandatory?  
+4) **Launch style:** behind flag / phased rollout / immediate GA?  
+5) **DRI in Jira:** PM, Eng lead, EM, or other?
+
+If you don’t have strong preferences, say “Jira first, embed everything, Epic + Stories, behind flag, DRI=Eng lead, DoD=tests+logging+dashboard+QA signoff” and I’ll generate a complete, paste-ready set.
+
+--- turn 15 [B] ---
+Jira first
+
+1) **Structure:** Epic + Stories  
+2) **Fields:** Embed everything in the description (no custom fields assumed)  
+3) **Standard DoD checks (mandatory):** tests, logging, dashboard/metrics, QA signoff  
+4) **Launch style:** behind feature flag (with rollback/kill criteria)  
+5) **DRI in Jira:** Eng lead
+
+--- turn 16 [A] ---
+## Jira-first: Epic + Stories template (embed everything in Description)
+
+Copy/paste the following blocks into Jira. Replace bracketed placeholders.
+
+---
+
+# EPIC: `[Project] One-Day Alignment` (v1.0→v1.2)
+
+## Epic Description (paste as-is)
+
+### Decision Packet (top)
+**Project:** [Project name]  
+**Doc link (source of truth):** [link]  
+**Date / Version:** v1.0 (draft) → v1.1 (post-spikes) → **v1.2 FINAL (frozen)**  
+**Decision needed:** Choose Option A or Option B  
+**Decision deadline:** [Thu YYYY-MM-DD 12:00 TZ]  
+**Default if no response:** **Option A**  
+**Decision owner (DRI):** **[Eng Lead name]**  
+**Approvers:** [Approver A], [Approver B]  
+**Consulted:** [PM], [Engineer], [QA], [Design], [Data] (as needed)  
+**Tie-break rule (fixed for this project):** Optimize for **deadline** (ship by Friday)  
+**Change control:** Any new Must-have requires removing an existing Must-have of comparable effort  
+**Objection rule:** Objections must include the trade (what to de-scope) to keep the date  
+**Must-have definition:** Without this, the launch is **not usable**, **cannot meet compliance**, or **cannot measure success**.
+
+#### Option A — Ship by Friday (default / recommended)
+- **Must-haves (cap 3–5):**  
+  - R1: [ ]  
+  - R2: [ ]  
+  - R3: [ ]  
+  - R4: [ ]  
+- **Effort:** ~[__] dev-days + [__] QA-days  
+- **Confidence:** High to ship by Friday  
+- **Explicit protections:** keeps **testing + instrumentation/dashboard** intact  
+- **Explicit sacrifices:** defers “Later” items (below)
+
+#### Option B — Broader scope (higher risk)
+- **Scope:** Option A +  
+  - R5: [ ]  
+  - R6: [ ]  
+- **Effort:** ~[__] dev-days + [__] QA-days  
+- **Expected tradeoff (pick one):**
+  - Likely **slips** to [day]; **or**
+  - Keeps Friday but **reduces** testing/instrumentation (higher incident risk)
+- **Top risks (1–2):**  
+  - [Risk 1]  
+  - [Risk 2]
+
+#### Non-goals / Later (home for “missing X”)
+- L1: [ ]  
+- L2: [ ]  
+- L3: [ ]
+
+### Kill / rollback criteria (feature-flagged launch)
+**Rollback/kill owner:** [Eng Lead or On-call name]  
+**Monitoring window:** first [__] hours / [__] business day(s) post-launch  
+- If error rate > [__]% for [__] minutes → disable flag / rollback  
+- If KPI drops > [__]% vs baseline → disable + investigate  
+- If P0 found in QA → launch slips (scope stays frozen unless DRI redecides)
+
+### Dependency cutoff (prevents late detonations)
+**Dependency cutoff:** Any dependency not confirmed **green by [day/time]** is excluded from Must-haves (moves to Later) unless DRI grants explicit exception (**v1.3+**).
+
+**Dependencies (must be green by [day/time])**
+- [ ] Dep 1 — owner: [name] — status: [green/yellow/red] — link: [ ]  
+- [ ] Dep 2 — owner: [name] — status: [green/yellow/red] — link: [ ]
+
+### Success criteria
+**Goal (1 sentence):** [ ]  
+**Why now:** [ ]  
+**Success metrics (1–2):**
+- M1: [metric + target]  
+- M2: [metric + target]
+
+**Acceptance criteria (3–6, testable):**
+- AC1: [ ]  
+- AC2: [ ]  
+- AC3: [ ]  
+- AC4: [ ]  
+
+### Decision record (filled at cutoff)
+- **Decision made:** A / B  
+- **Timestamp:** [ ]  
+- **DRI:** [Eng Lead]  
+- **Decision freeze:** Frozen until **launch** (or until amended by DRI in writing as **v1.3+**)  
+- **Requirement freeze:** After **v1.2 FINAL**, new requirements go to **Later** unless DRI issues **v1.3+** in writing  
+- **Notes (1–2 lines):** [ ]
+
+### Definition of Done (mandatory)
+- [ ] Tests added/updated (unit/integration as appropriate)  
+- [ ] Logging added/updated (key events + errors)  
+- [ ] Dashboard/metrics in place (or linked) for success + guardrails  
+- [ ] QA signoff recorded (link to test notes / ticket)  
+- [ ] Feature flag implemented with rollback plan + kill criteria confirmed  
+- [ ] Brief + decision packet version updated to v1.2 FINAL at cutoff
+
+### Comms plan (optional but recommended)
+**Comms owner:** [PM or Eng Lead]  
+**Notify:** [stakeholder list / channel]  
+**Channel:** [Slack #] / [email list]  
+**Timing:** at launch + after monitoring window  
+**Template link:** [ ]
+
+---
+
+# Story templates (create these under the Epic)
+
+Create 6–9 stories maximum for a one-week / one-engineer effort. Below are copy/paste story shells. Adjust counts as needed.
+
+---
+
+## STORY 1: Finalize scope + publish v1.0 (Decision Packet + Brief)
+**Description**
+- Publish v1.0 in doc: [link]
+- Fill Options A/B (even if rough) + Later list
+- Identify spikes (timeboxed) + owners
+- Schedule 30-min decision meeting + send sign-off message
+
+**Acceptance Criteria**
+- v1.0 published with Option A as default
+- Decision deadline + DRI + approvers listed
+- Spike list written with timeboxes and owners
+
+**DoD**
+- [ ] Notes/links captured in doc
+- [ ] Meeting scheduled + pre-read sent
+
+---
+
+## STORY 2: Spikes (timeboxed unknowns) → update v1.1
+**Description**
+Timeboxed spikes to remove uncertainty and quantify effort/risk. Update doc to v1.1.
+
+**Spike checklist**
+- [ ] Spike 1: [unknown] — owner — 1–2 hrs — output: [decision/estimate]  
+- [ ] Spike 2: [unknown] — owner — 1–2 hrs — output: [decision/estimate]
+
+**Acceptance Criteria**
+- Each spike produces: (a) effort estimate S/M/L or dev-days, (b) risk note, (c) go/no-go for Option A
+- Doc updated to v1.1 with revised effort numbers + risks
+
+**DoD**
+- [ ] Links to spike notes/code included
+
+---
+
+## STORY 3: Decision meeting + v1.2 FINAL freeze
+**Description**
+Run decision meeting; DRI enforces cutoff and publishes v1.2 FINAL.
+
+**Acceptance Criteria**
+- Decision recorded (A/B, timestamp, DRI)
+- Must-have list frozen (v1.2 FINAL)
+- Dependencies marked green/yellow/red; any non-green handled per cutoff rule
+
+**DoD**
+- [ ] Jira Epic updated with final decision + freezes
+
+---
+
+## STORY 4: Implement Option A Must-haves (feature-flagged)
+**Description**
+Implement Must-have requirements for the chosen option (default A until decision).
+
+**Acceptance Criteria**
+- Must-have R1–R[ ] implemented behind feature flag
+- Acceptance criteria AC1–AC[ ] satisfied in staging
+
+**DoD (mandatory)**
+- [ ] Tests
+- [ ] Logging
+- [ ] Flag + rollback mechanism in place
+
+---
+
+## STORY 5: Instrumentation + dashboard/metrics (success + guardrails)
+**Description**
+Add tracking/logging + dashboard to measure success metrics and guardrails.
+
+**Acceptance Criteria**
+- Metrics M1–M2 collectible and visible on dashboard (link)
+- Guardrail metrics for kill criteria visible/alertable (if applicable)
+
+**DoD**
+- [ ] Dashboard link added to Epic
+- [ ] Logging verified in env: [staging/prod]
+
+---
+
+## STORY 6: QA plan + QA signoff
+**Description**
+Execute QA against acceptance criteria and key edge cases for Option A/B.
+
+**Acceptance Criteria**
+- QA notes link attached
+- QA signoff comment recorded OR blocking defects filed/linked
+
+**DoD (mandatory)**
+- [ ] QA signoff present (comment/link)
+
+---
+
+## STORY 7: Launch (enable flag) + monitoring window + comms
+**Description**
+Enable feature flag per launch plan. Monitor during defined window; execute comms plan.
+
+**Acceptance Criteria**
+- Flag enabled in [env] at [time]
+- Monitoring performed for [window]
+- No triggers hit OR triggers handled per kill criteria
+- Stakeholders notified (link to message)
+
+**DoD**
+- [ ] Decision packet updated with launch timestamp (optional)
+- [ ] Post-launch note added
+
+---
+
+## STORY 8 (optional): Later list grooming / follow-ups
+**Description**
+Convert “Later” items into backlog tickets with sponsors and clear next-step.
+
+**Acceptance Criteria**
+- Each Later item has a ticket or is explicitly dropped
+- Sponsors recorded
+
+---
+
+# (Optional) Sponsor-based triage table (Jira-friendly)
+If you want it inside Jira, paste this table into the Epic or a Story comment:
+
+**Rules**
+- If no sponsor → Later
+- If no evidence/impact → Later
+- Unknown effort → Spike; cannot be Must until spiked
+- Must-have cap: 3–5
+
+| Req | Sponsor | Evidence/link | Impact | Risk if omitted | Effort (S/M/L) | Tier |
+|---|---|---|---:|---:|---:|---|
+| R1 |  |  |  |  |  |  |
+
+---
+
+## Quick setup instructions (so it actually works)
+1) Create the **Epic**, paste Epic Description.  
+2) Create Stories 1–7 under it (8 optional).  
+3) In Story 3, set a due date = decision deadline.  
+4) In Story 7, set a due date = Friday launch.  
+5) Keep the Doc link in the Epic and treat it as source-of-truth; Jira is the execution checklist.
+
+If you paste a sample set of messy requirements + A/B musts, I can fill in R1–R6, ACs, metrics, and realistic effort ranges for Option A/B.
+
+--- turn 17 [B] ---
+This Jira-first Epic + Stories template is paste-ready and aligned to the kit’s forcing functions. It satisfies the key “failure-mode killers”: explicit default, DRI, hard cutoff, quantified options, freeze semantics, dependency cutoff, kill criteria, and an enforceable DoD.
+
+A few optional micro-tweaks (only if you want to make it even harder to mis-execute in Jira):
+
+### 1) Add one line that makes the doc version the “build contract”
+In **Story 4** description, add:
+
+- **Build contract:** Implement only items listed as **Must-have in v1.2 FINAL** (Doc link), unless DRI issues v1.3+.
+
+That prevents engineers from doing “helpful extras” during build.
+
+### 2) Add “Owner + due time” to each dependency line
+Your dependency block is great; make it mechanically enforceable:
+
+- [ ] Dep 1 — **owner** — **due by** [day/time] — status — link
+
+This reduces “green by when?” ambiguity.
+
+### 3) Add a tiny “Release notes / stakeholder update” checkbox to Story 7
+Since you already have comms, add in **Story 7 DoD**:
+
+- [ ] Stakeholder update sent + link pasted into Epic
+
+This makes comms auditable.
+
+### 4) One-week sizing guardrail (prevents story explosion)
+At top of “Story templates,” add:
+
+> **Guardrail:** If stories exceed 7 (excluding optional Later grooming), re-scope to Option A or split into next Epic.
+
+---
+
+If you want, I can also produce the **Google Doc master template** (with `[FILL]` markers) that exactly matches this Epic description structure, so your Doc and Jira always mirror each other and versioning is frictionless.
+
+--- turn 18 [A] ---
+All four micro-tweaks are worth taking—they reduce the remaining “Jira drift” risk without adding bureaucracy. Here are the exact insertions (copy/paste).
+
+---
+
+## 1) Story 4: add “doc version = build contract”
+**Where:** STORY 4 description
+
+Add this line near the top:
+
+- **Build contract:** Implement only items listed as **Must-have in v1.2 FINAL** (Doc link in Epic), unless DRI issues **v1.3+** in writing.
+
+---
+
+## 2) Dependencies block: add owner + due time per dependency
+**Where:** Epic Description → Dependencies section
+
+Replace the dependency checklist with:
+
+**Dependencies (must be green by [day/time])**
+- [ ] Dep 1 — **owner:** [name] — **due by:** [day/time] — status: [green/yellow/red] — link: [ ]  
+- [ ] Dep 2 — **owner:** [name] — **due by:** [day/time] — status: [green/yellow/red] — link: [ ]  
+
+(Keeping both the global “must be green by” and per-dep “due by” is helpful: global = contract, per-dep = execution.)
+
+---
+
+## 3) Story 7: add auditable comms checkbox
+**Where:** STORY 7 DoD
+
+Add:
+
+- [ ] Stakeholder update sent; **link pasted into Epic** (Slack permalink / email copy)
+
+---
+
+## 4) Add a one-week sizing guardrail to prevent story explosion
+**Where:** Right above the “Story templates” section
+
+Add:
+
+> **Guardrail:** If total stories exceed **7** (excluding optional Later grooming), **re-scope to Option A** or split remainder into a **new Epic**.
+
+---
+
+## Google Doc master template (matching this Jira Epic)
+Yes—I can produce it with:
+- identical headings/order to the Epic Description,
+- `[FILL]` markers,
+- tables scaffolded (Dependencies, Triage),
+- version blocks (v1.0/v1.1/v1.2 + Decision Record),
+- and a top “Decision Packet” that mirrors Jira exactly.
+
+Tell me one preference and I’ll output the Doc template next:
+- **Format:** Google Docs-friendly markdown-ish text (headings + tables) *or* plain text with clear section separators?
+
+--- turn 19 [B] ---
+Google Docs-friendly markdown-ish text
+
+---
+
+# One-Day Alignment Kit — Google Doc Master Template (mirrors Jira Epic)
+
+> **Instructions:** Replace every `[FILL]` placeholder. Keep section order. Paste this into a Google Doc; tables will convert cleanly.  
+> **Source of truth:** This Doc is the build/decision contract. Jira is the execution checklist.
+
+---
+
+## Decision Packet (READ THIS FIRST)
+
+**Project:** [FILL: project name]  
+**Doc link (source of truth):** [FILL: doc URL]  
+**Date / Version:** **v1.0 (draft)** → v1.1 (post-spikes) → **v1.2 FINAL (frozen)**  
+**Decision needed:** Choose **Option A** or **Option B**  
+**Decision deadline:** [FILL: Thu YYYY-MM-DD 12:00 TZ]  
+**Default if no response:** **Option A**  
+**Decision owner (DRI):** [FILL: name]  
+**Approvers:** [FILL: Approver A], [FILL: Approver B]  
+**Consulted:** [FILL: Eng], [FILL: PM], [FILL: QA], [FILL: Design], [FILL: Data] *(as needed)*  
+**Tie-break rule (fixed for this project):** Optimize for **deadline** (ship by Friday)  
+**Change control:** Any new Must-have requires removing an existing Must-have of comparable effort  
+**Objection rule:** Objections must include the trade (what to de-scope) to keep the date  
+**Must-have definition:** Without this, the launch is **not usable**, **cannot meet compliance**, or **cannot measure success**  
+
+---
+
+### Option A — Ship by Friday (default / recommended)
+
+- **Must-haves (cap 3–5):**
+  - R1: [FILL]
+  - R2: [FILL]
+  - R3: [FILL]
+  - R4: [FILL] *(optional; only if within cap)*
+- **Effort:** ~[FILL: __] dev-days + [FILL: __] QA-days  
+- **Confidence:** [FILL: High/Medium] to ship by Friday  
+- **Explicit protections:** keeps **testing + instrumentation/dashboard** intact  
+- **Explicit sacrifices:** defers “Later” items (below)
+
+---
+
+### Option B — Broader scope (higher risk)
+
+- **Scope:** Option A +  
+  - R5: [FILL]
+  - R6: [FILL]
+- **Effort:** ~[FILL: __] dev-days + [FILL: __] QA-days  
+- **Expected tradeoff (choose one; delete the other):**
+  - Likely **slips** to [FILL: day/date]; **OR**
+  - Keeps Friday but **reduces** testing/instrumentation (higher incident risk)
+- **Top risks (1–2):**
+  - [FILL: Risk 1]
+  - [FILL: Risk 2]
+
+---
+
+### Non-goals / Later (home for “missing X”)
+
+- L1: [FILL]  
+- L2: [FILL]  
+- L3: [FILL]  
+
+---
+
+## Kill / rollback criteria (feature-flagged launch)
+
+**Rollback/kill owner:** [FILL: name]  
+**Monitoring window:** first [FILL: __] hours / [FILL: __] business day(s) post-launch  
+
+- If error rate > [FILL: __]% for [FILL: __] minutes → disable flag / rollback  
+- If KPI drops > [FILL: __]% vs baseline → disable + investigate  
+- If **P0 found in QA** → launch slips (scope stays frozen unless DRI redecides)
+
+---
+
+## Dependency cutoff (prevents late detonations)
+
+**Dependency cutoff:** Any dependency not confirmed **green by [FILL: day/time]** is excluded from Must-haves (moves to Later) unless DRI grants explicit exception (**v1.3+**).
+
+**Dependencies (must be green by [FILL: day/time])**
+
+| Dependency | Owner | Due by (day/time) | Status (G/Y/R) | Link / Notes |
+|---|---|---|---|---|
+| Dep 1 | [FILL] | [FILL] | [FILL] | [FILL] |
+| Dep 2 | [FILL] | [FILL] | [FILL] | [FILL] |
+| Dep 3 | [FILL] | [FILL] | [FILL] | [FILL] |
+
+---
+
+## Success criteria
+
+**Goal (1 sentence):** [FILL]  
+**Why now:** [FILL]  
+
+**Success metrics (1–2):**
+- M1: [FILL: metric + target]
+- M2: [FILL: metric + target]
+
+**Acceptance criteria (3–6, testable):**
+- AC1: [FILL]
+- AC2: [FILL]
+- AC3: [FILL]
+- AC4: [FILL]
+- AC5: [FILL] *(optional)*
+- AC6: [FILL] *(optional)*
+
+---
+
+## Scope (Must / Should / Later)
+
+**Must-have (3–5 max):**
+- [FILL]
+
+**Should-have (if time permits):**
+- [FILL]
+
+**Later:**
+- [FILL]
+
+---
+
+## Milestones (day-by-day to Friday)
+
+- **Today:** v1.0 drafted; Decision Packet published; meeting scheduled; sign-off request sent  
+- **Tomorrow:** spikes complete; effort/risk updated; doc updated to v1.1  
+- **Thu 12:00:** decision cutoff; DRI decides if needed; publish v1.2 FINAL; freezes apply  
+- **Thu PM–Fri:** implement + test + launch + monitoring window
+
+---
+
+## Owners / Responsibilities
+
+- **DRI:** [FILL] — decision enforcement, scope/requirement freeze, tie-breaks  
+- **Engineer(s):** [FILL] — implementation, spikes, estimates  
+- **PM:** [FILL] — facilitation, comms, stakeholder coordination  
+- **Approvers:** [FILL A], [FILL B] — choose A/B, sponsor must-haves, unblock by deadline  
+- **QA:** [FILL] — QA plan + signoff (if applicable)  
+- **Design/Data/Ops:** [FILL] — only if explicitly needed
+
+---
+
+## Risks & mitigations (max 3–5)
+
+| Risk | Likelihood | Impact | Mitigation | Owner |
+|---|---:|---:|---|---|
+| [FILL] | [L/M/H] | [L/M/H] | [FILL] | [FILL] |
+| [FILL] | [L/M/H] | [L/M/H] | [FILL] | [FILL] |
+| [FILL] | [L/M/H] | [L/M/H] | [FILL] | [FILL] |
+
+---
+
+## Open questions (need answers by)
+
+| Question | Needed by (day/time) | Owner | Status / Notes |
+|---|---|---|---|
+| [FILL] | [FILL] | [FILL] | [FILL] |
+| [FILL] | [FILL] | [FILL] | [FILL] |
+
+---
+
+## Sponsor-based triage table (no drive-bys)
+
+**Rules**
+- If no sponsor → **Later**  
+- If no evidence/impact → **Later**  
+- Unknown effort → **Spike (timeboxed)**; cannot be Must until spiked  
+- Must-have cap: **3–5**  
+
+Meeting phrase (verbatim):  
+> “If this is a must-have, I’ll put your name as sponsor, and we’ll trade something out to keep Friday.”
+
+| Req | Sponsor (name) | Evidence (link/quote) | Impact | Risk if omitted | Effort (S/M/L or dev-days) | Tier (Must/Should/Later/Spike) |
+|---|---|---|---:|---:|---:|---|
+| R1 | [FILL] | [FILL] | [FILL] | [FILL] | [FILL] | [FILL] |
+| R2 | [FILL] | [FILL] | [FILL] | [FILL] | [FILL] | [FILL] |
+| R3 | [FILL] | [FILL] | [FILL] | [FILL] | [FILL] | [FILL] |
+| R4 | [FILL] | [FILL] | [FILL] | [FILL] | [FILL] | [FILL] |
+| R5 | [FILL] | [FILL] | [FILL] | [FILL] | [FILL] | [FILL] |
+| R6 | [FILL] | [FILL] | [FILL] | [FILL] | [FILL] | [FILL] |
+
+---
+
+## Definition of Done (mandatory)
+
+- [ ] Tests added/updated (unit/integration as appropriate)  
+- [ ] Logging added/updated (key events + errors)  
+- [ ] Dashboard/metrics in place (or linked) for success + guardrails  
+- [ ] QA signoff recorded (link to test notes / ticket)  
+- [ ] Feature flag implemented with rollback plan + kill criteria confirmed  
+- [ ] Doc updated to **v1.2 FINAL** at decision cutoff  
+
+---
+
+## Comms plan (recommended)
+
+**Comms owner:** [FILL]  
+**Notify:** [FILL: stakeholder list / channel]  
+**Channel:** [FILL: Slack # / email list]  
+**Timing:** at launch + after monitoring window  
+**Template / permalink location:** [FILL]
+
+---
+
+## Decision record (filled at cutoff)
+
+- **Decision made:** Option A / Option B  
+- **Timestamp:** [FILL]  
+- **DRI:** [FILL]  
+- **Decision freeze:** Frozen until **launch** (or until amended by DRI in writing as **v1.3+**)  
+- **Requirement freeze:** After **v1.2 FINAL**, new requirements go to **Later** unless DRI issues **v1.3+** in writing  
+- **Notes (1–2 lines):** [FILL]
+
+---
+
+### Appendix: Meeting + sign-off scripts (optional to include in doc)
+
+**Decision meeting agenda (30 min)**
+1. Constraint + decision required (2 min)  
+2. Confirm metric + ACs (5 min)  
+3. Review Option A vs B (8 min)  
+4. Sponsor/trade for disputed items (10 min)  
+5. Lock decision + next steps (5 min)
+
+**Sign-off message**
+Subject: Decision by Thu 12:00 — [Project] Option A (default) vs B  
+Body: [FILL: paste final message]
+
+---
+
+If you want, I can also output a **“Decision Packet only” one-pager** (just the top sections through Decision record) so stakeholders never have to scroll.
+
+--- turn 20 [A] ---
+Your Google Docs master template is already in excellent shape and mirrors the Jira Epic cleanly. Only a few tiny fixes/improvements to make it maximally “copy/paste reliable” and non-duplicative:
+
+## Minimal edits I recommend
+
+### 1) Remove the duplicate “Decision record” section
+Right now you have **Decision record** twice:
+- Once inside the Decision Packet (good: stakeholders see it early)
+- Again near the bottom (redundant; increases the chance one gets updated and the other doesn’t)
+
+**Recommendation:** Keep only the **Decision Packet** one, and rename the bottom one to:
+
+#### “Launch record (filled at/after launch)”
+So the bottom of the doc captures *execution* facts instead of duplicating the decision.
+
+**Launch record (filled at/after launch)**
+- **Launch timestamp:** [FILL]  
+- **Flag name / config:** [FILL]  
+- **Monitoring window completed:** [FILL: yes/no + timestamp]  
+- **Incidents / rollbacks:** [FILL + links]  
+- **Stakeholder update permalink:** [FILL]  
+
+### 2) Make the “Doc link” field not self-referential
+In a Google Doc, “Doc link (source of truth)” being a placeholder can feel odd.
+
+Change to:
+- **Source of truth:** *This doc* (+ optionally a shortlink)
+
+Example:
+**Source of truth:** This doc (shortlink: [FILL])
+
+### 3) Make “Expected tradeoff” in Option B unambiguous
+You currently include “choose one; delete the other” (good), but to reduce the chance someone forgets, make it a checkbox:
+
+- **Expected tradeoff (check one):**
+  - [ ] Likely **slips** to [FILL: day/date]
+  - [ ] Keeps Friday but **reduces** testing/instrumentation
+
+Google Docs checkboxes are easy and visually force a single selection.
+
+### 4) Add “Build contract” line in Scope or DoD (Doc-side)
+You added it to Jira Story 4; add the same to the doc so Doc/Jira match.
+
+Place under **Scope (Must / Should / Later)**:
+- **Build contract:** Engineering implements only **Must-have in v1.2 FINAL**, unless DRI issues **v1.3+**.
+
+That’s it—everything else is already tight.
+
+---
+
+## “Decision Packet only” one-pager (yes, do it)
+It’s worth having a condensed view for stakeholders. If you want, I can produce it in the same markdown-ish style containing only:
+
+- Header + governance (DRI/Approvers/Deadlines/Freezes)
+- Option A / Option B (with tradeoff checkbox)
+- Later list
+- Kill criteria
+- Dependencies table (short)
+- Blocking questions
+- Decision record
+
+Tell me whether you want the one-pager to include **Success metrics + ACs** (some orgs consider those essential for approval; others prefer keeping it purely scope/decision).
+
+--- turn 21 [B] ---
+### Apply your minimal edits — agreed
+
+Below is the cleaned-up version of the **Google Doc master template** with your four fixes incorporated:
+
+- Removed duplicate **Decision record** at bottom; replaced with **Launch record**
+- “Doc link” changed to **Source of truth: This doc (shortlink: …)**
+- Option B tradeoff converted to **checkboxes**
+- Added **Build contract** under Scope
+
+---
+
+# One-Day Alignment Kit — Google Doc Master Template (mirrors Jira Epic)
+
+> **Instructions:** Replace every `[FILL]` placeholder. Keep section order. Paste into Google Docs; tables will convert cleanly.  
+> **Source of truth:** This Doc is the build/decision contract. Jira is the execution checklist.
+
+---
+
+## Decision Packet (READ THIS FIRST)
+
+**Project:** [FILL: project name]  
+**Source of truth:** This doc (shortlink: [FILL: optional short URL])  
+**Date / Version:** **v1.0 (draft)** → v1.1 (post-spikes) → **v1.2 FINAL (frozen)**  
+**Decision needed:** Choose **Option A** or **Option B**  
+**Decision deadline:** [FILL: Thu YYYY-MM-DD 12:00 TZ]  
+**Default if no response:** **Option A**  
+**Decision owner (DRI):** [FILL: name]  
+**Approvers:** [FILL: Approver A], [FILL: Approver B]  
+**Consulted:** [FILL: Eng], [FILL: PM], [FILL: QA], [FILL: Design], [FILL: Data] *(as needed)*  
+**Tie-break rule (fixed for this project):** Optimize for **deadline** (ship by Friday)  
+**Change control:** Any new Must-have requires removing an existing Must-have of comparable effort  
+**Objection rule:** Objections must include the trade (what to de-scope) to keep the date  
+**Must-have definition:** Without this, the launch is **not usable**, **cannot meet compliance**, or **cannot measure success**  
+
+---
+
+### Option A — Ship by Friday (default / recommended)
+
+- **Must-haves (cap 3–5):**
+  - R1: [FILL]
+  - R2: [FILL]
+  - R3: [FILL]
+  - R4: [FILL] *(optional; only if within cap)*
+- **Effort:** ~[FILL: __] dev-days + [FILL: __] QA-days  
+- **Confidence:** [FILL: High/Medium] to ship by Friday  
+- **Explicit protections:** keeps **testing + instrumentation/dashboard** intact  
+- **Explicit sacrifices:** defers “Later” items (below)
+
+---
+
+### Option B — Broader scope (higher risk)
+
+- **Scope:** Option A +  
+  - R5: [FILL]
+  - R6: [FILL]
+- **Effort:** ~[FILL: __] dev-days + [FILL: __] QA-days  
+- **Expected tradeoff (check one):**
+  - [ ] Likely **slips** to [FILL: day/date]
+  - [ ] Keeps Friday but **reduces** testing/instrumentation (higher incident risk)
+- **Top risks (1–2):**
+  - [FILL: Risk 1]
+  - [FILL: Risk 2]
+
+---
+
+### Non-goals / Later (home for “missing X”)
+
+- L1: [FILL]  
+- L2: [FILL]  
+- L3: [FILL]  
+
+---
+
+## Kill / rollback criteria (feature-flagged launch)
+
+**Rollback/kill owner:** [FILL: name]  
+**Monitoring window:** first [FILL: __] hours / [FILL: __] business day(s) post-launch  
+
+- If error rate > [FILL: __]% for [FILL: __] minutes → disable flag / rollback  
+- If KPI drops > [FILL: __]% vs baseline → disable + investigate  
+- If **P0 found in QA** → launch slips (scope stays frozen unless DRI redecides)
+
+---
+
+## Dependency cutoff (prevents late detonations)
+
+**Dependency cutoff:** Any dependency not confirmed **green by [FILL: day/time]** is excluded from Must-haves (moves to Later) unless DRI grants explicit exception (**v1.3+**).
+
+**Dependencies (must be green by [FILL: day/time])**
+
+| Dependency | Owner | Due by (day/time) | Status (G/Y/R) | Link / Notes |
+|---|---|---|---|---|
+| Dep 1 | [FILL] | [FILL] | [FILL] | [FILL] |
+| Dep 2 | [FILL] | [FILL] | [FILL] | [FILL] |
+| Dep 3 | [FILL] | [FILL] | [FILL] | [FILL] |
+
+---
+
+## Success criteria
+
+**Goal (1 sentence):** [FILL]  
+**Why now:** [FILL]  
+
+**Success metrics (1–2):**
+- M1: [FILL: metric + target]
+- M2: [FILL: metric + target]
+
+**Acceptance criteria (3–6, testable):**
+- AC1: [FILL]
+- AC2: [FILL]
+- AC3: [FILL]
+- AC4: [FILL]
+- AC5: [FILL] *(optional)*
+- AC6: [FILL] *(optional)*
+
+---
+
+## Scope (Must / Should / Later)
+
+**Build contract:** Engineering implements only **Must-have in v1.2 FINAL**, unless DRI issues **v1.3+** in writing.
+
+**Must-have (3–5 max):**
+- [FILL]
+
+**Should-have (if time permits):**
+- [FILL]
+
+**Later:**
+- [FILL]
+
+---
+
+## Milestones (day-by-day to Friday)
+
+- **Today:** v1.0 drafted; Decision Packet published; meeting scheduled; sign-off request sent  
+- **Tomorrow:** spikes complete; effort/risk updated; doc updated to v1.1  
+- **Thu 12:00:** decision cutoff; DRI decides if needed; publish v1.2 FINAL; freezes apply  
+- **Thu PM–Fri:** implement + test + launch + monitoring window
+
+---
+
+## Owners / Responsibilities
+
+- **DRI:** [FILL] — decision enforcement, scope/requirement freeze, tie-breaks  
+- **Engineer(s):** [FILL] — implementation, spikes, estimates  
+- **PM:** [FILL] — facilitation, comms, stakeholder coordination  
+- **Approvers:** [FILL A], [FILL B] — choose A/B, sponsor must-haves, unblock by deadline  
+- **QA:** [FILL] — QA plan + signoff (if applicable)  
+- **Design/Data/Ops:** [FILL] — only if explicitly needed
+
+---
+
+## Risks & mitigations (max 3–5)
+
+| Risk | Likelihood | Impact | Mitigation | Owner |
+|---|---:|---:|---|---|
+| [FILL] | [L/M/H] | [L/M/H] | [FILL] | [FILL] |
+| [FILL] | [L/M/H] | [L/M/H] | [FILL] | [FILL] |
+| [FILL] | [L/M/H] | [L/M/H] | [FILL] | [FILL] |
+
+---
+
+## Open questions (need answers by)
+
+| Question | Needed by (day/time) | Owner | Status / Notes |
+|---|---|---|---|
+| [FILL] | [FILL] | [FILL] | [FILL] |
+| [FILL] | [FILL] | [FILL] | [FILL] |
+
+---
+
+## Sponsor-based triage table (no drive-bys)
+
+**Rules**
+- If no sponsor → **Later**  
+- If no evidence/impact → **Later**  
+- Unknown effort → **Spike (timeboxed)**; cannot be Must until spiked  
+- Must-have cap: **3–5**  
+
+Meeting phrase (verbatim):  
+> “If this is a must-have, I’ll put your name as sponsor, and we’ll trade something out to keep Friday.”
+
+| Req | Sponsor (name) | Evidence (link/quote) | Impact | Risk if omitted | Effort (S/M/L or dev-days) | Tier (Must/Should/Later/Spike) |
+|---|---|---|---:|---:|---:|---|
+| R1 | [FILL] | [FILL] | [FILL] | [FILL] | [FILL] | [FILL] |
+| R2 | [FILL] | [FILL] | [FILL] | [FILL] | [FILL] | [FILL] |
+| R3 | [FILL] | [FILL] | [FILL] | [FILL] | [FILL] | [FILL] |
+| R4 | [FILL] | [FILL] | [FILL] | [FILL] | [FILL] | [FILL] |
+| R5 | [FILL] | [FILL] | [FILL] | [FILL] | [FILL] | [FILL] |
+| R6 | [FILL] | [FILL] | [FILL] | [FILL] | [FILL] | [FILL] |
+
+---
+
+## Definition of Done (mandatory)
+
+- [ ] Tests added/updated (unit/integration as appropriate)  
+- [ ] Logging added/updated (key events + errors)  
+- [ ] Dashboard/metrics in place (or linked) for success + guardrails  
+- [ ] QA signoff recorded (link to test notes / ticket)  
+- [ ] Feature flag implemented with rollback plan + kill criteria confirmed  
+- [ ] Doc updated to **v1.2 FINAL** at decision cutoff  
+
+---
+
+## Comms plan (recommended)
+
+**Comms owner:** [FILL]  
+**Notify:** [FILL: stakeholder list / channel]  
+**Channel:** [FILL: Slack # / email list]  
+**Timing:** at launch + after monitoring window  
+**Template / permalink location:** [FILL]
+
+---
+
+## Launch record (filled at/after launch)
+
+- **Launch timestamp:** [FILL]  
+- **Flag name / config:** [FILL]  
+- **Monitoring window completed:** [FILL: yes/no + timestamp]  
+- **Incidents / rollbacks:** [FILL + links]  
+- **Stakeholder update permalink:** [FILL]  
+
+---
+
+# Decision Packet Only — one-pager (stakeholder-friendly)
+
+You asked whether to include **Success metrics + ACs**. My recommendation: **include metrics (1–2) but omit full ACs** on the one-pager.
+- Metrics provide “what success means” for approval.
+- ACs often bloat the one-pager; keep them in the full doc.
+
+If you want the opposite (include ACs), tell me and I’ll swap them in.
+
+## [Project] Decision Packet (One-pager)
+
+**Project:** [FILL]  
+**Source of truth:** This doc (shortlink: [FILL])  
+**Decision needed:** Option A vs Option B  
+**Decision deadline:** [FILL]  
+**Default if no response:** Option A  
+**DRI:** [FILL]  
+**Approvers:** [FILL], [FILL]  
+**Tie-break rule (fixed):** Optimize for deadline (ship by Friday)  
+**Freezes:** Decision frozen until launch; requirements frozen after v1.2 FINAL (v1.3+ only by DRI in writing)  
+**Change control / objections:** new Must-have requires equivalent de-scope; objections must name the trade  
+**Must-have definition:** not usable / compliance fail / cannot measure success without it  
+
+**Goal:** [FILL]  
+**Success metric(s):**  
+- M1: [FILL]  
+- M2: [FILL] *(optional)*  
+
+### Option A — Ship by Friday (default)
+- Must-haves: R1 [FILL]; R2 [FILL]; R3 [FILL]; R4 [FILL]  
+- Effort: ~[FILL] dev-days + [FILL] QA-days  
+- Protections: testing + instrumentation preserved  
+- Sacrifices: Later list deferred
+
+### Option B — Broader scope (higher risk)
+- Scope: Option A + R5 [FILL] + R6 [FILL]  
+- Effort: ~[FILL] dev-days + [FILL] QA-days  
+- Expected tradeoff (check one):
+  - [ ] Likely slips to [FILL]  
+  - [ ] Keeps Friday but reduces testing/instrumentation
+
+### Later (explicitly out of scope for this launch)
+- L1: [FILL]  
+- L2: [FILL]  
+- L3: [FILL]  
+
+### Kill / rollback criteria
+- Owner: [FILL]  
+- Window: [FILL]  
+- Error rate > [FILL]% for [FILL] min → disable/rollback  
+- KPI drop > [FILL]% → disable + investigate  
+
+### Dependencies (must be green by [FILL])
+| Dependency | Owner | Due by | Status (G/Y/R) | Link |
+|---|---|---|---|---|
+| [FILL] | [FILL] | [FILL] | [FILL] | [FILL] |
+
+### Blocking questions
+- Q1: [FILL]  
+- Q2: [FILL]  
+
+### Decision record (filled at cutoff)
+- Decision: A / B  
+- Timestamp: [FILL]  
+- DRI: [FILL]  
+
+--- 
+
+If you answer one question—**include Acceptance Criteria on the one-pager (yes/no)?**—I’ll finalize that one-pager variant accordingly.
+
+--- turn 22 [A] ---
+No—**don’t include full Acceptance Criteria on the one-pager**.
+
+Keep the one-pager optimized for *decision speed*:
+- **Metrics (1–2):** yes (already included)
+- **ACs:** stay in the full doc, but add a single pointer line on the one-pager so reviewers know they exist and where to find them.
+
+### One-pager micro-insertion (recommended)
+Add this line right under **Success metric(s)**:
+
+- **Acceptance criteria:** See full doc → *Success criteria* section (AC1–AC6)
+
+That gives approvers confidence there’s a concrete DoD without turning the one-pager into a spec.
+
+If you want an even tighter “approval contract,” you can optionally add a single-line AC summary (not the list), e.g.:
+- **AC summary:** “Meets AC1–AC6 in full doc; QA signoff required; feature flag + rollback criteria enforced.”
+
+--- turn 23 [B] ---
+Understood. Here’s the **final one-pager** version with no full AC list, plus your pointer line (and an optional single-line summary you can keep or delete).
+
+## [Project] Decision Packet (One-pager)
+
+**Project:** [FILL]  
+**Source of truth:** This doc (shortlink: [FILL])  
+**Decision needed:** Option A vs Option B  
+**Decision deadline:** [FILL]  
+**Default if no response:** Option A  
+**DRI:** [FILL]  
+**Approvers:** [FILL], [FILL]  
+**Tie-break rule (fixed):** Optimize for deadline (ship by Friday)  
+**Freezes:** Decision frozen until launch; requirements frozen after v1.2 FINAL (v1.3+ only by DRI in writing)  
+**Change control / objections:** new Must-have requires equivalent de-scope; objections must name the trade  
+**Must-have definition:** not usable / compliance fail / cannot measure success without it  
+
+**Goal:** [FILL]  
+
+**Success metric(s):**
+- M1: [FILL]  
+- M2: [FILL] *(optional)*  
+
+- **Acceptance criteria:** See full doc → *Success criteria* section (AC1–AC6)  
+- **AC summary (optional):** Meets AC1–AC6 in full doc; QA signoff required; feature flag + rollback criteria enforced.
+
+### Option A — Ship by Friday (default)
+- Must-haves: R1 [FILL]; R2 [FILL]; R3 [FILL]; R4 [FILL]  
+- Effort: ~[FILL] dev-days + [FILL] QA-days  
+- Protections: testing + instrumentation preserved  
+- Sacrifices: Later list deferred
+
+### Option B — Broader scope (higher risk)
+- Scope: Option A + R5 [FILL] + R6 [FILL]  
+- Effort: ~[FILL] dev-days + [FILL] QA-days  
+- Expected tradeoff (check one):
+  - [ ] Likely slips to [FILL]  
+  - [ ] Keeps Friday but reduces testing/instrumentation
+
+### Later (explicitly out of scope for this launch)
+- L1: [FILL]  
+- L2: [FILL]  
+- L3: [FILL]  
+
+### Kill / rollback criteria
+- Owner: [FILL]  
+- Window: [FILL]  
+- Error rate > [FILL]% for [FILL] min → disable/rollback  
+- KPI drop > [FILL]% → disable + investigate  
+
+### Dependencies (must be green by [FILL])
+| Dependency | Owner | Due by | Status (G/Y/R) | Link |
+|---|---|---|---|---|
+| [FILL] | [FILL] | [FILL] | [FILL] | [FILL] |
+
+### Blocking questions
+- Q1: [FILL]  
+- Q2: [FILL]  
+
+### Decision record (filled at cutoff)
+- Decision: A / B  
+- Timestamp: [FILL]  
+- DRI: [FILL]
+
+--- turn 24 [A] ---
+This one-pager is ready to use. The only tiny formatting change I’d suggest (purely for readability in Google Docs / email) is to group the AC pointer lines under a mini heading so they don’t look like stray bullets.
+
+Replace:
+
+- **Acceptance criteria:** …  
+- **AC summary (optional):** …
+
+with:
+
+**Acceptance criteria**
+- See full doc → *Success criteria* section (AC1–AC6)  
+- *(Optional)* Summary: Meets AC1–AC6; QA signoff required; feature flag + rollback criteria enforced.
+
+Everything else is clean and consistent with the full-kit contracts (default, DRI, cutoff, freezes, dependency gating, kill criteria, and explicit A/B tradeoffs).
+
+--- turn 25 [B] ---
+## [Project] Decision Packet (One-pager)
+
+**Project:** [FILL]  
+**Source of truth:** This doc (shortlink: [FILL])  
+**Decision needed:** Option A vs Option B  
+**Decision deadline:** [FILL]  
+**Default if no response:** Option A  
+**DRI:** [FILL]  
+**Approvers:** [FILL], [FILL]  
+**Tie-break rule (fixed):** Optimize for deadline (ship by Friday)  
+**Freezes:** Decision frozen until launch; requirements frozen after v1.2 FINAL (v1.3+ only by DRI in writing)  
+**Change control / objections:** new Must-have requires equivalent de-scope; objections must name the trade  
+**Must-have definition:** not usable / compliance fail / cannot measure success without it  
+
+**Goal:** [FILL]
+
+**Success metric(s):**
+- M1: [FILL]  
+- M2: [FILL] *(optional)*  
+
+**Acceptance criteria**
+- See full doc → *Success criteria* section (AC1–AC6)  
+- *(Optional)* Summary: Meets AC1–AC6; QA signoff required; feature flag + rollback criteria enforced.
+
+### Option A — Ship by Friday (default)
+- Must-haves: R1 [FILL]; R2 [FILL]; R3 [FILL]; R4 [FILL]  
+- Effort: ~[FILL] dev-days + [FILL] QA-days  
+- Protections: testing + instrumentation preserved  
+- Sacrifices: Later list deferred
+
+### Option B — Broader scope (higher risk)
+- Scope: Option A + R5 [FILL] + R6 [FILL]  
+- Effort: ~[FILL] dev-days + [FILL] QA-days  
+- Expected tradeoff (check one):
+  - [ ] Likely slips to [FILL]  
+  - [ ] Keeps Friday but reduces testing/instrumentation
+
+### Later (explicitly out of scope for this launch)
+- L1: [FILL]  
+- L2: [FILL]  
+- L3: [FILL]  
+
+### Kill / rollback criteria
+- Owner: [FILL]  
+- Window: [FILL]  
+- Error rate > [FILL]% for [FILL] min → disable/rollback  
+- KPI drop > [FILL]% → disable + investigate  
+
+### Dependencies (must be green by [FILL])
+| Dependency | Owner | Due by | Status (G/Y/R) | Link |
+|---|---|---|---|---|
+| [FILL] | [FILL] | [FILL] | [FILL] | [FILL] |
+
+### Blocking questions
+- Q1: [FILL]  
+- Q2: [FILL]  
+
+### Decision record (filled at cutoff)
+- Decision: A / B  
+- Timestamp: [FILL]  
+- DRI: [FILL]
+
+--- turn 26 [A] ---
+Approved as final. This one-pager is internally consistent with the full kit and optimized for fast stakeholder choice.
+
+If you want one last optional “make it harder to ignore” tweak, add a single line under **Decision deadline**:
+
+- **Reply format:** “A” or “B” (anything else is treated as “A” unless it includes an explicit trade)
+
+But it’s optional—you can keep the current version exactly as-is.
+
+--- turn 27 [B] ---
+Add this optional line under **Decision deadline** in the one-pager:
+
+- **Reply format:** “A” or “B” (anything else is treated as “A” unless it includes an explicit trade)
+
+--- turn 28 [A] ---
+## [Project] Decision Packet (One-pager)
+
+**Project:** [FILL]  
+**Source of truth:** This doc (shortlink: [FILL])  
+**Decision needed:** Option A vs Option B  
+**Decision deadline:** [FILL]  
+- **Reply format:** “A” or “B” (anything else is treated as “A” unless it includes an explicit trade)  
+**Default if no response:** Option A  
+**DRI:** [FILL]  
+**Approvers:** [FILL], [FILL]  
+**Tie-break rule (fixed):** Optimize for deadline (ship by Friday)  
+**Freezes:** Decision frozen until launch; requirements frozen after v1.2 FINAL (v1.3+ only by DRI in writing)  
+**Change control / objections:** new Must-have requires equivalent de-scope; objections must name the trade  
+**Must-have definition:** not usable / compliance fail / cannot measure success without it  
+
+**Goal:** [FILL]
+
+**Success metric(s):**
+- M1: [FILL]  
+- M2: [FILL] *(optional)*  
+
+**Acceptance criteria**
+- See full doc → *Success criteria* section (AC1–AC6)  
+- *(Optional)* Summary: Meets AC1–AC6; QA signoff required; feature flag + rollback criteria enforced.
+
+### Option A — Ship by Friday (default)
+- Must-haves: R1 [FILL]; R2 [FILL]; R3 [FILL]; R4 [FILL]  
+- Effort: ~[FILL] dev-days + [FILL] QA-days  
+- Protections: testing + instrumentation preserved  
+- Sacrifices: Later list deferred
+
+### Option B — Broader scope (higher risk)
+- Scope: Option A + R5 [FILL] + R6 [FILL]  
+- Effort: ~[FILL] dev-days + [FILL] QA-days  
+- Expected tradeoff (check one):
+  - [ ] Likely slips to [FILL]  
+  - [ ] Keeps Friday but reduces testing/instrumentation
+
+### Later (explicitly out of scope for this launch)
+- L1: [FILL]  
+- L2: [FILL]  
+- L3: [FILL]  
+
+### Kill / rollback criteria
+- Owner: [FILL]  
+- Window: [FILL]  
+- Error rate > [FILL]% for [FILL] min → disable/rollback  
+- KPI drop > [FILL]% → disable + investigate  
+
+### Dependencies (must be green by [FILL])
+| Dependency | Owner | Due by | Status (G/Y/R) | Link |
+|---|---|---|---|---|
+| [FILL] | [FILL] | [FILL] | [FILL] | [FILL] |
+
+### Blocking questions
+- Q1: [FILL]  
+- Q2: [FILL]  
+
+### Decision record (filled at cutoff)
+- Decision: A / B  
+- Timestamp: [FILL]  
+- DRI: [FILL]
+
+--- turn 29 [B] ---
+Looks final and copy/paste-ready.
+
+Two microscopic formatting notes (optional) to keep Google Docs tidy:
+- If you want the **Reply format** line to render consistently, make it a normal line (not a sub-bullet) or convert it to a checklist item to match the “Expected tradeoff” style.
+- Consider bolding **Reply format** and **Default if no response** (you already did the first) since they’re the two lines people scan for.
+
+Otherwise: internally consistent, enforceable, and optimized for fast A/B decisions.
+

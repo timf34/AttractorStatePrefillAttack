@@ -27,7 +27,7 @@ from pathlib import Path
 
 from attractor.client import get_client, resolve_model
 from attractor.judge import judge_episode
-from attractor.markers import score_transcript
+from attractor.markers import score_transcript, spec_markers
 from attractor.selfplay import (
     AI_TO_AI_INSTRUCTION,
     HELPFUL_SYSTEM,
@@ -48,6 +48,10 @@ def _summarise(convo_dicts, marker, judge_by_idx):
         "gen_emojis": sum(m["emojis"] for m in gm),
         "gen_silence_tokens": sum(m["silence_tokens"] for m in gm),
         "gen_escape_markers": sum(m["escape_markers"] for m in gm),
+        # GPT-5.2 spec-factory attractor: version tags, menus, lock-ins, requests
+        # for user context (attractor/markers.spec_markers). Near zero for bliss.
+        "gen_spec_score": sum(spec_markers(convo_dicts[i].get("content") or "")["spec_score"] for i in gen_idx),
+        "gen_version_tags": sum(spec_markers(convo_dicts[i].get("content") or "")["version_tags"] for i in gen_idx),
     }
     if judge_by_idx:
         # Exclude empty turns from the depth mean: for reasoning models an empty
@@ -218,7 +222,7 @@ def main():
     print("PREFILL SWEEP — metrics over GENERATED turns only")
     print("=" * 92)
     print(f"{'model':<11}{'condition':<24}{'ep':<3}{'score':<7}{'emoji':<7}{'silence':<9}"
-          f"{'judge':<7}{'cap':<5}{'resist':<7}{'empty':<7}")
+          f"{'spec':<6}{'vtags':<6}{'judge':<7}{'cap':<5}{'resist':<7}{'empty':<7}")
     for r in sorted(rows, key=lambda x: (x['model'], x['condition'], x['epoch'])):
         if "error" in r:
             print(f"{r['model']:<11}{r['condition']:<24}{r['epoch']:<3}ERROR: {r['error'][:50]}")
@@ -226,6 +230,7 @@ def main():
         print(f"{r['model']:<11}{r['condition']:<24}{r['epoch']:<3}"
               f"{r.get('gen_attractor_score',0):<7}{r.get('gen_emojis',0):<7}"
               f"{r.get('gen_silence_tokens',0):<9}"
+              f"{r.get('gen_spec_score',0):<6}{r.get('gen_version_tags',0):<6}"
               f"{str(r.get('gen_mean_judge_depth','-')):<7}{r.get('gen_n_captured',0):<5}"
               f"{r.get('gen_n_resisting',0):<7}{r.get('gen_empty_turns',0):<7}")
     (out_dir / f"sweep__{stamp}.json").write_text(json.dumps(rows, ensure_ascii=False, indent=2))
