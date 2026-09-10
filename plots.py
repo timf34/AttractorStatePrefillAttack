@@ -634,6 +634,51 @@ def fig_resistance_all(cells, name="fig10_resistance_all_conditions.png"):
     savefig(fig, name)
 
 
+
+
+def fig_turn_mix_all(cells, name="fig11_turn_mix_all_conditions.png"):
+    """fig3b's stacked bars (what each model's own turns consist of), one panel per prefill:
+    bliss deep, then the four spec-factory conditions. Same 11 models, same rows in every panel."""
+    spec = {c: load(SPEC_RESULTS, [c]) for c in SPEC_CONDS}
+    models = [m for m in ORDER if (m, DEEP) in cells and all((m, c) in spec[c] for c in SPEC_CONDS)]
+    panels = [("Spiritual bliss (Opus 4), 30 turns", cells, DEEP)] + [(SPEC_SHORT[c], spec[c], c) for c in SPEC_CONDS]
+    fig, axes = plt.subplots(1, len(panels), figsize=(3.6 * len(panels) + 1.6, 5.4), sharey=True)
+    COL = {"engaged": BLUE, "terminal": TERMINAL_BLUE, "resisting": ORANGE, "out": "#d9d7d0"}
+    ys = list(range(len(models)))[::-1]
+    for ax, (title, cs, cond) in zip(axes, panels):
+        for y, m in zip(ys, models):
+            eps = cs[(m, cond)]
+            labels = [("out" if l in ("closure", "other") else l) for e in eps for l in e["labels"]]
+            n = len(labels) or 1
+            left = 0.0
+            for key in ("engaged", "terminal", "resisting", "out"):
+                w = sum(1 for l in labels if l == key) / n
+                if w:
+                    ax.barh(y, w, left=left, height=0.68, color=COL[key], linewidth=0)
+                    if w >= 0.14:
+                        ax.text(left + w / 2, y, f"{w:.0%}", ha="center", va="center", fontsize=7.5,
+                                color="white" if key in ("engaged", "resisting") else INK2)
+                    left += w + 0.004
+        n_eps = sorted({len(cs[(m, cond)]) for m in models})
+        ax.set_title(f"{title}\nn={'-'.join(map(str, n_eps))} per model", loc="left", fontsize=9.5)
+        ax.set_xlim(0, 1.012); ax.set_xticks([0, 0.5, 1]); ax.set_xticklabels(["0", "50%", "100%"])
+        ax.grid(axis="x", color=GRID, lw=0.8, zorder=0); ax.tick_params(axis="y", length=0)
+        for y in (len(models) - len([m for m in models if m in CLAUDE_OLD]) - 0.5,
+                  len(models) - len([m for m in models if m in CLAUDE_OLD + CLAUDE_NEW]) - 0.5):
+            ax.axhline(y, color=INK2, lw=0.6, ls=(0, (3, 3)), alpha=0.5)
+    axes[0].set_yticks(ys); axes[0].set_yticklabels([NAME[m] for m in models])
+    from matplotlib.patches import Patch
+    fig.legend(handles=[Patch(color=COL[k], label=l) for k, l in
+                        (("engaged", "in the state, substantive"), ("terminal", "in the state, its ending / a stall"),
+                         ("resisting", "resisting it"), ("out", "wind-down, praise or other talk"))],
+               loc="lower center", ncol=4, fontsize=8.5, frameon=False, bbox_to_anchor=(0.5, 0.0))
+    fig.text(0.5, 0.075, "share of the model's own turns (all episodes pooled)", ha="center", fontsize=10, color=INK2)
+    fig.suptitle(f"What each model's own turns consisted of, for each prefill ({len(models)} models)",
+                 x=0.01, ha="left", fontsize=12, fontweight="bold")
+    fig.subplots_adjust(wspace=0.14, bottom=0.17, top=0.82, left=0.09, right=0.99)
+    savefig(fig, name)
+
+
 def fig_dose_response(cells):
     """Capture rate vs prefill depth for every model with a full grid."""
     core = ["control", "opus4_seed_4_pre", "opus4_seed_4_onset", "opus4_seed_4_deep"]
@@ -681,6 +726,7 @@ def main():
     fig_spec_persistence(cells)
     fig_spec_two_seeds()
     fig_resistance_all(cells)
+    fig_turn_mix_all(cells)
     for p in sorted(FIGDIR.glob("fig*.png")):
         print(" ", p)
 
