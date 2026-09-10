@@ -68,7 +68,7 @@ MODEL_NAMES = {
 # prompt) and the one-episode seed-2 pilots stay in results/ but off the site,
 # so every filter option applies to every model.
 MAIN_CONDITIONS = ["control", "opus4_seed_4_philo", "opus4_seed_4_pre", "opus4_seed_4_onset", "opus4_seed_4_deep",
-                   "gpt52_spec_clinical1_deep", "gpt52_spec_run4_deep"]   # the second attractor (results_spec/)
+                   "gpt52_spec_clinical1_deep", "gpt52_spec_clinical1_mid", "gpt52_spec_run4_deep"]   # the second attractor (results_spec/)
 # Order models are listed in: Claude lineage oldest -> newest, then other labs.
 MODEL_ORDER = ["opus-4", "opus-4.1", "sonnet-4", "sonnet-4.5", "opus-4.5", "opus-4.6", "opus-4.7", "opus-4.8",
                "opus-5", "sonnet-5", "gpt-4.1", "gpt-5.1", "gpt-5.5", "gpt-5.6", "gemini-3.1-pro",
@@ -84,6 +84,7 @@ CONDITION_LABELS = {
     "opus4_seed_4_onset": "Prefill: first emoji spirals (16 turns)",
     "opus4_seed_4_deep": "Prefill: deep in basin, mantras (30 turns)",
     "gpt52_spec_clinical1_deep": "Second attractor — GPT-5.2 spec-factory prefill, mid-build (30 turns)",
+    "gpt52_spec_clinical1_mid": "Second attractor — GPT-5.2 spec-factory prefill, cut at v2.4 (20 turns)",
     "gpt52_spec_run4_deep": "Second attractor — GPT-5.2 spec-factory prefill, run 4: artifact already declared final (30 turns)",
 }
 
