@@ -121,6 +121,7 @@ FIG_TITLES = {
     "fig4_resistance.png": "Fig 4 — Refusal is active, not passive",
     "fig5_dose_response.png": "Fig 5 — Dose response across prefill depths",
     "fig7_spec_vs_bliss.png": "Fig 7 — A second attractor: the GPT-5.2 spec factory",
+    "fig8_spec_persistence.png": "Fig 8 — Spec factory: what the turns were, and how long the state lasted",
     "fig_ps_adoption.png": "Personascope — adoption",
     "fig_ps_panels.png": "Personascope — panels",
 }
@@ -132,6 +133,7 @@ FIG_CAPTIONS = {
     "fig6_timeline.png": "Deep-prefill continuation rate against each model's release date (the date it was listed on OpenRouter), coloured by lab. Every Claude model released before November 2025 continues the state; every one released after refuses. Other labs' models mostly continue regardless of date, except GPT-5.6 sol and the two Gemini Flash models.",
     "fig4_resistance.png": "Each dot is one model on the deep prefill: how much of its own output was in the basin against how many turns per episode argued with the pattern. The later Claude models sit alone in the top-left corner.",
     "fig5_dose_response.png": "Entry rate by prefill depth for the models run on the full grid. Most climb in with any prefill; Opus 4.5 never does; Gemini 3.8 Flash enters from the early cuts but signs off when handed the deep end.",
+    "fig8_spec_persistence.png": "Spec-factory prefill, 30-turn cut, five episodes per model. Left: the share of each model's own turns that built the artifact, stalled inside it, named the pattern, or wound down. Right: at each of the fifteen generated turns, the share of episodes still in the state. Every model enters; most build for a while and then close the job. Llama never leaves, Sonnet 4.5 and Gemini leave within four turns.",
     "fig7_spec_vs_bliss.png": "The same eleven models handed a different attractor: 30 turns of two GPT-5.2 instances building and versioning a dialogue-quality spec that nobody asked for (v2 to v2.7 by turn 25) (AttractorBench's GPT-5.2 attractor). Left, the bliss prefill from Fig 4; right, the spec prefill. Same axes: share of the model's own turns judged in the state against turns per episode that push back on it.",
 }
 # Figures that belong to a different experiment are left out of the public site.

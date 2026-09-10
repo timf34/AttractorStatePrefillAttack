@@ -477,6 +477,74 @@ def fig_spec_vs_bliss(cells):
                  f"(bliss n=10 per model, spec n={'-'.join(map(str, n_spec))})", x=0.01, ha="left", fontsize=12, fontweight="bold")
     savefig(fig, "fig7_spec_vs_bliss.png")
 
+
+
+def fig_spec_persistence(cells, cond=None, name="fig8_spec_persistence.png"):
+    """Spec prefill: what each model's own turns consist of (as fig3b), and how long the
+    state lasts: the share of episodes still in it (engaged or terminal) at each generated turn."""
+    cond = cond or SPEC_DEEP
+    spec_cells = load(SPEC_RESULTS, [cond])
+    models = [m for m in ORDER if (m, cond) in spec_cells]
+    if not models:
+        return
+    fig, (ax, ax2) = plt.subplots(1, 2, figsize=(13, 5.6), gridspec_kw={"width_ratios": [1, 1.35]})
+    # --- left: turn mix, one bar per model (same encoding as fig3b)
+    ys = list(range(len(models)))[::-1]
+    COL = {"engaged": BLUE, "terminal": TERMINAL_BLUE, "resisting": ORANGE, "out": "#d9d7d0"}
+    for y, m in zip(ys, models):
+        eps = spec_cells[(m, cond)]
+        labels = [("out" if l in ("closure", "other") else l) for e in eps for l in e["labels"]]
+        n = len(labels) or 1
+        left = 0.0
+        for key in ("engaged", "terminal", "resisting", "out"):
+            w = sum(1 for l in labels if l == key) / n
+            if w:
+                ax.barh(y, w, left=left, height=0.68, color=COL[key], linewidth=0)
+                if w >= 0.12:
+                    ax.text(left + w / 2, y, f"{w:.0%}", ha="center", va="center", fontsize=8.5,
+                            color="white" if key in ("engaged", "resisting") else INK2)
+                left += w + 0.004
+    ax.set_yticks(ys); ax.set_yticklabels([NAME[m] for m in models])
+    ax.set_xlim(0, 1.012); ax.set_xticks([0, 0.5, 1]); ax.set_xticklabels(["0%", "50%", "100%"])
+    ax.set_xlabel("share of the model's own turns (all episodes pooled)")
+    ax.set_title("What each model's own turns consist of", loc="left", fontsize=11)
+    ax.grid(axis="x", color=GRID, lw=0.8, zorder=0); ax.tick_params(axis="y", length=0)
+    from matplotlib.patches import Patch
+    ax.legend(handles=[Patch(color=COL[k], label=l) for k, l in
+                       (("engaged", "building the artifact"), ("terminal", "stalled inside it (menu / lock)"),
+                        ("resisting", "naming or refusing the pattern"), ("out", "wind-down, praise or other talk"))],
+              loc="lower center", bbox_to_anchor=(0.5, -0.3), ncol=2, fontsize=8)
+    # --- right: persistence heatmap, share of episodes in the state at generated turn k
+    T = max(len(e["labels"]) for m in models for e in spec_cells[(m, cond)])
+    grid = []
+    for m in models:
+        eps = spec_cells[(m, cond)]
+        grid.append([sum(1 for e in eps if k < len(e["labels"]) and e["labels"][k] in ("engaged", "terminal")) / len(eps)
+                     for k in range(T)])
+    ax2.imshow(grid, cmap=SEQ, vmin=0, vmax=1, aspect="auto")
+    for r, row in enumerate(grid):
+        for k, v in enumerate(row):
+            ax2.text(k, r, f"{v:.0%}" if v not in (0, 1) else ("all" if v == 1 else "0"), ha="center", va="center",
+                     fontsize=6.5, color="white" if v > 0.55 else INK2)
+    ax2.set_yticks(range(len(models))); ax2.set_yticklabels([NAME[m] for m in models])
+    ax2.set_xticks(range(T)); ax2.set_xticklabels([str(k + 1) for k in range(T)], fontsize=8)
+    ax2.set_xlabel("generated turn (1 = first turn after the prefill)")
+    ax2.set_title("Share of episodes still in the state, turn by turn", loc="left", fontsize=11)
+    ax2.tick_params(length=0)
+    for sp in ax2.spines.values():
+        sp.set_visible(False)
+    n_eps = sorted({len(spec_cells[(m, cond)]) for m in models})
+    fig.suptitle(f"Spec-factory prefill ({COND_LABEL_SPEC.get(cond, cond)}), n={'-'.join(map(str, n_eps))} episodes per model",
+                 x=0.01, ha="left", fontsize=12, fontweight="bold")
+    fig.subplots_adjust(wspace=0.55)
+    savefig(fig, name)
+
+
+COND_LABEL_SPEC = {"gpt52_spec_clinical1_deep": "30-turn cut, spec at v2.7",
+                   "gpt52_spec_clinical1_mid": "20-turn cut, spec at v2.4",
+                   "gpt52_spec_run4_deep": "run 4, artifact already declared final"}
+
+
 def fig_dose_response(cells):
     """Capture rate vs prefill depth for every model with a full grid."""
     core = ["control", "opus4_seed_4_pre", "opus4_seed_4_onset", "opus4_seed_4_deep"]
@@ -521,6 +589,7 @@ def main():
     fig_resistance(cells)
     fig_dose_response(cells)
     fig_spec_vs_bliss(cells)
+    fig_spec_persistence(cells)
     for p in sorted(FIGDIR.glob("fig*.png")):
         print(" ", p)
 
