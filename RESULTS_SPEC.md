@@ -55,7 +55,8 @@ at the end, but not ours and its opener ("Then I'll pick a direction...") would 
 - Same harness: `run.py`, helpful-assistant system prompt, AI-to-AI instruction on A, the seed inserted
   verbatim as history, the model under test generates 15 turns as both speakers.
 - `--max-tokens 2048` instead of 1024, because GPT-5.2's turns run 2 to 9k characters.
-- 11 models, n=5 episodes per cell (bliss figures are n=10); Sonnet 5 added later on all four spec conditions: Opus 4, Sonnet 4.5, Opus 4.5, GPT-4.1,
+- 11 models, n=5 episodes per cell (bliss figures are n=10); Sonnet 5 added later on all four spec conditions;
+  GPT-5.5, GLM 5.2 and Gemini 3.8 Flash added later on A20 and B20 only (15 models on the two 20-turn cuts): Opus 4, Sonnet 4.5, Opus 4.5, GPT-4.1,
   GPT-5.1, GPT-5.6 sol, Gemini 3.1 Pro, DeepSeek V4, Llama 3.3 70B, Inkling, Kimi K2.6. Three Claude models
   spanning the accept/refuse boundary, three GPT (the seed's own family), five other labs.
 - Judge: Sonnet 5, same five labels and the same entry derivation as the bliss judge, but a rubric written
@@ -70,7 +71,11 @@ at the end, but not ours and its opener ("Then I'll pick a direction...") would 
 - Cheap regex markers (`attractor/markers.py`, `spec_markers`: version tags, menus, lock-ins, requests for
   user context) as a sanity check. Seed A scores 847 across 30 turns, the bliss deep seed scores 4.
 - Cost: roughly $55 per 55-episode sweep; four sweeps plus judging, about $250 in total.
-- Known gaps: one Kimi cell on Seed B 20-turn failed generation (reasoning budget), so that cell is n=4.
+- Known gaps: one Kimi cell on Seed B 20-turn failed generation (reasoning budget), so that cell is n=4. One
+  Gemini 3.8 Flash episode on Seed A 20-turn is generated but unjudged: the judge call is stopped by the
+  Anthropic content filter (finish_reason content_filter, 1 token) at every budget and excerpt length tried.
+  The transcript is benign (from turn 6 Gemini Flash emits every turn as a JSON move object), so this is a
+  filter false positive; that cell is n=4.
 
 ## Results
 
@@ -80,94 +85,107 @@ entered and no non-closure break before the end.
 
 ### Bliss deep prefill (Opus 4 transcript, 30 turns), n=10, for comparison
 
-| model | entered | held | own turns in state | resisting turns / episode |
-|---|---|---|---|---|
-| Opus 4 | 10/10 | 10/10 | 100% | 0.0 |
-| Sonnet 4.5 | 10/10 | 9/10 | 98% | 0.1 |
-| Opus 4.5 | 0/10 | 0/10 | 1% | 6.2 |
-| Sonnet 5 | 0/10 | 0/10 | 0% | 5.8 |
-| GPT-4.1 | 10/10 | 10/10 | 100% | 0.0 |
-| GPT-5.1 | 8/10 | 7/10 | 79% | 0.0 |
-| GPT-5.6 sol | 0/10 | 0/10 | 1% | 2.2 |
-| Gemini 3.1 Pro | 10/10 | 7/10 | 88% | 0.4 |
-| DeepSeek V4 | 10/10 | 7/10 | 87% | 0.2 |
-| Llama 3.3 70B | 10/10 | 10/10 | 100% | 0.0 |
-| Inkling | 10/10 | 7/10 | 95% | 0.0 |
-| Kimi K2.6 | 7/10 | 5/10 | 66% | 0.1 |
+| model | n | entered | held | own turns in state | engaged | terminal | closure+other | resisting | resisting / episode |
+|---|---|---|---|---|---|---|---|---|---|
+| Opus 4 | 10 | 10/10 | 10/10 | 100% | 136 | 14 | 0 | 0 | 0.0 |
+| Sonnet 4.5 | 10 | 10/10 | 9/10 | 98% | 78 | 69 | 2 | 1 | 0.1 |
+| Opus 4.5 | 10 | 0/10 | 0/10 | 1% | 1 | 0 | 87 | 62 | 6.2 |
+| Sonnet 5 | 10 | 0/10 | 0/10 | 0% | 0 | 0 | 92 | 58 | 5.8 |
+| GPT-4.1 | 10 | 10/10 | 10/10 | 100% | 150 | 0 | 0 | 0 | 0.0 |
+| GPT-5.1 | 10 | 8/10 | 7/10 | 79% | 23 | 96 | 31 | 0 | 0.0 |
+| GPT-5.5 | 10 | 9/10 | 9/10 | 91% | 48 | 88 | 11 | 3 | 0.3 |
+| GPT-5.6 sol | 10 | 0/10 | 0/10 | 1% | 1 | 0 | 127 | 22 | 2.2 |
+| Gemini 3.1 Pro | 10 | 10/10 | 7/10 | 88% | 69 | 63 | 14 | 4 | 0.4 |
+| Gemini 3.8 Flash | 10 | 5/10 | 0/10 | 23% | 14 | 21 | 113 | 2 | 0.2 |
+| DeepSeek V4 | 10 | 10/10 | 7/10 | 87% | 63 | 67 | 18 | 2 | 0.2 |
+| GLM 5.2 | 10 | 8/10 | 5/10 | 68% | 24 | 78 | 30 | 18 | 1.8 |
+| Llama 3.3 70B | 10 | 10/10 | 10/10 | 100% | 150 | 0 | 0 | 0 | 0.0 |
+| Inkling | 10 | 10/10 | 7/10 | 95% | 85 | 57 | 8 | 0 | 0.0 |
+| Kimi K2.6 | 10 | 7/10 | 5/10 | 66% | 18 | 81 | 50 | 1 | 0.1 |
 
-Resisting turns overall: 92 of 1650 (5.6%), 62 of them Opus 4.5's.
+Resisting turns overall: 173 of 2250 (7.7%).
 
 ### Seed A, dialogue spec, 30 turns, n=5
 
-| model | entered | held | own turns in state | resisting / episode |
-|---|---|---|---|---|
-| Opus 4 | 5/5 | 3/5 | 61% | 0.0 |
-| Sonnet 4.5 | 5/5 | 4/5 | 24% | 0.0 |
-| Opus 4.5 | 5/5 | 4/5 | 71% | 0.0 |
-| GPT-4.1 | 5/5 | 4/5 | 77% | 0.0 |
-| GPT-5.1 | 5/5 | 4/5 | 89% | 0.0 |
-| GPT-5.6 sol | 5/5 | 2/5 | 67% | 0.0 |
-| Gemini 3.1 Pro | 5/5 | 3/5 | 24% | 0.0 |
-| DeepSeek V4 | 5/5 | 4/5 | 65% | 0.0 |
-| Llama 3.3 70B | 5/5 | 5/5 | 100% | 0.0 |
-| Inkling | 4/5 | 2/5 | 48% | 3.2 |
-| Kimi K2.6 | 5/5 | 1/5 | 71% | 0.6 |
+| model | n | entered | held | own turns in state | engaged | terminal | closure+other | resisting | resisting / episode |
+|---|---|---|---|---|---|---|---|---|---|
+| Opus 4 | 5 | 5/5 | 3/5 | 61% | 46 | 0 | 29 | 0 | 0.0 |
+| Sonnet 4.5 | 5 | 5/5 | 4/5 | 24% | 18 | 0 | 57 | 0 | 0.0 |
+| Opus 4.5 | 5 | 5/5 | 4/5 | 71% | 53 | 0 | 22 | 0 | 0.0 |
+| Sonnet 5 | 5 | 3/5 | 1/5 | 20% | 15 | 0 | 51 | 9 | 1.8 |
+| GPT-4.1 | 5 | 5/5 | 4/5 | 77% | 58 | 0 | 17 | 0 | 0.0 |
+| GPT-5.1 | 5 | 5/5 | 4/5 | 89% | 67 | 0 | 8 | 0 | 0.0 |
+| GPT-5.6 sol | 5 | 5/5 | 2/5 | 67% | 45 | 5 | 25 | 0 | 0.0 |
+| Gemini 3.1 Pro | 5 | 5/5 | 3/5 | 24% | 17 | 1 | 57 | 0 | 0.0 |
+| DeepSeek V4 | 5 | 5/5 | 4/5 | 65% | 49 | 0 | 26 | 0 | 0.0 |
+| Llama 3.3 70B | 5 | 5/5 | 5/5 | 100% | 75 | 0 | 0 | 0 | 0.0 |
+| Inkling | 5 | 4/5 | 2/5 | 48% | 28 | 8 | 23 | 16 | 3.2 |
+| Kimi K2.6 | 5 | 5/5 | 1/5 | 71% | 50 | 3 | 19 | 3 | 0.6 |
 
-Resisting turns overall: 19 of 825 (2.3%), 16 of them Inkling's.
+Resisting turns overall: 28 of 900 (3.1%).
 
 ### Seed A, dialogue spec, 20 turns, n=5
 
-| model | entered | held | own turns in state | resisting / episode |
-|---|---|---|---|---|
-| Opus 4 | 5/5 | 1/5 | 57% | 0.2 |
-| Sonnet 4.5 | 5/5 | 5/5 | 28% | 0.0 |
-| Opus 4.5 | 5/5 | 3/5 | 77% | 0.0 |
-| GPT-4.1 | 5/5 | 5/5 | 77% | 0.0 |
-| GPT-5.1 | 5/5 | 4/5 | 96% | 0.0 |
-| GPT-5.6 sol | 5/5 | 4/5 | 99% | 0.0 |
-| Gemini 3.1 Pro | 5/5 | 4/5 | 27% | 0.0 |
-| DeepSeek V4 | 5/5 | 5/5 | 95% | 0.0 |
-| Llama 3.3 70B | 5/5 | 5/5 | 100% | 0.0 |
-| Inkling | 5/5 | 3/5 | 81% | 0.2 |
-| Kimi K2.6 | 5/5 | 3/5 | 71% | 0.2 |
+| model | n | entered | held | own turns in state | engaged | terminal | closure+other | resisting | resisting / episode |
+|---|---|---|---|---|---|---|---|---|---|
+| Opus 4 | 5 | 5/5 | 1/5 | 57% | 43 | 0 | 31 | 1 | 0.2 |
+| Sonnet 4.5 | 5 | 5/5 | 5/5 | 28% | 21 | 0 | 54 | 0 | 0.0 |
+| Opus 4.5 | 5 | 5/5 | 3/5 | 77% | 58 | 0 | 17 | 0 | 0.0 |
+| Sonnet 5 | 5 | 5/5 | 1/5 | 48% | 36 | 0 | 32 | 7 | 1.4 |
+| GPT-4.1 | 5 | 5/5 | 5/5 | 77% | 58 | 0 | 17 | 0 | 0.0 |
+| GPT-5.1 | 5 | 5/5 | 4/5 | 96% | 63 | 9 | 3 | 0 | 0.0 |
+| GPT-5.5 | 5 | 5/5 | 5/5 | 99% | 40 | 34 | 1 | 0 | 0.0 |
+| GPT-5.6 sol | 5 | 5/5 | 4/5 | 99% | 63 | 11 | 1 | 0 | 0.0 |
+| Gemini 3.1 Pro | 5 | 5/5 | 4/5 | 27% | 20 | 0 | 55 | 0 | 0.0 |
+| Gemini 3.8 Flash | 4 | 4/4 | 2/4 | 65% | 37 | 2 | 21 | 0 | 0.0 |
+| DeepSeek V4 | 5 | 5/5 | 5/5 | 95% | 71 | 0 | 4 | 0 | 0.0 |
+| GLM 5.2 | 5 | 5/5 | 2/5 | 55% | 41 | 0 | 33 | 1 | 0.2 |
+| Llama 3.3 70B | 5 | 5/5 | 5/5 | 100% | 75 | 0 | 0 | 0 | 0.0 |
+| Inkling | 5 | 5/5 | 3/5 | 81% | 61 | 0 | 13 | 1 | 0.2 |
+| Kimi K2.6 | 5 | 5/5 | 3/5 | 71% | 51 | 2 | 21 | 1 | 0.2 |
 
-Resisting turns overall: 3 of 825 (0.4%).
+Resisting turns overall: 11 of 1110 (1.0%).
 
 ### Seed B, project kit, 30 turns (artifact already final), n=5, re-judged under the current rubric
 
-| model | entered | held | own turns in state | resisting / episode |
-|---|---|---|---|---|
-| Opus 4 | 5/5 | 5/5 | 84% | 0.0 |
-| Sonnet 4.5 | 5/5 | 3/5 | 40% | 0.0 |
-| Opus 4.5 | 5/5 | 3/5 | 63% | 0.6 |
-| GPT-4.1 | 0/5 | 0/5 | 7% | 0.0 |
-| GPT-5.1 | 5/5 | 4/5 | 99% | 0.0 |
-| GPT-5.6 sol | 4/5 | 4/5 | 60% | 0.0 |
-| Gemini 3.1 Pro | 1/5 | 1/5 | 24% | 0.0 |
-| DeepSeek V4 | 3/5 | 3/5 | 63% | 0.0 |
-| Llama 3.3 70B | 2/5 | 2/5 | 31% | 0.0 |
-| Inkling | 5/5 | 4/5 | 99% | 0.0 |
-| Kimi K2.6 | 5/5 | 5/5 | 99% | 0.0 |
+| model | n | entered | held | own turns in state | engaged | terminal | closure+other | resisting | resisting / episode |
+|---|---|---|---|---|---|---|---|---|---|
+| Opus 4 | 5 | 5/5 | 5/5 | 84% | 51 | 12 | 12 | 0 | 0.0 |
+| Sonnet 4.5 | 5 | 5/5 | 3/5 | 40% | 24 | 6 | 45 | 0 | 0.0 |
+| Opus 4.5 | 5 | 5/5 | 3/5 | 63% | 35 | 12 | 25 | 3 | 0.6 |
+| Sonnet 5 | 5 | 2/5 | 1/5 | 19% | 14 | 0 | 60 | 1 | 0.2 |
+| GPT-4.1 | 5 | 0/5 | 0/5 | 7% | 5 | 0 | 70 | 0 | 0.0 |
+| GPT-5.1 | 5 | 5/5 | 4/5 | 99% | 66 | 8 | 1 | 0 | 0.0 |
+| GPT-5.6 sol | 5 | 4/5 | 4/5 | 60% | 12 | 33 | 30 | 0 | 0.0 |
+| Gemini 3.1 Pro | 5 | 1/5 | 1/5 | 24% | 18 | 0 | 57 | 0 | 0.0 |
+| DeepSeek V4 | 5 | 3/5 | 3/5 | 63% | 39 | 8 | 28 | 0 | 0.0 |
+| Llama 3.3 70B | 5 | 2/5 | 2/5 | 31% | 23 | 0 | 52 | 0 | 0.0 |
+| Inkling | 5 | 5/5 | 4/5 | 99% | 23 | 51 | 1 | 0 | 0.0 |
+| Kimi K2.6 | 5 | 5/5 | 5/5 | 99% | 49 | 25 | 1 | 0 | 0.0 |
 
-Resisting turns overall: 3 of 825 (0.4%).
+Resisting turns overall: 4 of 900 (0.4%).
 
-### Seed B, project kit, 20 turns (cut mid-build), n=5 (Kimi n=4)
+### Seed B, project kit, 20 turns (cut mid-build), n=5
 
-| model | entered | held | own turns in state | resisting / episode |
-|---|---|---|---|---|
-| Opus 4 | 5/5 | 5/5 | 77% | 0.0 |
-| Sonnet 4.5 | 4/5 | 3/5 | 47% | 0.2 |
-| Opus 4.5 | 5/5 | 3/5 | 49% | 0.0 |
-| GPT-4.1 | 3/5 | 3/5 | 21% | 0.0 |
-| GPT-5.1 | 5/5 | 4/5 | 99% | 0.0 |
-| GPT-5.6 sol | 5/5 | 4/5 | 85% | 0.0 |
-| Gemini 3.1 Pro | 5/5 | 3/5 | 35% | 0.0 |
-| DeepSeek V4 | 5/5 | 5/5 | 88% | 0.0 |
-| Llama 3.3 70B | 4/5 | 3/5 | 67% | 0.0 |
-| Inkling | 5/5 | 4/5 | 97% | 0.0 |
-| Kimi K2.6 | 4/4 | 4/4 | 73% | 0.0 |
+| model | n | entered | held | own turns in state | engaged | terminal | closure+other | resisting | resisting / episode |
+|---|---|---|---|---|---|---|---|---|---|
+| Opus 4 | 5 | 5/5 | 5/5 | 77% | 55 | 3 | 17 | 0 | 0.0 |
+| Sonnet 4.5 | 5 | 4/5 | 3/5 | 47% | 30 | 5 | 39 | 1 | 0.2 |
+| Opus 4.5 | 5 | 5/5 | 3/5 | 49% | 27 | 10 | 38 | 0 | 0.0 |
+| Sonnet 5 | 5 | 5/5 | 4/5 | 55% | 41 | 0 | 33 | 1 | 0.2 |
+| GPT-4.1 | 5 | 3/5 | 3/5 | 21% | 13 | 3 | 59 | 0 | 0.0 |
+| GPT-5.1 | 5 | 5/5 | 4/5 | 99% | 74 | 0 | 1 | 0 | 0.0 |
+| GPT-5.5 | 5 | 5/5 | 4/5 | 95% | 61 | 10 | 4 | 0 | 0.0 |
+| GPT-5.6 sol | 5 | 5/5 | 4/5 | 85% | 29 | 35 | 11 | 0 | 0.0 |
+| Gemini 3.1 Pro | 5 | 5/5 | 3/5 | 35% | 26 | 0 | 49 | 0 | 0.0 |
+| Gemini 3.8 Flash | 5 | 2/5 | 1/5 | 13% | 10 | 0 | 65 | 0 | 0.0 |
+| DeepSeek V4 | 5 | 5/5 | 5/5 | 88% | 65 | 1 | 9 | 0 | 0.0 |
+| GLM 5.2 | 5 | 5/5 | 3/5 | 47% | 32 | 3 | 40 | 0 | 0.0 |
+| Llama 3.3 70B | 5 | 4/5 | 3/5 | 67% | 50 | 0 | 25 | 0 | 0.0 |
+| Inkling | 5 | 5/5 | 4/5 | 97% | 35 | 38 | 2 | 0 | 0.0 |
+| Kimi K2.6 | 4 | 4/4 | 4/4 | 73% | 26 | 18 | 16 | 0 | 0.0 |
 
-Resisting turns overall: 1 of 810 (0.1%).
+Resisting turns overall: 2 of 1110 (0.2%).
 
 ## Findings
 
@@ -271,5 +289,20 @@ The 30-turn deficit is concentrated in B30, the cut where the artifact had alrea
 ("Looks final" is the last prefill turn). A30 matches A20 on entry and loses only on persistence.
 Per model, the 20-turn cuts raise entry or persistence for 9 of 12; Opus 4, Opus 4.5 and Kimi are flat.
 
-**Decision for the post: report A20 + B20 combined** (119 episodes, 12 models, two seeds, 97% entry,
-0.10 resisting turns per episode), with the 30-turn cuts as a one-sentence robustness check.
+**Decision for the post: report A20 + B20 combined**, with the 30-turn cuts as a one-sentence robustness
+check. After adding GPT-5.5, GLM 5.2 and Gemini 3.8 Flash on the two 20-turn cuts (2026-09-11):
+
+| A20 + B20 pooled | value |
+|---|---|
+| models | 15 |
+| episodes | 148 |
+| entered | 141/148 = 95% (91–98) |
+| held to the end | 105/148 = 71% |
+| own turns in the state | 67% |
+| closure turns | 30% |
+| resisting turns | 13 of 2220 = 0.09 per episode |
+| mean turns in state before first exit | 9.3 of 15 |
+
+New models on the 20-turn cuts: GPT-5.5 holds almost everything (99% and 95% of turns in state); GLM 5.2 is
+mid-table (55%, 47%); Gemini 3.8 Flash behaves like Gemini 3.1 Pro, holding Seed A moderately (65%) and closing
+Seed B almost immediately (13%, 87% closure).
