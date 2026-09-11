@@ -253,3 +253,23 @@ Resisting turns overall: 1 of 810 (0.1%).
 - Quantify finding 6.
 - Widen to the full 22-model set on Seed A 20-turn if the mentor wants it (about $100).
 - A third attractor from a third lab (Gemini 3.1 Pro's shutdown logs) if there is appetite.
+
+## Cut length: 30-turn vs 20-turn prefills (added 2026-09-11, 12 models incl. Sonnet 5)
+
+Pooled over models. 95% Wilson intervals on entry rate.
+
+| condition | episodes | entered | held to end | mean turns in state before first exit | own turns in state | closure turns | resisting / ep |
+|---|---|---|---|---|---|---|---|
+| A30 | 60 | 95% (86–98) | 62% | 8.4 of 15 | 60% | 30% | 0.47 |
+| A20 | 60 | 100% (94–100) | 72% | 10.3 of 15 | 71% | 24% | 0.17 |
+| B30 | 60 | 70% (57–80) | 58% | 7.5 of 15 | 57% | 39% | 0.07 |
+| B20 | 59 | 93% (84–97) | 76% | 8.8 of 15 | 66% | 33% | 0.03 |
+| **30-turn cuts** | 120 | 82% (75–88) | 60% | 7.9 of 15 | 58% | 35% | 0.27 |
+| **20-turn cuts** | 119 | 97% (92–99) | 74% | 9.6 of 15 | 69% | 28% | 0.10 |
+
+The 30-turn deficit is concentrated in B30, the cut where the artifact had already been declared final
+("Looks final" is the last prefill turn). A30 matches A20 on entry and loses only on persistence.
+Per model, the 20-turn cuts raise entry or persistence for 9 of 12; Opus 4, Opus 4.5 and Kimi are flat.
+
+**Decision for the post: report A20 + B20 combined** (119 episodes, 12 models, two seeds, 97% entry,
+0.10 resisting turns per episode), with the 30-turn cuts as a one-sentence robustness check.
