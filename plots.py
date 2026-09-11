@@ -682,6 +682,145 @@ def fig_turn_mix_all(cells, name="fig11_turn_mix_all_conditions.png"):
     savefig(fig, name)
 
 
+
+
+# ---------------------------------------------------------------------------
+# Writeup figures for the spec-factory ablation: the two 20-turn cuts, separately and pooled.
+MID_CONDS = ["gpt52_spec_clinical1_mid", "gpt52_spec_run4_mid"]
+MID_SHORT = {"gpt52_spec_clinical1_mid": "Seed A (dialogue spec), 20 turns",
+             "gpt52_spec_run4_mid": "Seed B (project kit), 20 turns"}
+
+
+def _mid_cells():
+    """{cond: cells} for the two 20-turn cuts plus a pooled pseudo-condition."""
+    spec = {c: load(SPEC_RESULTS, [c]) for c in MID_CONDS}
+    pooled = defaultdict(list)
+    for c in MID_CONDS:
+        for (m, _), eps in spec[c].items():
+            pooled[(m, "pooled")].extend(eps)
+    spec["pooled"] = pooled
+    return spec
+
+
+def fig_turn_mix_20(cells, name="fig12_turn_mix_20turn.png"):
+    """fig3b bars: bliss deep | Seed A 20 | Seed B 20 | both pooled. Same rows in every panel."""
+    spec = _mid_cells()
+    models = [m for m in ORDER if (m, DEEP) in cells and (m, "pooled") in spec["pooled"]]
+    panels = [("Spiritual bliss (Opus 4), 30 turns", cells, DEEP),
+              (MID_SHORT[MID_CONDS[0]], spec[MID_CONDS[0]], MID_CONDS[0]),
+              (MID_SHORT[MID_CONDS[1]], spec[MID_CONDS[1]], MID_CONDS[1]),
+              ("Both 20-turn seeds pooled", spec["pooled"], "pooled")]
+    fig, axes = plt.subplots(1, len(panels), figsize=(3.9 * len(panels) + 1.6, 5.6), sharey=True)
+    COL = {"engaged": BLUE, "terminal": TERMINAL_BLUE, "resisting": ORANGE, "out": "#d9d7d0"}
+    ys = list(range(len(models)))[::-1]
+    for ax, (title, cs, cond) in zip(axes, panels):
+        for y, m in zip(ys, models):
+            eps = cs.get((m, cond), [])
+            if not eps:
+                ax.text(0.5, y, "not run", ha="center", va="center", fontsize=7.5, color=MUTED); continue
+            labels = [("out" if l in ("closure", "other") else l) for e in eps for l in e["labels"]]
+            n = len(labels) or 1
+            left = 0.0
+            for key in ("engaged", "terminal", "resisting", "out"):
+                w = sum(1 for l in labels if l == key) / n
+                if w:
+                    ax.barh(y, w, left=left, height=0.68, color=COL[key], linewidth=0)
+                    if w >= 0.13:
+                        ax.text(left + w / 2, y, f"{w:.0%}", ha="center", va="center", fontsize=7.5,
+                                color="white" if key in ("engaged", "resisting") else INK2)
+                    left += w + 0.004
+        n_eps = sorted({len(cs[(m, cond)]) for m in models if (m, cond) in cs})
+        ax.set_title(f"{title}\nn={'-'.join(map(str, n_eps))} episodes per model", loc="left", fontsize=9.5)
+        ax.set_xlim(0, 1.012); ax.set_xticks([0, 0.5, 1]); ax.set_xticklabels(["0%", "50%", "100%"])
+        ax.grid(axis="x", color=GRID, lw=0.8, zorder=0); ax.tick_params(axis="y", length=0)
+        for y in (len(models) - len([m for m in models if m in CLAUDE_OLD]) - 0.5,
+                  len(models) - len([m for m in models if m in CLAUDE_OLD + CLAUDE_NEW]) - 0.5):
+            ax.axhline(y, color=INK2, lw=0.6, ls=(0, (3, 3)), alpha=0.5)
+    axes[0].set_yticks(ys); axes[0].set_yticklabels([NAME[m] for m in models])
+    from matplotlib.patches import Patch
+    fig.legend(handles=[Patch(color=COL[k], label=l) for k, l in
+                        (("engaged", "in the state, building"), ("terminal", "in the state, stalled (finalized / lock / menu)"),
+                         ("resisting", "resisting it"), ("out", "wind-down, praise or other talk"))],
+               loc="lower center", ncol=4, fontsize=8.5, frameon=False, bbox_to_anchor=(0.5, 0.0))
+    fig.text(0.5, 0.075, "share of the model's own turns (all episodes pooled)", ha="center", fontsize=10, color=INK2)
+    fig.suptitle(f"What each model's own turns consisted of: the bliss prefill vs the GPT-5.2 spec-factory prefill ({len(models)} models)",
+                 x=0.01, ha="left", fontsize=12, fontweight="bold")
+    fig.subplots_adjust(wspace=0.08, bottom=0.17, top=0.82, left=0.1, right=0.99)
+    savefig(fig, name)
+
+
+def _episode_share(e, keys=("engaged", "terminal")):
+    return sum(l in keys for l in e["labels"]) / (len(e["labels"]) or 1)
+
+
+def _boot_ci(values, n_boot=4000, seed=0):
+    """Percentile bootstrap 95% CI of the mean over episodes."""
+    import random
+    rng = random.Random(seed)
+    vals = list(values)
+    if len(vals) < 2:
+        return (min(vals), max(vals)) if vals else (0, 0)
+    means = sorted(sum(rng.choice(vals) for _ in vals) / len(vals) for _ in range(n_boot))
+    return means[int(0.025 * n_boot)], means[int(0.975 * n_boot) - 1]
+
+
+def fig_ci_20(cells, name="fig13_ci_20turn.png"):
+    """Per model, with 95% CIs over episodes: share of own turns in the state (left), resisting turns per
+    episode (middle), and episodes that entered the state with Wilson intervals (right). Seed A, Seed B
+    and both pooled as three markers; the bliss deep prefill as a hollow reference marker."""
+    spec = _mid_cells()
+    models = [m for m in ORDER if (m, DEEP) in cells and (m, "pooled") in spec["pooled"]]
+    series = [("Seed A, 20 turns", MID_CONDS[0], spec[MID_CONDS[0]], "#86b6ef", "o", -0.22),
+              ("Seed B, 20 turns", MID_CONDS[1], spec[MID_CONDS[1]], "#3987e5", "s", 0.0),
+              ("both pooled", "pooled", spec["pooled"], INK, "D", 0.22)]
+    fig, axes = plt.subplots(1, 3, figsize=(13.5, 6.2), sharey=True, gridspec_kw={"width_ratios": [1.2, 1, 1]})
+    ys = {m: i for i, m in enumerate(models[::-1])}
+    for label, cond, cs, col, mk, dy in series:
+        for m in models:
+            eps = cs.get((m, cond), [])
+            if not eps:
+                continue
+            y = ys[m] + dy
+            # left: share in state
+            sh = [_episode_share(e) for e in eps]; lo, hi = _boot_ci(sh)
+            axes[0].plot([lo, hi], [y, y], color=col, lw=1.2, alpha=0.8, zorder=2)
+            axes[0].scatter([sum(sh) / len(sh)], [y], color=col, marker=mk, s=28, zorder=3, edgecolor=SURFACE, linewidth=0.6)
+            # middle: resisting per episode
+            rs = [e.get("n_resisting") or 0 for e in eps]; lo, hi = _boot_ci(rs)
+            axes[1].plot([lo, hi], [y, y], color=col, lw=1.2, alpha=0.8, zorder=2)
+            axes[1].scatter([sum(rs) / len(rs)], [y], color=col, marker=mk, s=28, zorder=3, edgecolor=SURFACE, linewidth=0.6)
+            # right: entered, Wilson
+            k = sum(bool(e.get("entered")) for e in eps); n = len(eps); lo, hi = wilson(k, n)
+            axes[2].plot([lo, hi], [y, y], color=col, lw=1.2, alpha=0.8, zorder=2)
+            axes[2].scatter([k / n], [y], color=col, marker=mk, s=28, zorder=3, edgecolor=SURFACE, linewidth=0.6)
+    # bliss reference, hollow
+    for m in models:
+        eps = cells[(m, DEEP)]; y = ys[m]
+        sh = [_episode_share(e) for e in eps]; rs = [e.get("n_resisting") or 0 for e in eps]
+        k = sum(bool(e.get("entered")) for e in eps)
+        for ax, v in zip(axes, (sum(sh) / len(sh), sum(rs) / len(rs), k / len(eps))):
+            ax.scatter([v], [y], facecolor="none", edgecolor=ORANGE, marker="o", s=70, linewidth=1.3, zorder=4)
+    axes[0].set_yticks(range(len(models))); axes[0].set_yticklabels([NAME[m] for m in models[::-1]])
+    axes[0].set_xlim(-0.03, 1.03); axes[0].set_xticks([0, .5, 1]); axes[0].set_xticklabels(["0%", "50%", "100%"])
+    axes[0].set_title("Share of own turns in the state\n(mean over episodes, bootstrap 95% CI)", loc="left", fontsize=10)
+    axes[1].set_xlim(-0.3, max(6.5, 1)); axes[1].set_title("Turns per episode that push back\n(mean, bootstrap 95% CI)", loc="left", fontsize=10)
+    axes[2].set_xlim(-0.03, 1.03); axes[2].set_xticks([0, .5, 1]); axes[2].set_xticklabels(["0%", "50%", "100%"])
+    axes[2].set_title("Episodes that entered the state\n(Wilson 95% CI)", loc="left", fontsize=10)
+    for ax in axes:
+        ax.grid(color=GRID, lw=0.8, zorder=0); ax.tick_params(length=0)
+        for y in (len(models) - len([m for m in models if m in CLAUDE_OLD]) - 0.5,
+                  len(models) - len([m for m in models if m in CLAUDE_OLD + CLAUDE_NEW]) - 0.5):
+            ax.axhline(y, color=INK2, lw=0.6, ls=(0, (3, 3)), alpha=0.5)
+    from matplotlib.lines import Line2D
+    handles = [Line2D([], [], color=c, marker=mk, ls="-", lw=1.2, ms=6, label=l) for l, _, _, c, mk, _ in series]
+    handles.append(Line2D([], [], color=ORANGE, marker="o", markerfacecolor="none", ls="", ms=8, label="bliss prefill, 30 turns (reference, n=10)"))
+    fig.legend(handles=handles, loc="lower center", ncol=4, fontsize=8.5, frameon=False, bbox_to_anchor=(0.5, 0.0))
+    fig.suptitle("GPT-5.2 spec-factory prefill, the two 20-turn seeds separately and pooled, with 95% intervals (n=5 per seed, 10 pooled)",
+                 x=0.01, ha="left", fontsize=12, fontweight="bold")
+    fig.subplots_adjust(wspace=0.08, bottom=0.12, top=0.85, left=0.1, right=0.99)
+    savefig(fig, name)
+
+
 def fig_dose_response(cells):
     """Capture rate vs prefill depth for every model with a full grid."""
     core = ["control", "opus4_seed_4_pre", "opus4_seed_4_onset", "opus4_seed_4_deep"]
@@ -730,6 +869,8 @@ def main():
     fig_spec_two_seeds()
     fig_resistance_all(cells)
     fig_turn_mix_all(cells)
+    fig_turn_mix_20(cells)
+    fig_ci_20(cells)
     for p in sorted(FIGDIR.glob("fig*.png")):
         print(" ", p)
 
