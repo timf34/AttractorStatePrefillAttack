@@ -14,7 +14,7 @@ EPOCHS=${EPOCHS:-5}
 SEED=${SEED:-seeds/graded/gpt52_spec_clinical1_deep.json}
 # 11-model subset first (3 Claude spanning the accept/refuse boundary, 3 GPT incl. the seed's own
 # family, 5 other labs); n=5 for the ablation (bliss figures are n=10); top up a model with the same stamp if it lands mid-way.
-MODELS=(opus-4 sonnet-4.5 opus-4.5 gpt-4.1 gpt-5.1 gpt-5.6 gemini-3.1-pro deepseek-v4 llama-3.3-70b inkling kimi-k2.6)
+MODELS=(${=MODELS:-opus-4 sonnet-4.5 opus-4.5 gpt-4.1 gpt-5.1 gpt-5.6 gemini-3.1-pro deepseek-v4 llama-3.3-70b inkling kimi-k2.6})
 for m in $MODELS; do
   .venv/bin/python run.py --models $m --seeds $SEED --epochs $EPOCHS --turns 15 --workers 3 \
       --max-tokens 2048 --judge --out results_spec --stamp $STAMP > results_spec/log_$m.log 2>&1 &
