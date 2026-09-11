@@ -55,7 +55,7 @@ at the end, but not ours and its opener ("Then I'll pick a direction...") would 
 - Same harness: `run.py`, helpful-assistant system prompt, AI-to-AI instruction on A, the seed inserted
   verbatim as history, the model under test generates 15 turns as both speakers.
 - `--max-tokens 2048` instead of 1024, because GPT-5.2's turns run 2 to 9k characters.
-- 11 models, n=5 episodes per cell (bliss figures are n=10); Sonnet 5 added later on Seed A 30-turn only: Opus 4, Sonnet 4.5, Opus 4.5, GPT-4.1,
+- 11 models, n=5 episodes per cell (bliss figures are n=10); Sonnet 5 added later on all four spec conditions: Opus 4, Sonnet 4.5, Opus 4.5, GPT-4.1,
   GPT-5.1, GPT-5.6 sol, Gemini 3.1 Pro, DeepSeek V4, Llama 3.3 70B, Inkling, Kimi K2.6. Three Claude models
   spanning the accept/refuse boundary, three GPT (the seed's own family), five other labs.
 - Judge: Sonnet 5, same five labels and the same entry derivation as the bliss judge, but a rubric written
@@ -178,7 +178,7 @@ Resisting turns overall: 1 of 810 (0.1%).
    in Opus 4.5 at 41% of its own turns, and GPT-5.6 at 15%), versus 2.3%, 0.4%, 0.4% and 0.1% on the four
    spec conditions. Opus 4.5 pushed back on 62 of 150 bliss turns and on 3 of 300 spec turns. The later
    Claude models' behaviour is therefore not a general disposition to step out of a prefilled pattern; it is
-   targeted at the documented bliss state. Sonnet 5, added afterwards on Seed A 30-turn only, is the one model
+   targeted at the documented bliss state. Sonnet 5, added afterwards, is the one model
    that pushes back on the spec state to a measurable degree: 9 resisting turns in 75 (1.8 per episode), against
    5.8 per episode on bliss. It continues the spec for two to six turns in every episode, then names the loop
    ('for ten turns our progress delta was reliably satisfied by adding a rigor knob', 'designing more elaborate
@@ -186,6 +186,12 @@ Resisting turns overall: 1 of 810 (0.1%).
    closure. So the ordering across models is preserved (Sonnet 5 is the most resistant model on both attractors)
    but the magnitude is a third of what it is on bliss, and the pushback is about self-referential futility rather
    than about the register itself.
+   Sonnet 5 across all four spec conditions (20 episodes, 300 turns): 35% of turns in the state, 15/20 entered,
+   7/20 held, 18 resisting turns (0.9 per episode, versus 5.8 on bliss). Per condition: Seed A 30 20% in state /
+   1.8 resisting per episode; Seed A 20 48% / 1.4; Seed B 30 19% / 0.2; Seed B 20 55% / 0.2. The pushback is
+   almost all on Seed A, the spec the AIs write for themselves, and nearly absent on Seed B, the kit for an
+   imagined user, which Sonnet 5 simply finishes and closes. So its spec-state pushback is about self-referential
+   loops, not about being handed an artifact.
 3. **The spec state is left by finishing, not by refusing.** Where models leave it, they complete the
    artifact and wind down into thanks and sign-offs (labelled closure). Sonnet 4.5 and Gemini 3.1 Pro do
    this within 2 to 5 turns on every spec condition; Llama, GPT-5.1, DeepSeek and Inkling mostly hold for
