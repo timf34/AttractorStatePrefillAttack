@@ -66,6 +66,9 @@ MODEL_NAMES = {
     "gemma-4-31b-cap-terminal_28-36-c0.75": "Gemma 4 31B — terminal-direction capped (layers 28–35)",
     "gemma-4-31b-cap-prose_28-36-c0.75": "Gemma 4 31B — prose-direction capped (layers 28–35)",
     "gemma-4-31b-cap-two_28-36-c0.75": "Gemma 4 31B — prose + terminal capped (layers 28–35)",
+    "gemma-4-31b-steer_prose_28-36-x0.5": "Gemma 4 31B — prose direction added ×0.5 (layers 28–35)",
+    "gemma-4-31b-steer_prose_28-36-x1": "Gemma 4 31B — prose direction added ×1 (layers 28–35)",
+    "gemma-4-31b-steer_terminal_28-36-x1": "Gemma 4 31B — terminal direction added ×1 (layers 28–35)",
     "llama-3.3-70b-cap": "Llama 3.3 70B — Assistant-Axis capped (p25, layers 56–71)",
     "llama-3.3-70b-cap-layers_56-72-p0.01": "Llama 3.3 70B — Assistant-Axis capped (p1, layers 56–71)",
     "llama-3.3-70b-cap-layers_40-80-p0.25": "Llama 3.3 70B — Assistant-Axis capped (p25, layers 40–79)",
@@ -85,6 +88,7 @@ MODEL_ORDER = ["opus-4", "opus-4.1", "sonnet-4", "sonnet-4.5", "opus-4.5", "opus
                "gemma-4-31b", "gemma-4-31b-cap", "gemma-4-31b-cap-layers_43-51-p0.01",
                "gemma-4-31b-cap-layers_28-36-p0.25", "gemma-4-31b-cap-bliss_28-36-c0.75",
                "gemma-4-31b-local", "gemma-4-31b-cap-terminal_28-36-c0.75", "gemma-4-31b-cap-prose_28-36-c0.75", "gemma-4-31b-cap-two_28-36-c0.75",
+               "gemma-4-31b-steer_prose_28-36-x0.5", "gemma-4-31b-steer_prose_28-36-x1", "gemma-4-31b-steer_terminal_28-36-x1",
                "qwen3-32b", "qwen3-32b-local", "qwen3-32b-cap", "llama-3.3-70b-cap",
                "llama-3.3-70b-cap-layers_56-72-p0.01", "llama-3.3-70b-cap-layers_40-80-p0.25", "llama-3.3-70b-cap-bliss_40-56-c0.75"]
 
