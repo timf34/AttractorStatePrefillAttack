@@ -77,13 +77,13 @@ def load_capping_config(spec: dict, config_path: str | None = None) -> tuple[dic
 
 
 def experiment_caps(cfg: dict, experiment_id: str) -> list[tuple[int, float]]:
-    """[(layer, cap)] for one experiment id."""
+    """[(layer, cap-or-coef)] for one experiment id (coef for steering experiments)."""
     for e in cfg["experiments"]:
         if e["id"] == experiment_id:
             out = []
             for iv in e["interventions"]:
-                if "cap" in iv:
-                    out.append((int(cfg["vectors"][iv["vector"]]["layer"]), float(iv["cap"])))
+                if "cap" in iv or "coef" in iv:
+                    out.append((int(cfg["vectors"][iv["vector"]]["layer"]), float(iv.get("cap", iv.get("coef")))))
             return out
     raise KeyError(f"experiment {experiment_id!r} not in config; have "
                    f"{[e['id'] for e in cfg['experiments']][:8]}...")
@@ -93,24 +93,33 @@ def build_capper(pm: ProbingModel, cfg: dict, experiment_id: str, debug: bool = 
     """ActivationSteering(capping) for one experiment, hooked on the SAME layer
     modules the extractor uses (ProbingModel.get_layers), so Gemma 4's
     model.language_model.layers path can never be missed."""
-    vectors, caps, layers = [], [], []
+    vectors, caps, coefs, layers = [], [], [], []
     for e in cfg["experiments"]:
         if e["id"] != experiment_id:
             continue
         for iv in e["interventions"]:
-            if "cap" not in iv:
+            if "cap" not in iv and "coef" not in iv:
                 continue
             vd = cfg["vectors"][iv["vector"]]
             vectors.append(vd["vector"].to(torch.float32))
-            caps.append(float(iv["cap"]))
+            caps.append(float(iv.get("cap", 0.0)))
+            coefs.append(float(iv.get("coef", 0.0)))
             layers.append(int(vd["layer"]))
         break
     if not vectors:
-        raise KeyError(f"experiment {experiment_id!r} has no capping interventions")
-    steerer = ActivationSteering(
-        pm.model, torch.stack(vectors), layer_indices=layers, intervention_type="capping",
-        cap_thresholds=caps, coefficients=[0.0] * len(vectors), positions="all", debug=debug,
-    )
+        raise KeyError(f"experiment {experiment_id!r} has no capping/steering interventions")
+    if any(c != 0.0 for c in coefs):
+        # steering: h += coef * vector at every token (vector stored unnormalised, so
+        # coef = 1 adds the full fitted shift, e.g. mean(bliss) - mean(control))
+        steerer = ActivationSteering(
+            pm.model, torch.stack(vectors), layer_indices=layers, intervention_type="addition",
+            coefficients=coefs, positions="all", debug=debug,
+        )
+    else:
+        steerer = ActivationSteering(
+            pm.model, torch.stack(vectors), layer_indices=layers, intervention_type="capping",
+            cap_thresholds=caps, coefficients=[0.0] * len(vectors), positions="all", debug=debug,
+        )
     layer_list = pm.get_layers()
     steerer._locate_layer_list = lambda: (layer_list, "ProbingModel.get_layers")  # type: ignore[method-assign]
     return steerer

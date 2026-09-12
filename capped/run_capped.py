@@ -53,6 +53,8 @@ def alias_for(model: str, experiment: str | None, spec: dict) -> str:
         return f"{model}-local"
     if experiment == spec["experiment"]:
         return f"{model}-cap"
+    if experiment.startswith("steer"):
+        return f"{model}-{experiment.replace(':', '-')}"
     return f"{model}-cap-{experiment.replace(':', '-')}"
 
 
@@ -198,7 +200,7 @@ def main():
             "transcript": turns,
             "intervention": (
                 {"type": "none"} if exp is None else
-                {"type": "capping", "experiment": exp, "config_source": cfg_source,
+                {"type": "steering" if exp.startswith("steer") else "capping", "experiment": exp, "config_source": cfg_source,
                  "window": _window(exp),
                  "caps": [{"layer": L, "cap": c} for L, c in caps],
                  "note": "cap vector is the negated axis: caps are floors on Assistant-ness, all tokens"}),

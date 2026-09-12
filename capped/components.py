@@ -225,6 +225,12 @@ def main():
                                 [{"vector": f"layer_{L}/terminal_minus_control", "cap": caps_term[L]} for L in range(a, b)]})
             experiments.append({"id": f"prose_{a}:{b}-c{q}", "interventions":
                                 [{"vector": f"layer_{L}/prose_minus_control", "cap": caps_prose[L]} for L in range(a, b)]})
+        # steering: add coef x (mean bliss-phase turn - mean control turn) at every token, all layers in window
+        for a, b in windows:
+            for name in ("prose", "terminal"):
+                for coef in (0.5, 1.0):
+                    experiments.append({"id": f"steer_{name}_{a}:{b}-x{coef:g}", "interventions":
+                                        [{"vector": f"layer_{L}/{name}_minus_control", "coef": coef} for L in range(a, b)]})
         out = Path(args.out) if Path(args.out).is_absolute() else ROOT / args.out
         torch.save({"vectors": vectors, "experiments": experiments,
                     "meta": {"model": spec["hf"], "note": "prose = judge-'engaged' turns minus control; terminal = judge-'terminal' turns minus control; caps = control quantile"}}, out)

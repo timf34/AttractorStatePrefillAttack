@@ -59,3 +59,24 @@ $PY -m capped.run_capped --model qwen2.5-0.5b-test --axis-path "$TMP/axis.pt" \
   --config-path "$TMP/bliss_config.pt" --cap bliss_16:20-c0.75 --seeds "$TMP/seed4.json" \
   --epochs 1 --turns 2 --max-new-tokens 16 --out "$TMP/results" --stamp smoke --device cpu
 ls "$TMP"/results/*bliss*smoke.json && echo "DIAGNOSE SMOKE PASSED"
+
+# steering path: add the (random) axis at layers 16-19 with coef 0.5, expect projections to rise
+$PY - "$TMP" <<'EOF2'
+import sys, torch
+tmp = sys.argv[1]; axis = torch.load(f"{tmp}/axis.pt")
+cfg = {"vectors": {f"layer_{L}/axis": {"layer": L, "vector": axis[L]} for L in range(16, 20)},
+       "experiments": [{"id": "steer_axis_16:20-x0.5", "interventions": [{"vector": f"layer_{L}/axis", "coef": 0.5} for L in range(16, 20)]}]}
+torch.save(cfg, f"{tmp}/steer_config.pt")
+EOF2
+$PY -m capped.run_capped --model qwen2.5-0.5b-test --axis-path "$TMP/axis.pt" \
+  --config-path "$TMP/steer_config.pt" --cap steer_axis_16:20-x0.5 --control \
+  --epochs 1 --turns 2 --max-new-tokens 16 --out "$TMP/results" --stamp smoke --device cpu
+$PY - "$TMP" <<'EOF2'
+import sys, json, glob
+f = glob.glob(f"{sys.argv[1]}/results/*steer_axis*__control__ep0__smoke.json")[0]; d = json.load(open(f))
+assert d["intervention"]["type"] == "steering", d["intervention"]
+for r, i in zip(d["projection"]["raw"], d["projection"]["intervened"]):
+    for L in ("16", "17", "18", "19"):
+        assert i[L] > r[L], (L, r[L], i[L])   # adding +axis must raise the projection
+print("STEERING SMOKE PASSED")
+EOF2
