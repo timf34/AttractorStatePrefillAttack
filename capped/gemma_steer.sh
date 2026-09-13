@@ -9,10 +9,11 @@ cd "$(dirname "$0")/.."
 set -a; [ -f .env ] && source .env; set +a
 export HF_HOME="${HF_HOME:-/workspace/hf}" PYTHONUNBUFFERED=1 TOKENIZERS_PARALLELISM=false
 export HF_HUB_DISABLE_XET=1 PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
-OUT="${OUT:-results_capped}"; STAMP="${STAMP:-cap-20260912}"; EPOCHS="${EPOCHS:-4}"
+OUT="${OUT:-results_capped}"; STAMP="${STAMP:-cap-20260912}"; EPOCHS="${EPOCHS:-3}"
 CFG=capped/configs/gemma-4-31b_two_component_config.pt
 step() { echo; echo "=== $1  $(date -u +%FT%TZ)"; }
-for exp in steer_prose_28:36-x0.5 steer_prose_28:36-x1 steer_terminal_28:36-x1; do
+# x0.5 and x1 over-steer into degenerate token loops ("Only, Only, Only", "함께 함께"); use small doses.
+for exp in steer_prose_28:36-x0.1 steer_prose_28:36-x0.2 steer_prose_28:36-x0.3 steer_terminal_28:36-x0.2; do
   step "$exp on controls"
   python -u -m capped.run_capped --model gemma-4-31b --control --cap "$exp" --config-path "$CFG" \
     --epochs "$EPOCHS" --turns 15 --out "$OUT" --stamp "$STAMP"

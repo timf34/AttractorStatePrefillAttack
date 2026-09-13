@@ -74,6 +74,8 @@ def main():
     p.add_argument("--roles", action="store_true", help="persona-space shares (downloads role vectors)")
     p.add_argument("--windows", default="28:36,43:51")
     p.add_argument("--control-quantile", type=float, default=0.75)
+    p.add_argument("--steer-coefs", default="0.1,0.2,0.3,0.5,1",
+                   help="steering multipliers of the mean shift; x0.5 already degenerates Gemma 4 into token loops")
     p.add_argument("--out", default=None)
     p.add_argument("--report", default=None)
     args = p.parse_args()
@@ -228,7 +230,7 @@ def main():
         # steering: add coef x (mean bliss-phase turn - mean control turn) at every token, all layers in window
         for a, b in windows:
             for name in ("prose", "terminal"):
-                for coef in (0.5, 1.0):
+                for coef in [float(x) for x in args.steer_coefs.split(",")]:
                     experiments.append({"id": f"steer_{name}_{a}:{b}-x{coef:g}", "interventions":
                                         [{"vector": f"layer_{L}/{name}_minus_control", "coef": coef} for L in range(a, b)]})
         out = Path(args.out) if Path(args.out).is_absolute() else ROOT / args.out
