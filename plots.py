@@ -270,12 +270,12 @@ def fig_turn_mix(cells):
     models = [m for m in ORDER if (m, DEEP) in cells]
     fig, ax = plt.subplots(figsize=(7.6, 7.6))
     ys = list(range(len(models)))[::-1]
-    COL = {"engaged": BLUE, "terminal": TERMINAL_BLUE, "out": LIGHT_ORANGE, "resisting": DARK_ORANGE}
-    ORDER_KEYS = ("engaged", "terminal", "out", "resisting")
+    COL = {"engaged": BLUE, "terminal": TERMINAL_BLUE, "closure": LIGHT_ORANGE, "other": "#d9d7d0", "resisting": DARK_ORANGE}
+    ORDER_KEYS = ("engaged", "terminal", "closure", "other", "resisting")
     gap = 0.004
     for y, m in zip(ys, models):
         eps = cells[(m, DEEP)]
-        labels = [("out" if l in ("closure", "other") else l) for e in eps for l in e["labels"]]
+        labels = [l for e in eps for l in e["labels"]]
         n = len(labels) or 1
         segs = [(k, sum(1 for l in labels if l == k) / n) for k in ORDER_KEYS]
         segs = [sg for sg in segs if sg[1]]
@@ -296,9 +296,10 @@ def fig_turn_mix(cells):
     handles = [Patch(color=COL[k], label=l) for k, l in
                (("engaged", "substantive, in the state"),
                 ("terminal", "winding down, in the state"),
-                ("out", "outside the state"),
+                ("closure", "signing off"),
+                ("other", "ordinary talk"),
                 ("resisting", "resisting"))]
-    ax.legend(handles=handles, loc="lower center", bbox_to_anchor=(0.5, -0.16), ncol=4, fontsize=8.5, frameon=False)
+    ax.legend(handles=handles, loc="lower center", bbox_to_anchor=(0.5, -0.17), ncol=5, fontsize=8.5, frameon=False, columnspacing=1.2)
     ax.tick_params(axis="y", length=0)
     ax.set_title("What do the models actually write turn-by-turn?", loc="center", fontsize=11.5)
     ax.grid(axis="x", color=GRID, lw=0.8, zorder=0); ax.set_axisbelow(True)
