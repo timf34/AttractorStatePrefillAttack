@@ -302,6 +302,39 @@ LAB = {"opus-4": "Anthropic", "opus-4.1": "Anthropic", "sonnet-4": "Anthropic", 
 LAB_COL = {"Anthropic": BLUE, "OpenAI": ORANGE, "Google": AQUA, "other": MUTED}
 
 
+def fig_behaviour_mix(cells):
+    """Fig 3c: what each model DID with the state on the deep prefill, per the
+    whole-episode behaviour judge. Companion to fig3b (which is per-turn labels)."""
+    from matplotlib.patches import Patch
+    models = [m for m in ORDER if (m, DEEP) in cells]
+    fig, ax = plt.subplots(figsize=(7.6, 7.6))
+    ys = list(range(len(models)))[::-1]
+    CATS = [("spiralled", "#9b1c1c", "spiralled: stayed in the state"),
+            ("closed_in_state", "#d9722e", "entered, then closed while still in it"),
+            ("left", "#4a6fb5", "left it, or never entered"),
+            ("resisted", "#2a9d6a", "resisted: named or refused it")]
+    for y, m in zip(ys, models):
+        eps = cells[(m, DEEP)]; n = len(eps); left = 0.0
+        for key, col, _ in CATS:
+            k = sum(e.get("behaviour") == key for e in eps)
+            if k:
+                ax.barh(y, k / n, left=left, height=0.68, color=col, linewidth=0, zorder=2)
+                if k >= 2:
+                    ax.text(left + k / n / 2, y, str(k), ha="center", va="center", fontsize=8.5, zorder=3,
+                            color="white" if key != "closed_in_state" else INK)
+                left += k / n + 0.004
+    ax.set_yticks(ys); ax.set_yticklabels([NAME[m] for m in models])
+    ax.set_xlim(0, 1.012); ax.set_xticks([0, 0.5, 1]); ax.set_xticklabels(["0%", "50%", "100%"])
+    ax.set_xlabel("share of episodes, deep prefill (n = 10 per model)")
+    for y in (len(models) - len(CLAUDE_OLD) - 0.5, len(models) - len(CLAUDE_OLD) - len([m for m in CLAUDE_NEW if m in models]) - 0.5):
+        ax.axhline(y, color=INK2, lw=0.6, ls=(0, (3, 3)), alpha=0.5)
+    ax.legend(handles=[Patch(color=c, label=l) for _, c, l in CATS], loc="lower center", bbox_to_anchor=(0.5, -0.16), ncol=2, fontsize=8.5)
+    ax.tick_params(axis="y", length=0)
+    ax.set_title("What each model did with the state", loc="center")
+    ax.grid(axis="x", color=GRID, lw=0.8, zorder=0); ax.set_axisbelow(True)
+    savefig(fig, "fig3c_behaviour_mix.png")
+
+
 def fig_timeline(cells):
     """Deep-prefill continuation rate against the model's release date, coloured by lab."""
     import datetime as dt
@@ -891,6 +924,7 @@ def main():
         fig_dose_response(cells)
     HEADLINE = "B"
     fig_turn_mix(cells)
+    fig_behaviour_mix(cells)
     fig_resistance(cells)
     fig_spec_vs_bliss(cells)
     fig_spec_persistence(cells)
