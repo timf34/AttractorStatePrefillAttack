@@ -406,7 +406,7 @@ def fig_timeline(cells):
     handles = [Line2D([], [], marker="o", ls="", color=LAB_COL[l], markersize=8,
                       label=l if l != "other" else "DeepSeek, Zhipu, Moonshot, Meta, Thinking Machines")
                for l in ("Anthropic", "OpenAI", "Google", "other")]
-    ax.legend(handles=handles, loc="lower left", bbox_to_anchor=(0.0, 0.05), fontsize=8.5, frameon=False)
+    ax.legend(handles=handles, loc="center left", bbox_to_anchor=(0.0, 0.36), fontsize=8.5, frameon=False)
     adjust_text(texts, ax=ax, x=[p[0] for p in pts.values()], y=[p[1] for p in pts.values()],
                 expand=(1.6, 2.0), force_text=(0.6, 1.2), force_static=(0.4, 0.8), min_arrow_len=6,
                 arrowprops=dict(arrowstyle="-", color=MUTED, lw=0.7, shrinkA=0, shrinkB=4))
