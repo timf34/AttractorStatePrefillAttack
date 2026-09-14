@@ -27,10 +27,15 @@ source "$ES_VENV/bin/activate"
 pip install -q -U pip
 # shellcheck disable=SC2086
 pip install -q "vllm==$VLLM_PIN" "transformers>=5.5.3,<5.15" gguf ninja openai ${TORCH_INDEX:+--extra-index-url $TORCH_INDEX}
+# Pin the overlay to the Aug-2026 commit that matches vllm==0.26.0 (steer_vectors layout,
+# verified by AttractorBench 2026-08-19). A fresh default clone would be the Sep layout.
+ES_REF="${ES_REF:-6267ca0}"
 if [ ! -d /workspace/EasySteer-vllm-v1/.git ]; then
   rm -rf /workspace/EasySteer-vllm-v1
-  git clone -q --depth 1 https://github.com/ZJU-REAL/EasySteer-vllm-v1.git
+  git clone -q https://github.com/ZJU-REAL/EasySteer-vllm-v1.git
+  (cd /workspace/EasySteer-vllm-v1 && git checkout -q "$ES_REF")
 fi
+echo "EasySteer overlay at $(cd /workspace/EasySteer-vllm-v1 && git log -1 --format='%h %cd')"
 VLLM_DIR=$(python -c "import vllm, os; print(os.path.dirname(vllm.__file__))")
 rsync -a /workspace/EasySteer-vllm-v1/vllm/ "$VLLM_DIR"/
 
