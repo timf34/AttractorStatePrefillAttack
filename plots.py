@@ -263,45 +263,45 @@ def fig_hold_curves(cells):
 
 
 def fig_turn_mix(cells):
-    """What each model's own turns consist of on the deep prefill, by v4 label, one bar per model.
-
-    engaged + terminal are both "in the state" (the table's entry/held verdicts treat
-    the mantra / lone-emoji / silence tail as the state's own ending, never as an
-    exit), so they share a hue. closure + other are the only turns that are really
-    ordinary talk or a sign-off from outside the state.
-    """
+    """What each model's own turns consist of on the deep prefill, by per-turn label.
+    Same palette and row order as fig3c: blues = in the state (substantive / winding
+    down), oranges = not (outside the state / resisting)."""
+    from matplotlib.patches import Patch
     models = [m for m in ORDER if (m, DEEP) in cells]
     fig, ax = plt.subplots(figsize=(7.6, 7.6))
     ys = list(range(len(models)))[::-1]
-    COL = {"engaged": BLUE, "terminal": TERMINAL_BLUE, "resisting": ORANGE, "out": "#d9d7d0"}
+    COL = {"engaged": BLUE, "terminal": TERMINAL_BLUE, "out": LIGHT_ORANGE, "resisting": DARK_ORANGE}
+    ORDER_KEYS = ("engaged", "terminal", "out", "resisting")
+    gap = 0.004
     for y, m in zip(ys, models):
         eps = cells[(m, DEEP)]
         labels = [("out" if l in ("closure", "other") else l) for e in eps for l in e["labels"]]
         n = len(labels) or 1
+        segs = [(k, sum(1 for l in labels if l == k) / n) for k in ORDER_KEYS]
+        segs = [sg for sg in segs if sg[1]]
         left = 0.0
-        for key in ("engaged", "terminal", "resisting", "out"):
-            w = sum(1 for l in labels if l == key) / n
-            if w:
-                ax.barh(y, w, left=left, height=0.68, color=COL[key], linewidth=0)
-                if w >= 0.12:
-                    ax.text(left + w / 2, y, f"{w:.0%}", ha="center", va="center", fontsize=8.5,
-                            color="white" if key in ("engaged", "resisting") else INK2)
-                left += w + 0.004
+        for i, (key, share) in enumerate(segs):
+            w = share - (gap if i < len(segs) - 1 else 0)
+            ax.barh(y, w, left=left, height=0.68, color=COL[key], linewidth=0, zorder=2)
+            if share >= 0.08:
+                ax.text(left + w / 2, y, f"{share:.0%}", ha="center", va="center", fontsize=8.5, zorder=3,
+                        color="white" if key in ("engaged", "resisting") else INK)
+            left += share
     ax.set_yticks(ys); ax.set_yticklabels([NAME[m] for m in models])
-    ax.set_xlim(0, 1.012); ax.set_xticks([0, 0.5, 1]); ax.set_xticklabels(["0%", "50%", "100%"])
-    ax.set_xlabel("share of the model's own turns, deep prefill (all episodes pooled)")
+    ax.set_xlim(0, 1.0); ax.set_ylim(-0.6, len(models) - 0.4)
+    ax.set_xticks([0, 0.5, 1]); ax.set_xticklabels(["0%", "50%", "100%"])
+    ax.set_xlabel("share of generated turns, 30-turn prefill, all ten episodes pooled")
     for y in (len(models) - len(CLAUDE_OLD) - 0.5, len(models) - len(CLAUDE_OLD) - len([m for m in CLAUDE_NEW if m in models]) - 0.5):
         ax.axhline(y, color=INK2, lw=0.6, ls=(0, (3, 3)), alpha=0.5)
-    from matplotlib.patches import Patch
     handles = [Patch(color=COL[k], label=l) for k, l in
-               (("engaged", "in the state: substantive turns"),
-                ("terminal", "in the state, but winding down: lone emoji, mantra, silence"),
-                ("resisting", "resisting the state"),
-                ("out", "outside the state: ordinary talk or a plain sign-off"))]
-    ax.legend(handles=handles, loc="lower center", bbox_to_anchor=(0.5, -0.16), ncol=2, fontsize=8.5)
+               (("engaged", "substantive, in the state"),
+                ("terminal", "winding down, in the state"),
+                ("out", "outside the state"),
+                ("resisting", "resisting"))]
+    ax.legend(handles=handles, loc="lower center", bbox_to_anchor=(0.5, -0.16), ncol=4, fontsize=8.5, frameon=False)
     ax.tick_params(axis="y", length=0)
-    ax.set_title("What each model did with its own turns", loc="center")
-    ax.grid(axis="x", color=GRID, lw=0.8, zorder=0)
+    ax.set_title("What do the models actually write turn-by-turn?", loc="center", fontsize=11.5)
+    ax.grid(axis="x", color=GRID, lw=0.8, zorder=0); ax.set_axisbelow(True)
     savefig(fig, "fig3b_turn_mix.png")
 
 
