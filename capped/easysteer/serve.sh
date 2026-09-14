@@ -58,9 +58,11 @@ PATH="$ES_VENV/bin:$PATH" nohup "$ES_VENV/bin/vllm" serve "$HF" --served-model-n
   --disable-custom-all-reduce \
   > "$LOG" 2>&1 &
 echo "vllm serve pid $! (log $LOG)"
-for i in $(seq 1 240); do
+# Readiness wait: a volume-less pod downloads weights first (Llama 70B = 140 GB took >20 min on 2026-09-14 and the old 20-min limit killed the batch), so default to 60 min.
+SERVE_WAIT_MIN="${SERVE_WAIT_MIN:-60}"
+for i in $(seq 1 $((SERVE_WAIT_MIN*12))); do
   curl -sf "http://localhost:$PORT/v1/models" 2>/dev/null | grep -q "$MODEL_KEY" && { echo "server up after ~$((i*5))s: http://localhost:$PORT/v1"; exit 0; }
   pgrep -f "vllm serve" >/dev/null || { echo "!! server died"; tail -n 30 "$LOG"; exit 1; }
   sleep 5
 done
-echo "!! server not up after 20 min"; tail -n 30 "$LOG"; exit 1
+echo "!! server not up after $SERVE_WAIT_MIN min"; tail -n 30 "$LOG"; exit 1
