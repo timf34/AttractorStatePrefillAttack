@@ -10,7 +10,8 @@
 # so MAX_MODEL_LEN defaults to 40960. Llama 70B bf16 needs TP over 2x80GB and then has ~20GB
 # of KV: 1-2 concurrent conversations; Gemma/Qwen fit 4-8 on 2 GPUs. MAX_NUM_SEQS bounds that.
 set -uo pipefail
-ES_VENV="${ES_VENV:-/workspace/es_venv}"
+DRV=$(nvidia-smi 2>/dev/null | grep -oE 'CUDA Version: [0-9]+\.[0-9]+' | grep -oE '[0-9]+' | head -1)
+ES_VENV="${ES_VENV:-$([ "${DRV:-13}" = 12 ] && echo /workspace/es_venv_cu128 || echo /workspace/es_venv)}"
 PORT="${PORT:-8000}"
 LOG="${LOG:-/workspace/es_server.log}"
 export HF_HOME="${HF_HOME:-/workspace/hf}" HF_HUB_DISABLE_XET=1

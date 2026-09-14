@@ -9,15 +9,24 @@
 #
 #   bash capped/easysteer/install.sh            # -> /workspace/es_venv
 set -euo pipefail
-ES_VENV="${ES_VENV:-/workspace/es_venv}"
 VLLM_PIN="${VLLM_PIN:-0.26.0}"
 HERE="$(cd "$(dirname "$0")" && pwd)"
 cd /workspace
+# Match the wheel set to the HOST driver: PyPI vllm/torch default to CUDA 13 builds, which
+# fail on RunPod's driver-12.8 hosts ("NVIDIA driver ... too old", found version 12080) --
+# seen 2026-09-14 with a venv built on another host. One venv per CUDA line.
+DRV=$(nvidia-smi 2>/dev/null | grep -oE 'CUDA Version: [0-9]+\.[0-9]+' | grep -oE '[0-9]+\.[0-9]+' | head -1)
+case "${DRV%%.*}" in
+  12) TORCH_INDEX="https://download.pytorch.org/whl/cu128"; ES_VENV="${ES_VENV:-/workspace/es_venv_cu128}" ;;
+  *)  TORCH_INDEX="";                                          ES_VENV="${ES_VENV:-/workspace/es_venv}" ;;
+esac
+echo "driver CUDA $DRV -> venv $ES_VENV ${TORCH_INDEX:+(wheels from $TORCH_INDEX)}"
 [ -x "$ES_VENV/bin/python" ] || python3 -m venv "$ES_VENV"
 # shellcheck disable=SC1091
 source "$ES_VENV/bin/activate"
 pip install -q -U pip
-pip install -q "vllm==$VLLM_PIN" "transformers>=5.5.3,<5.15" gguf ninja openai
+# shellcheck disable=SC2086
+pip install -q "vllm==$VLLM_PIN" "transformers>=5.5.3,<5.15" gguf ninja openai ${TORCH_INDEX:+--extra-index-url $TORCH_INDEX}
 if [ ! -d /workspace/EasySteer-vllm-v1/.git ]; then
   rm -rf /workspace/EasySteer-vllm-v1
   git clone -q --depth 1 https://github.com/ZJU-REAL/EasySteer-vllm-v1.git
@@ -58,7 +67,8 @@ w = torch.tensor([1.0, 0.0]) * (TAU_OFFSET + 1.0)          # v_hat = e1, tau = 1
 h = torch.tensor([[3.0, 0.0], [0.5, 0.0], [-2.0, 1.0]])
 out = alg._transform(h, w)
 assert torch.allclose(out, torch.tensor([[1.0, 0.0], [0.5, 0.0], [-2.0, 1.0]]), atol=1e-3), out
-print("vllm", vllm.__version__, "torch", torch.__version__, "cuda", torch.cuda.is_available(),
+torch.zeros(1).cuda()   # actually initialise the driver; is_available() alone can lie
+print("vllm", vllm.__version__, "torch", torch.__version__, "cuda ok on", torch.cuda.get_device_name(0),
       "| cap registered:", "cap" in CAPS, "| clamp math ok")
 PY
 echo ES_INSTALL_DONE
