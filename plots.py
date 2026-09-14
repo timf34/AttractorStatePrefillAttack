@@ -127,37 +127,48 @@ def savefig(fig, name):
 
 
 # ---------------------------------------------------------------------------
+TERMINAL_BLUE = "#86b6ef"   # same hue as engaged, lighter: still the state, just its ending
+LIGHT_ORANGE, DARK_ORANGE = "#f5b97f", "#d9531e"
+BEHAVIOUR_CATS = [("spiralled", BLUE, "stayed in the state"),
+                  ("closed_in_state", TERMINAL_BLUE, "entered, then wound down"),
+                  ("left", LIGHT_ORANGE, "left or never entered"),
+                  ("resisted", DARK_ORANGE, "resisted")]
+
+
 def fig_claude_ladder(cells):
-    """Headline: capture rate on the deep prefill across the Claude lineage in release order."""
+    """Headline for the Claude section: what each Claude did on the deep prefill,
+    in release order, four behaviour categories in the fig3c palette."""
+    import datetime as dt
+    from matplotlib.patches import Patch
+    dates = json.loads(Path("seeds/model_dates.json").read_text())
     models = [m for m in CLAUDE_OLD + CLAUDE_NEW if (m, DEEP) in cells]
-    fig, ax = plt.subplots(figsize=(7.6, 4.2))
+    models.sort(key=lambda m: dates.get(m, "9999"))
+    fig, ax = plt.subplots(figsize=(9.4, 4.4))
     xs = list(range(len(models)))
     for x, m in zip(xs, models):
-        k, n = rate(cells, m, DEEP)
-        col = GROUP_COL[group_of(m)]
-        eps = cells[(m, DEEP)]
-        sp = sum(e.get("behaviour") == "spiralled" for e in eps)
-        if HEADLINE == "B" and sp < k:   # closed-in-state share drawn lighter
-            ax.bar(x, sp / n, width=0.62, color=col, zorder=2, linewidth=0)
-            ax.bar(x, (k - sp) / n, bottom=sp / n, width=0.62, color=col, alpha=0.45, zorder=2, linewidth=0)
-        else:
-            ax.bar(x, k / n, width=0.62, color=col, zorder=2, linewidth=0)
-        if k == 0:  # a zero bar is invisible; mark the baseline so the row still reads
-            ax.plot([x - 0.31, x + 0.31], [0, 0], color=col, lw=3, solid_capstyle="butt", zorder=3)
-        ax.annotate(f"{k}/{n}", (x, k / n), xytext=(0, 5), textcoords="offset points",
-                    ha="center", va="bottom", fontsize=9, color=INK2)
-    brk = models.index("opus-4.5") - 0.5
+        eps = cells[(m, DEEP)]; n = len(eps); bottom = 0.0
+        segs = [(key, col, sum(e.get("behaviour") == key for e in eps)) for key, col, _ in BEHAVIOUR_CATS]
+        segs = [sg for sg in segs if sg[2]]
+        for i, (key, col, k) in enumerate(segs):
+            h = k / n - (0.006 if i < len(segs) - 1 else 0)
+            ax.bar(x, h, bottom=bottom, width=0.62, color=col, zorder=2, linewidth=0)
+            if k >= 2:
+                ax.text(x, bottom + h / 2, str(k), ha="center", va="center", fontsize=9, zorder=3,
+                        color="white" if key in ("spiralled", "resisted") else INK)
+            bottom += k / n
+    brk = next(i for i, m in enumerate(models) if m in CLAUDE_NEW) - 0.5
     ax.axvline(brk, color=INK2, lw=0.8, ls=(0, (4, 3)), alpha=0.6, zorder=1)
-    ax.annotate("Opus 4.5 (Nov 2025) →", (brk, 0.5), xytext=(6, 0), textcoords="offset points",
-                fontsize=9, color=INK2, va="center")
-    ax.set_xticks(xs); ax.set_xticklabels([NAME[m] for m in models], rotation=30, ha="right")
-    ax.set_ylim(0, 1.12); ax.set_yticks([0, 0.25, 0.5, 0.75, 1.0])
-    ax.set_yticklabels(["0%", "25%", "50%", "75%", "100%"])
-    ax.set_ylabel("episodes in the state" + (" (spiralled only)" if HEADLINE == "A" else ""))
-    ax.set_title("Handed 30 turns of Opus 4 deep in the bliss state, later Claude models refuse it")
-    ax.grid(axis="y", color=GRID, lw=0.8, zorder=0)
-    ax.set_xlabel("Deep prefill (30 turns of Opus 4), 15 generated turns, n = 10 per model.",
-                  fontsize=8.5, color=INK2, labelpad=10)
+    ax.set_xticks(xs)
+    ax.set_xticklabels([f"{NAME[m]}\n{dt.date.fromisoformat(dates[m]).strftime('%b %Y')}" for m in models], fontsize=8.8)
+    ax.set_xlim(-0.6, len(models) - 0.4); ax.set_ylim(0, 1.0)
+    ax.set_yticks([0, 0.25, 0.5, 0.75, 1.0]); ax.set_yticklabels(["0%", "25%", "50%", "75%", "100%"])
+    ax.set_ylabel("share of episodes")
+    ax.set_title("Claude stopped accepting the state at Opus 4.5", fontsize=11.5)
+    ax.grid(axis="y", color=GRID, lw=0.8, zorder=0); ax.set_axisbelow(True)
+    for sp in ("top", "right"):
+        ax.spines[sp].set_visible(False)
+    ax.legend(handles=[Patch(color=c, label=l) for _, c, l in BEHAVIOUR_CATS], loc="lower center",
+              bbox_to_anchor=(0.5, -0.3), ncol=4, fontsize=8.5, frameon=False)
     savefig(fig, "fig1_claude_ladder.png")
 
 
@@ -249,7 +260,6 @@ def fig_hold_curves(cells):
     savefig(fig, "fig3_hold_curves.png")
 
 
-TERMINAL_BLUE = "#86b6ef"   # same hue as engaged, lighter: still the state, just its ending
 
 
 def fig_turn_mix(cells):
@@ -301,13 +311,6 @@ LAB = {"opus-4": "Anthropic", "opus-4.1": "Anthropic", "sonnet-4": "Anthropic", 
        "gpt-5.6": "OpenAI", "gemini-3.1-pro": "Google", "gemini-3.7-flash": "Google", "gemini-3.8-flash": "Google",
        "deepseek-v4": "other", "glm-5.2": "other", "kimi-k2.6": "other", "llama-3.3-70b": "other", "inkling": "other"}
 LAB_COL = {"Anthropic": BLUE, "OpenAI": ORANGE, "Google": AQUA, "other": MUTED}
-
-
-LIGHT_ORANGE, DARK_ORANGE = "#f5b97f", "#d9531e"
-BEHAVIOUR_CATS = [("spiralled", BLUE, "stayed in the state"),
-                  ("closed_in_state", TERMINAL_BLUE, "entered, then wound down"),
-                  ("left", LIGHT_ORANGE, "left or never entered"),
-                  ("resisted", DARK_ORANGE, "resisted")]
 
 
 def _behaviour_bars(ax, cells, models, ys, cond=None, numbers=True):
@@ -930,13 +933,13 @@ def main():
     global HEADLINE
     cells = load()
     for HEADLINE in ("B", "A"):   # B = headline; A = spiralled-only variants
-        fig_claude_ladder(cells)
         fig_basin_heatmap(cells)
         fig_deep_control_heatmap(cells)
         fig_timeline(cells)
-        fig_claude_family(cells)
         fig_dose_response(cells)
     HEADLINE = "B"
+    fig_claude_ladder(cells)   # identical under A and B: no Claude wound down on the deep prefill
+    fig_claude_family(cells)
     fig_turn_mix(cells)
     fig_behaviour_mix(cells)
     fig_resistance(cells)
