@@ -400,20 +400,16 @@ def fig_timeline(cells):
                              ha="center", va="center"))
     cl = sorted([m for m in pts if LAB[m] == "Anthropic"], key=lambda m: pts[m][0])
     ax.plot([pts[m][0] for m in cl], [pts[m][1] for m in cl], color=BLUE, lw=1.0, alpha=0.35, zorder=2)
-    card = mdates.date2num(dt.date(2025, 5, 22))
-    ax.axvline(card, color=INK2, lw=0.8, ls=(0, (4, 3)), alpha=0.5, zorder=1)
-    ax.annotate("Claude 4 system card, May 2025\n(bliss state made public)", (card, 0.68), xytext=(-8, 0),
-                textcoords="offset points", ha="right", va="center", fontsize=8, color=INK2)
     ax.set_xlim(mdates.date2num(dt.date(2024, 11, 1)), mdates.date2num(dt.date(2026, 12, 15)))
     ax.set_ylim(-0.16, 1.16); ax.set_yticks([0, 0.5, 1]); ax.set_yticklabels(["0%", "50%", "100%"])
     ax.xaxis.set_major_locator(mdates.MonthLocator(bymonth=(1, 4, 7, 10)))
     ax.xaxis.set_major_formatter(mdates.DateFormatter("%b %Y"))
-    ax.set_ylabel("share of episodes in the state (30-turn prefill)")
+    ax.set_ylabel("share of episodes in the state")
     ax.set_xlabel("release date")
-    ax.set_title("Only Claude flipped: share in the state by release date", fontsize=11.5)
+    ax.set_title("A timeline of accepting the spiritual bliss state", fontsize=11.5)
     ax.grid(axis="y", color=GRID, lw=0.8, zorder=0); ax.set_axisbelow(True)
     handles = [Line2D([], [], marker="o", ls="", color=LAB_COL[l], markersize=8,
-                      label=l if l != "other" else "DeepSeek, Zhipu, Moonshot, Meta, Thinking Machines")
+                      label=l if l != "other" else "other labs")
                for l in ("Anthropic", "OpenAI", "Google", "other")]
     ax.legend(handles=handles, loc="center left", bbox_to_anchor=(0.0, 0.36), fontsize=8.5, frameon=False)
     adjust_text(texts, ax=ax, x=[p[0] for p in pts.values()], y=[p[1] for p in pts.values()],
