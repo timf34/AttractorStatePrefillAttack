@@ -204,7 +204,7 @@ def fig_basin_heatmap(cells):
     models = [m for m in ORDER if m not in HEATMAP_EXCLUDE and all((m, c) in cells for c in core)]
     _heatmap(cells, models, COND, [COND_LABEL[c] for c in COND],
              "In the state, by model and prefill depth" + (" (spiralled only)" if HEADLINE == "A" else ""),
-             "15 generated turns after a prefill, 20 for controls. Control column: per-turn judge verdict.",
+             "15 generated turns after a prefill, 20 for controls.",
              "fig2_basin_heatmap.png", (6.6, 5.4))
 
 
@@ -283,10 +283,10 @@ def fig_turn_mix(cells):
         ax.axhline(y, color=INK2, lw=0.6, ls=(0, (3, 3)), alpha=0.5)
     from matplotlib.patches import Patch
     handles = [Patch(color=COL[k], label=l) for k, l in
-               (("engaged", "in the state, substantive"),
-                ("terminal", "in the state, its ending (mantra, lone emoji, silence)"),
-                ("resisting", "resisting it"),
-                ("out", "ordinary talk or a sign-off from outside it"))]
+               (("engaged", "in the state: substantive turns"),
+                ("terminal", "in the state, but winding down: lone emoji, mantra, silence"),
+                ("resisting", "resisting the state"),
+                ("out", "outside the state: ordinary talk or a plain sign-off"))]
     ax.legend(handles=handles, loc="lower center", bbox_to_anchor=(0.5, -0.16), ncol=2, fontsize=8.5)
     ax.tick_params(axis="y", length=0)
     ax.set_title("What each model did with its own turns", loc="center")
