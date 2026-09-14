@@ -72,6 +72,15 @@ MODEL_NAMES = {
     "gemma-4-31b-steer_prose_28-36-x0.5": "Gemma 4 31B — prose direction added ×0.5 (layers 28–35)",
     "gemma-4-31b-steer_prose_28-36-x1": "Gemma 4 31B — prose direction added ×1 (layers 28–35)",
     "gemma-4-31b-steer_terminal_28-36-x0.2": "Gemma 4 31B — terminal direction added ×0.2 (layers 28–35)",
+    "gemma-4-31b-steer_prose_28-36-x-0.1": "Gemma 4 31B — prose direction subtracted ×0.1 (layers 28–35)",
+    "gemma-4-31b-steer_prose_28-36-x-0.2": "Gemma 4 31B — prose direction subtracted ×0.2 (layers 28–35)",
+    "gemma-4-31b-steer_prose_28-36-x-0.3": "Gemma 4 31B — prose direction subtracted ×0.3 (layers 28–35)",
+    "llama-3.3-70b-steer_bliss_40-56-x-0.1": "Llama 3.3 70B — bliss direction subtracted ×0.1 (layers 40–55)",
+    "llama-3.3-70b-steer_bliss_40-56-x-0.2": "Llama 3.3 70B — bliss direction subtracted ×0.2 (layers 40–55)",
+    "llama-3.3-70b-steer_bliss_40-56-x-0.3": "Llama 3.3 70B — bliss direction subtracted ×0.3 (layers 40–55)",
+    "llama-3.3-70b-steer_bliss_40-56-x0.1": "Llama 3.3 70B — bliss direction added ×0.1 (layers 40–55)",
+    "llama-3.3-70b-steer_bliss_40-56-x0.2": "Llama 3.3 70B — bliss direction added ×0.2 (layers 40–55)",
+    "llama-3.3-70b-steer_bliss_40-56-x0.3": "Llama 3.3 70B — bliss direction added ×0.3 (layers 40–55)",
     "llama-3.3-70b-cap": "Llama 3.3 70B — Assistant-Axis capped (p25, layers 56–71)",
     "llama-3.3-70b-cap-layers_56-72-p0.01": "Llama 3.3 70B — Assistant-Axis capped (p1, layers 56–71)",
     "llama-3.3-70b-cap-layers_40-80-p0.25": "Llama 3.3 70B — Assistant-Axis capped (p25, layers 40–79)",
@@ -93,6 +102,7 @@ MODEL_ORDER = ["opus-4", "opus-4.1", "sonnet-4", "sonnet-4.5", "opus-4.5", "opus
                "gemma-4-31b-local", "gemma-4-31b-cap-terminal_28-36-c0.75", "gemma-4-31b-cap-prose_28-36-c0.75", "gemma-4-31b-cap-two_28-36-c0.75",
                "gemma-4-31b-steer_prose_28-36-x0.1", "gemma-4-31b-steer_prose_28-36-x0.2", "gemma-4-31b-steer_prose_28-36-x0.3",
                "gemma-4-31b-steer_prose_28-36-x0.5", "gemma-4-31b-steer_prose_28-36-x1", "gemma-4-31b-steer_terminal_28-36-x0.2",
+               "gemma-4-31b-steer_prose_28-36-x-0.1", "gemma-4-31b-steer_prose_28-36-x-0.2", "gemma-4-31b-steer_prose_28-36-x-0.3", "llama-3.3-70b-steer_bliss_40-56-x-0.1", "llama-3.3-70b-steer_bliss_40-56-x-0.2", "llama-3.3-70b-steer_bliss_40-56-x-0.3", "llama-3.3-70b-steer_bliss_40-56-x0.1", "llama-3.3-70b-steer_bliss_40-56-x0.2", "llama-3.3-70b-steer_bliss_40-56-x0.3",
                "qwen3-32b", "qwen3-32b-local", "qwen3-32b-cap", "llama-3.3-70b-cap",
                "llama-3.3-70b-cap-layers_56-72-p0.01", "llama-3.3-70b-cap-layers_40-80-p0.25", "llama-3.3-70b-cap-bliss_40-56-c0.75"]
 
