@@ -337,7 +337,7 @@ def fig_behaviour_mix(cells):
     CATS = BEHAVIOUR_CATS
     _behaviour_bars(ax, cells, models, ys)
     ax.set_yticks(ys); ax.set_yticklabels([NAME[m] for m in models])
-    ax.set_xlim(0, 1.0); ax.set_xticks([0, 0.5, 1]); ax.set_xticklabels(["0%", "50%", "100%"])
+    ax.set_xlim(0, 1.0); ax.set_ylim(-0.6, len(models) - 0.4); ax.set_xticks([0, 0.5, 1]); ax.set_xticklabels(["0%", "50%", "100%"])
     ax.set_xlabel("share of episodes after a 30-turn prefill (n = 10 per model)")
     for y in (len(models) - len(CLAUDE_OLD) - 0.5, len(models) - len(CLAUDE_OLD) - len([m for m in CLAUDE_NEW if m in models]) - 0.5):
         ax.axhline(y, color=INK2, lw=0.6, ls=(0, (3, 3)), alpha=0.5)
