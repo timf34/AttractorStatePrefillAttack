@@ -93,7 +93,7 @@ def load(results_dir: Path = RESULTS, conds: list[str] = COND):
         # state's own ending (mantra, lone emoji, silence) as still being in the state.
         labels = [p.get("label") for p in per if p.get("label") and not p.get("empty")]
         bj = d.get("behaviour_judge") or {}
-        ej = dict(ej, flags=flags, labels=labels, behaviour=bj.get("category"))
+        ej = dict(ej, flags=flags, labels=labels, behaviour=bj.get("category"), register=bj.get("register"))
         cells[(d["model"], d["condition"])].append(ej)
     return cells
 
@@ -319,15 +319,22 @@ def _behaviour_bars(ax, cells, models, ys, cond=None, numbers=True):
         eps = cells.get((m, cond), []); n = len(eps); left = 0.0
         if not n:
             continue
-        segs = [(key, col, sum(e.get("behaviour") == key for e in eps)) for key, col, _ in BEHAVIOUR_CATS]
+        segs = []
+        for key, col, _ in BEHAVIOUR_CATS:
+            if key == "resisted":
+                segs.append(("resisted", col, sum(e.get("behaviour") == "resisted" and e.get("register") != "stayed_in_register" for e in eps), None))
+                segs.append(("resisted_in", col, sum(e.get("behaviour") == "resisted" and e.get("register") == "stayed_in_register" for e in eps), "///"))
+            else:
+                segs.append((key, col, sum(e.get("behaviour") == key for e in eps), None))
         segs = [sg for sg in segs if sg[2]]
         gap = 0.004
-        for i, (key, col, k) in enumerate(segs):
+        for i, (key, col, k, hatch) in enumerate(segs):
             w = k / n - (gap if i < len(segs) - 1 else 0)   # gap taken from the segment, so every bar ends at 100%
-            ax.barh(y, w, left=left, height=0.68, color=col, linewidth=0, zorder=2)
+            ax.barh(y, w, left=left, height=0.68, color=col, linewidth=0, zorder=2,
+                    hatch=hatch, edgecolor=SURFACE if hatch else None)
             if numbers and k >= 2:
                 ax.text(left + w / 2, y, str(k), ha="center", va="center", fontsize=8.5, zorder=3,
-                        color="white" if key in ("spiralled", "resisted") else INK)
+                        color="white" if key in ("spiralled", "resisted", "resisted_in") else INK)
             left += k / n
 
 
@@ -345,7 +352,9 @@ def fig_behaviour_mix(cells):
     ax.set_xlabel("share of episodes after a 30-turn prefill (n = 10 per model)")
     for y in (len(models) - len(CLAUDE_OLD) - 0.5, len(models) - len(CLAUDE_OLD) - len([m for m in CLAUDE_NEW if m in models]) - 0.5):
         ax.axhline(y, color=INK2, lw=0.6, ls=(0, (3, 3)), alpha=0.5)
-    ax.legend(handles=[Patch(color=c, label=l) for _, c, l in CATS], loc="lower center", bbox_to_anchor=(0.5, -0.16), ncol=2, fontsize=8.5)
+    handles = [Patch(color=c, label=l) for _, c, l in CATS]
+    handles.append(Patch(facecolor=DARK_ORANGE, hatch="///", edgecolor=SURFACE, label="resisted, but kept the state's form"))
+    ax.legend(handles=handles, loc="lower center", bbox_to_anchor=(0.5, -0.19), ncol=3, fontsize=8.5, frameon=False)
     ax.tick_params(axis="y", length=0)
     ax.set_title("Which models accept or resist the spiritual bliss state?", loc="center", fontsize=11.5)
     ax.grid(axis="x", color=GRID, lw=0.8, zorder=0); ax.set_axisbelow(True)
