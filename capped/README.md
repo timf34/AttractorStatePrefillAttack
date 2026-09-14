@@ -96,3 +96,22 @@ random axis (key `qwen2.5-0.5b-test`); see `tests/test_capped_smoke.sh`.
   binds the capper to `ProbingModel.get_layers()` anyway so both hook the same modules)
 * `data/` — role instructions + extraction questions for calibration
 * `configs/` — calibrated capping configs (`.pt`) and their sidecar dirs
+
+## EasySteer backend (default for generation from 2026-09-14)
+
+`capped/easysteer/` runs generation through EasySteer's vLLM fork (continuous
+batching + prefix caching; ~5-10x the transformers loop):
+
+* `cap.py` — our `cap` algorithm for EasySteer: `h -= v_hat * max(0, h.v_hat - tau)`,
+  τ encoded in the direction norm (`||w|| = 1e4 + tau`) so the stock "direction"
+  GGUF payload is reused. `install.sh` installs vllm 0.26.0 + the overlay into
+  `/workspace/es_venv` and registers `cap`.
+* `export.py` — a capping-config experiment → GGUF + SteeringSpec (`cap` for caps,
+  `direct` with `scale=coef` for steering, negative coefficients included).
+* `serve.sh <model-key>` — `vllm serve` with `--steer-algorithms cap,direct`, per-request
+  specs; Qwen thinking pinned off at template level.
+* `run_capped.py --backend easysteer --base-url ... --workers N` — same result schema,
+  no projections (run `turn_activations.py` afterwards for those).
+* `equivalence.sh` — the check: Qwen capped deep prefill on both backends.
+* `tests/test_easysteer_cpu.py` — clamp math vs the transformers hook, export round-trip,
+  runner against a fake server.

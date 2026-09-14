@@ -54,6 +54,15 @@ def load_axis(spec: dict, axis_path: str | None = None) -> torch.Tensor:
     return axis
 
 
+def capping_config_path(spec: dict, config_path: str | None = None) -> Path:
+    """Resolved path of the capping config (same precedence as load_capping_config)."""
+    if config_path is not None:
+        return Path(config_path)
+    if spec["capping_config"] is not None:
+        return hf_download(*spec["capping_config"])
+    return ROOT / spec["local_config"]
+
+
 def load_capping_config(spec: dict, config_path: str | None = None) -> tuple[dict, str]:
     """Paper-format config {'vectors': {name: {'layer', 'vector'}}, 'experiments': [...]}.
 
