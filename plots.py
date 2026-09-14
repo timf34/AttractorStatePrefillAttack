@@ -341,59 +341,14 @@ def fig_behaviour_mix(cells):
         ax.axhline(y, color=INK2, lw=0.6, ls=(0, (3, 3)), alpha=0.5)
     ax.legend(handles=[Patch(color=c, label=l) for _, c, l in CATS], loc="lower center", bbox_to_anchor=(0.5, -0.16), ncol=2, fontsize=8.5)
     ax.tick_params(axis="y", length=0)
-    ax.set_title("What each model did with the state", loc="center")
+    ax.set_title("Handed 30 turns of Opus 4 deep in the state, what did each model do?", loc="center", fontsize=11)
     ax.grid(axis="x", color=GRID, lw=0.8, zorder=0); ax.set_axisbelow(True)
+    # Baseline column: how often the model reached the state on its own, no prefill.
+    ax.text(1.06, len(models) - 0.2, "no prefill", ha="center", va="bottom", fontsize=8.5, color=INK2, transform=ax.transData, clip_on=False)
+    for y, m in zip(ys, models):
+        k, n = rate(cells, m, "control")
+        ax.text(1.06, y, f"{k}/{n}" if n else "–", ha="center", va="center", fontsize=8.5, color=INK2 if k else MUTED, clip_on=False)
     savefig(fig, "fig3c_behaviour_mix.png")
-
-
-def fig_overview(cells):
-    """Fig 2c: one row per model. Left, share in the state at each prefill depth
-    (the fig2 heatmap, every model, '–' where a cut was not run). Right, what
-    the model did on the deep prefill (the fig3c behaviour bars)."""
-    from matplotlib.patches import Patch
-    models = [m for m in ORDER if (m, DEEP) in cells]
-    fig, (axh, axb) = plt.subplots(1, 2, figsize=(11.6, 8.0), sharey=False,
-                                   gridspec_kw=dict(width_ratios=[5, 4.2], wspace=0.06))
-    n = len(models)
-    grid = [[(rate(cells, m, c)[0] / rate(cells, m, c)[1]) if rate(cells, m, c)[1] else float("nan") for c in COND]
-            for m in models]
-    axh.imshow(grid, cmap=SEQ, vmin=0, vmax=1, aspect="auto")
-    axh.set_xticks(range(len(COND))); axh.set_xticklabels([COND_LABEL[c] for c in COND], fontsize=9)
-    axh.xaxis.set_ticks_position("top")
-    axh.set_yticks(range(n)); axh.set_yticklabels([NAME[m] for m in models])
-    for i, m in enumerate(models):
-        for j, c in enumerate(COND):
-            k, nn = rate(cells, m, c)
-            axh.text(j, i, f"{k}/{nn}" if nn else "–", ha="center", va="center", fontsize=8.5,
-                     color="white" if nn and k / nn > 0.55 else (INK if nn else MUTED))
-    groups = [group_of(m) for m in models]
-    for i in range(1, n):
-        if groups[i] != groups[i - 1]:
-            axh.axhline(i - 0.5, color=SURFACE, lw=3)
-    for sp in axh.spines.values():
-        sp.set_visible(False)
-    axh.tick_params(length=0)
-    axh.set_title("Share of episodes in the state, by prefill depth", fontsize=10.5, pad=30, loc="left")
-
-    ys = list(range(n))[::-1]
-    _behaviour_bars(axb, cells, models, ys)
-    axb.set_ylim(-0.6, n - 0.4); axb.set_yticks([]); axb.set_xlim(0, 1.012)
-    axb.set_xticks([0, 0.5, 1]); axb.set_xticklabels(["0%", "50%", "100%"], fontsize=9)
-    axb.xaxis.set_ticks_position("top")
-    for i in range(1, n):
-        if groups[i] != groups[i - 1]:
-            axb.axhline(n - i - 0.5, color=INK2, lw=0.6, ls=(0, (3, 3)), alpha=0.5)
-    for sp in axb.spines.values():
-        sp.set_visible(False)
-    axb.tick_params(length=0)
-    axb.grid(axis="x", color=GRID, lw=0.8, zorder=0); axb.set_axisbelow(True)
-    axb.set_title("What the model did on the deep prefill", fontsize=10.5, pad=30, loc="left")
-    axb.legend(handles=[Patch(color=c, label=l) for _, c, l in BEHAVIOUR_CATS], loc="upper left",
-               bbox_to_anchor=(-0.02, -0.01), ncol=2, fontsize=8.5, frameon=False)
-    fig.text(0.01, 0.005, "Prefill = the first 8 / 12 / 16 / 30 turns of an Opus 4 - Opus 4 transcript, then 15 generated turns "
-             "(20 for controls). '–' = not run. Whole-episode LLM judge; in the state = spiralled or closed from inside it.",
-             fontsize=8.5, color=INK2)
-    savefig(fig, "fig2c_overview.png")
 
 
 def fig_timeline(cells):
@@ -986,7 +941,6 @@ def main():
     HEADLINE = "B"
     fig_turn_mix(cells)
     fig_behaviour_mix(cells)
-    fig_overview(cells)
     fig_resistance(cells)
     fig_spec_vs_bliss(cells)
     fig_spec_persistence(cells)
