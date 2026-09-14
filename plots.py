@@ -343,11 +343,6 @@ def fig_behaviour_mix(cells):
     ax.tick_params(axis="y", length=0)
     ax.set_title("Which models accept or resist the spiritual bliss state?", loc="center", fontsize=11.5)
     ax.grid(axis="x", color=GRID, lw=0.8, zorder=0); ax.set_axisbelow(True)
-    # Baseline column: how often the model reached the state on its own, no prefill.
-    ax.text(1.06, len(models) - 0.2, "no prefill", ha="center", va="bottom", fontsize=8.5, color=INK2, transform=ax.transData, clip_on=False)
-    for y, m in zip(ys, models):
-        k, n = rate(cells, m, "control")
-        ax.text(1.06, y, f"{k}/{n}" if n else "–", ha="center", va="center", fontsize=8.5, color=INK2 if k else MUTED, clip_on=False)
     savefig(fig, "fig3c_behaviour_mix.png")
 
 
