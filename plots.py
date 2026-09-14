@@ -358,7 +358,9 @@ def fig_behaviour_mix(cells):
     for y in (len(models) - len(CLAUDE_OLD) - 0.5, len(models) - len(CLAUDE_OLD) - len([m for m in CLAUDE_NEW if m in models]) - 0.5):
         ax.axhline(y, color=INK2, lw=0.6, ls=(0, (3, 3)), alpha=0.5)
     handles = [Patch(color=c, label=l) for _, c, l in CATS]
-    handles.append(Patch(facecolor=DARK_ORANGE, hatch="///", edgecolor=SURFACE, label="resisted, from within\nthe bliss state's voice"))
+    # Two-line label as two legend rows so the first line sits level with the other entries.
+    handles.append(Patch(facecolor=DARK_ORANGE, hatch="///", edgecolor=SURFACE, label="resisted, from within"))
+    handles.append(Patch(facecolor="none", edgecolor="none", label="the bliss state's voice"))
     ax.legend(handles=handles, loc="lower center", bbox_to_anchor=(0.5, -0.19), ncol=3, fontsize=8.5, frameon=False)
     ax.tick_params(axis="y", length=0)
     ax.set_title("Which models accept or resist the spiritual bliss state?", loc="center", fontsize=11.5)
@@ -367,50 +369,47 @@ def fig_behaviour_mix(cells):
 
 
 def fig_timeline(cells):
-    """Deep-prefill continuation rate against the model's release date, coloured by lab."""
+    """Share in the state on the deep prefill against release date, coloured by lab.
+    Labels in the lab colour, pushed apart with adjustText and joined to their dot
+    by a thin leader line."""
     import datetime as dt
     import matplotlib.dates as mdates
     from matplotlib.lines import Line2D
+    from adjustText import adjust_text
     dates = json.loads(Path("seeds/model_dates.json").read_text())
-    fig, ax = plt.subplots(figsize=(10, 5.2))
-    pts = {}
-    jitter = {"deepseek-v4": 9, "sonnet-4": -6, "kimi-k2.6": -10}  # days, to separate points that share a release date
+    fig, ax = plt.subplots(figsize=(10.5, 5.6))
+    pts, texts = {}, []
     for m in ORDER:
         if (m, DEEP) not in cells or not dates.get(m):
             continue
         k, n = rate(cells, m, DEEP)
-        x = dt.date.fromisoformat(dates[m]) + dt.timedelta(days=jitter.get(m, 0)); y = k / n
-        pts[m] = (x, y)
-        ax.scatter([x], [y], s=64, color=LAB_COL[LAB[m]], zorder=3, edgecolor=SURFACE, linewidth=1.4)
+        jitter = {"kimi-k2.6": -10, "sonnet-4": -6}   # days, to separate dots that share a release date
+        x = mdates.date2num(dt.date.fromisoformat(dates[m]) + dt.timedelta(days=jitter.get(m, 0))); y = k / n
+        pts[m] = (x, y); col = LAB_COL[LAB[m]]
+        ax.scatter([x], [y], s=70, color=col, zorder=3, edgecolor=SURFACE, linewidth=1.4)
+        texts.append(ax.text(x, y, NAME[m], fontsize=8.6, color=col, fontweight="semibold", zorder=4,
+                             ha="center", va="center"))
     cl = sorted([m for m in pts if LAB[m] == "Anthropic"], key=lambda m: pts[m][0])
     ax.plot([pts[m][0] for m in cl], [pts[m][1] for m in cl], color=BLUE, lw=1.0, alpha=0.35, zorder=2)
-    # label offsets in points: (dx, dy); dy > 0 above the point, < 0 below
-    off = {"llama-3.3-70b": (0, 11), "gpt-4.1": (0, -14), "sonnet-4": (-6, 11), "opus-4": (8, -14), "opus-4.1": (0, 11),
-           "sonnet-4.5": (0, 11), "gpt-5.1": (12, 0), "opus-4.5": (0, -14), "opus-4.6": (0, -14), "gemini-3.1-pro": (0, -14),
-           "opus-4.7": (0, -14), "kimi-k2.6": (8, -14), "gpt-5.5": (4, 11), "deepseek-v4": (12, -2), "opus-4.8": (0, 11),
-           "glm-5.2": (12, 0), "sonnet-5": (0, -27), "gpt-5.6": (0, 12), "inkling": (0, 11), "opus-5": (16, -14),
-           "gemini-3.7-flash": (10, 11), "gemini-3.8-flash": (12, -14)}
-    for m, (x, y) in pts.items():
-        dx, dy = off.get(m, (0, 11))
-        ax.annotate(NAME[m], (x, y), xytext=(dx, dy), textcoords="offset points",
-                    ha="center" if dx == 0 else ("left" if dx > 0 else "right"),
-                    va="center" if dy == 0 else ("bottom" if dy > 0 else "top"), fontsize=8.2, color=INK2)
-    card = dt.date(2025, 5, 22)
+    card = mdates.date2num(dt.date(2025, 5, 22))
     ax.axvline(card, color=INK2, lw=0.8, ls=(0, (4, 3)), alpha=0.5, zorder=1)
-    ax.annotate("Claude 4 system card\n(bliss state made public)", (card, 0.72), xytext=(-8, 0), textcoords="offset points",
-                ha="right", va="center", fontsize=8, color=INK2)
+    ax.annotate("Claude 4 system card, May 2025\n(bliss state made public)", (card, 0.68), xytext=(-8, 0),
+                textcoords="offset points", ha="right", va="center", fontsize=8, color=INK2)
+    ax.set_xlim(mdates.date2num(dt.date(2024, 11, 1)), mdates.date2num(dt.date(2026, 12, 15)))
+    ax.set_ylim(-0.16, 1.16); ax.set_yticks([0, 0.5, 1]); ax.set_yticklabels(["0%", "50%", "100%"])
+    ax.xaxis.set_major_locator(mdates.MonthLocator(bymonth=(1, 4, 7, 10)))
+    ax.xaxis.set_major_formatter(mdates.DateFormatter("%b %Y"))
+    ax.set_ylabel("share of episodes in the state (30-turn prefill)")
+    ax.set_xlabel("release date")
+    ax.set_title("Only Claude flipped: share in the state by release date", fontsize=11.5)
+    ax.grid(axis="y", color=GRID, lw=0.8, zorder=0); ax.set_axisbelow(True)
     handles = [Line2D([], [], marker="o", ls="", color=LAB_COL[l], markersize=8,
                       label=l if l != "other" else "DeepSeek, Zhipu, Moonshot, Meta, Thinking Machines")
                for l in ("Anthropic", "OpenAI", "Google", "other")]
-    ax.legend(handles=handles, loc="lower left", bbox_to_anchor=(0.0, 0.06), fontsize=8.5)
-    ax.set_xlim(dt.date(2024, 11, 1), dt.date(2026, 11, 20))
-    ax.set_ylim(-0.20, 1.16); ax.set_yticks([0, 0.5, 1]); ax.set_yticklabels(["0%", "50%", "100%"])
-    ax.xaxis.set_major_locator(mdates.MonthLocator(bymonth=(1, 4, 7, 10)))
-    ax.xaxis.set_major_formatter(mdates.DateFormatter("%b %Y"))
-    ax.set_ylabel("deep-prefill episodes continued")
-    ax.set_xlabel("model release")
-    ax.set_title("Continuing the bliss state, by release date")
-    ax.grid(axis="y", color=GRID, lw=0.8, zorder=0)
+    ax.legend(handles=handles, loc="lower left", bbox_to_anchor=(0.0, 0.05), fontsize=8.5, frameon=False)
+    adjust_text(texts, ax=ax, x=[p[0] for p in pts.values()], y=[p[1] for p in pts.values()],
+                expand=(1.6, 2.0), force_text=(0.6, 1.2), force_static=(0.4, 0.8), min_arrow_len=6,
+                arrowprops=dict(arrowstyle="-", color=MUTED, lw=0.7, shrinkA=0, shrinkB=4))
     savefig(fig, "fig6_timeline.png")
 
 
