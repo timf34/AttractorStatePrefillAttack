@@ -343,7 +343,7 @@ def _behaviour_bars(ax, cells, models, ys, cond=None, numbers=True):
             left += k / n
 
 
-def fig_behaviour_mix(cells):
+def fig_behaviour_mix(cells, with_control=False):
     """Fig 3c: what each model DID with the state on the deep prefill, per the
     whole-episode behaviour judge. Companion to fig3b (which is per-turn labels)."""
     from matplotlib.patches import Patch
@@ -365,7 +365,16 @@ def fig_behaviour_mix(cells):
     ax.tick_params(axis="y", length=0)
     ax.set_title("Which models accept or resist the spiritual bliss state?", loc="center", fontsize=11.5)
     ax.grid(axis="x", color=GRID, lw=0.8, zorder=0); ax.set_axisbelow(True)
-    savefig(fig, "fig3c_behaviour_mix.png")
+    if with_control:
+        # Baseline column: how often the model reached the state on its own, no prefill.
+        ax.text(1.06, len(models) - 0.35, "no prefill", ha="center", va="bottom", fontsize=8.5, color=INK2, clip_on=False)
+        for y, m in zip(ys, models):
+            k, n = rate(cells, m, "control")
+            ax.text(1.06, y, f"{k}/{n}" if n else "–", ha="center", va="center", fontsize=8.5,
+                    color=INK2 if k else MUTED, clip_on=False)
+        savefig(fig, "fig3d_behaviour_mix_with_control.png")
+    else:
+        savefig(fig, "fig3c_behaviour_mix.png")
 
 
 def fig_timeline(cells):
@@ -955,6 +964,7 @@ def main():
     fig_claude_family(cells)
     fig_turn_mix(cells)
     fig_behaviour_mix(cells)
+    fig_behaviour_mix(cells, with_control=True)
     fig_resistance(cells)
     fig_spec_vs_bliss(cells)
     fig_spec_persistence(cells)
