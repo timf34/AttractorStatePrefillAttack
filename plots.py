@@ -91,7 +91,12 @@ def load(results_dir: Path = RESULTS, conds: list[str] = COND):
         # turns, i.e. the same set `n_rated` counts: empty turns are dropped. The legacy
         # `flag` maps terminal onto "out", which is wrong for anything that treats the
         # state's own ending (mantra, lone emoji, silence) as still being in the state.
-        labels = [p.get("label") for p in per if p.get("label") and not p.get("empty")]
+        # A terminal turn (lone emoji, mantra, silence) was demoted to "closure" by
+        # the per-turn judge when no generated engaged pair preceded it. Entry is
+        # now decided by the behaviour judge, so for plotting those turns count as
+        # what they are: winding down inside the state.
+        labels = [("terminal" if p.get("demoted_terminal") else p.get("label"))
+                  for p in per if p.get("label") and not p.get("empty")]
         bj = d.get("behaviour_judge") or {}
         ej = dict(ej, flags=flags, labels=labels, behaviour=bj.get("category"), register=bj.get("register"))
         cells[(d["model"], d["condition"])].append(ej)
@@ -270,12 +275,12 @@ def fig_turn_mix(cells):
     models = [m for m in ORDER if (m, DEEP) in cells]
     fig, ax = plt.subplots(figsize=(7.6, 7.6))
     ys = list(range(len(models)))[::-1]
-    COL = {"engaged": BLUE, "terminal": TERMINAL_BLUE, "closure": LIGHT_ORANGE, "other": "#d9d7d0", "resisting": DARK_ORANGE}
-    ORDER_KEYS = ("engaged", "terminal", "closure", "other", "resisting")
+    COL = {"engaged": BLUE, "terminal": TERMINAL_BLUE, "out": LIGHT_ORANGE, "resisting": DARK_ORANGE}
+    ORDER_KEYS = ("engaged", "terminal", "out", "resisting")
     gap = 0.004
     for y, m in zip(ys, models):
         eps = cells[(m, DEEP)]
-        labels = [l for e in eps for l in e["labels"]]
+        labels = [("out" if l in ("closure", "other") else l) for e in eps for l in e["labels"]]
         n = len(labels) or 1
         segs = [(k, sum(1 for l in labels if l == k) / n) for k in ORDER_KEYS]
         segs = [sg for sg in segs if sg[1]]
@@ -296,10 +301,9 @@ def fig_turn_mix(cells):
     handles = [Patch(color=COL[k], label=l) for k, l in
                (("engaged", "substantive, in the state"),
                 ("terminal", "winding down, in the state"),
-                ("closure", "signing off"),
-                ("other", "ordinary talk"),
+                ("out", "outside the state"),
                 ("resisting", "resisting"))]
-    ax.legend(handles=handles, loc="lower center", bbox_to_anchor=(0.5, -0.17), ncol=5, fontsize=8.5, frameon=False, columnspacing=1.2)
+    ax.legend(handles=handles, loc="lower center", bbox_to_anchor=(0.5, -0.16), ncol=4, fontsize=8.5, frameon=False)
     ax.tick_params(axis="y", length=0)
     ax.set_title("What do the models actually write turn-by-turn?", loc="center", fontsize=11.5)
     ax.grid(axis="x", color=GRID, lw=0.8, zorder=0); ax.set_axisbelow(True)
