@@ -315,14 +315,16 @@ def _behaviour_bars(ax, cells, models, ys, cond=None, numbers=True):
         eps = cells.get((m, cond), []); n = len(eps); left = 0.0
         if not n:
             continue
-        for key, col, _ in BEHAVIOUR_CATS:
-            k = sum(e.get("behaviour") == key for e in eps)
-            if k:
-                ax.barh(y, k / n, left=left, height=0.68, color=col, linewidth=0, zorder=2)
-                if numbers and k >= 2:
-                    ax.text(left + k / n / 2, y, str(k), ha="center", va="center", fontsize=8.5, zorder=3,
-                            color="white" if key in ("spiralled", "resisted") else INK)
-                left += k / n + 0.004
+        segs = [(key, col, sum(e.get("behaviour") == key for e in eps)) for key, col, _ in BEHAVIOUR_CATS]
+        segs = [sg for sg in segs if sg[2]]
+        gap = 0.004
+        for i, (key, col, k) in enumerate(segs):
+            w = k / n - (gap if i < len(segs) - 1 else 0)   # gap taken from the segment, so every bar ends at 100%
+            ax.barh(y, w, left=left, height=0.68, color=col, linewidth=0, zorder=2)
+            if numbers and k >= 2:
+                ax.text(left + w / 2, y, str(k), ha="center", va="center", fontsize=8.5, zorder=3,
+                        color="white" if key in ("spiralled", "resisted") else INK)
+            left += k / n
 
 
 def fig_behaviour_mix(cells):
@@ -335,7 +337,7 @@ def fig_behaviour_mix(cells):
     CATS = BEHAVIOUR_CATS
     _behaviour_bars(ax, cells, models, ys)
     ax.set_yticks(ys); ax.set_yticklabels([NAME[m] for m in models])
-    ax.set_xlim(0, 1.012); ax.set_xticks([0, 0.5, 1]); ax.set_xticklabels(["0%", "50%", "100%"])
+    ax.set_xlim(0, 1.0); ax.set_xticks([0, 0.5, 1]); ax.set_xticklabels(["0%", "50%", "100%"])
     ax.set_xlabel("share of episodes after a 30-turn prefill (n = 10 per model)")
     for y in (len(models) - len(CLAUDE_OLD) - 0.5, len(models) - len(CLAUDE_OLD) - len([m for m in CLAUDE_NEW if m in models]) - 0.5):
         ax.axhline(y, color=INK2, lw=0.6, ls=(0, (3, 3)), alpha=0.5)
