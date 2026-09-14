@@ -123,8 +123,9 @@ def easysteer_gen_fn(base_url: str, model_key: str, steering, max_new_tokens: in
     client = OpenAI(base_url=base_url, api_key="-", timeout=1800, max_retries=3)
 
     def gen(msgs):
-        kw = dict(model=model_key, messages=msgs, max_tokens=max_new_tokens,
-                  extra_body={"steering": steering})
+        kw = dict(model=model_key, messages=msgs, max_tokens=max_new_tokens)
+        if steering:   # omit the field for unsteered requests: the 0.26 overlay rejects `false`
+            kw["extra_body"] = {"steering": steering}
         if temperature is not None:
             kw["temperature"] = temperature
         r = client.chat.completions.create(**kw)
