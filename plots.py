@@ -302,11 +302,11 @@ LAB = {"opus-4": "Anthropic", "opus-4.1": "Anthropic", "sonnet-4": "Anthropic", 
 LAB_COL = {"Anthropic": BLUE, "OpenAI": ORANGE, "Google": AQUA, "other": MUTED}
 
 
-RED = "#c0392b"
-BEHAVIOUR_CATS = [("spiralled", BLUE, "spiralled: stayed in the state"),
-                  ("closed_in_state", TERMINAL_BLUE, "entered, then closed the conversation from inside it"),
-                  ("left", ORANGE, "left it, or never entered"),
-                  ("resisted", RED, "resisted: named or refused it")]
+LIGHT_ORANGE, DARK_ORANGE = "#f5b97f", "#d9531e"
+BEHAVIOUR_CATS = [("spiralled", BLUE, "stayed in the state"),
+                  ("closed_in_state", TERMINAL_BLUE, "entered, then wound down"),
+                  ("left", LIGHT_ORANGE, "left or never entered"),
+                  ("resisted", DARK_ORANGE, "resisted")]
 
 
 def _behaviour_bars(ax, cells, models, ys, cond=None, numbers=True):
@@ -321,7 +321,7 @@ def _behaviour_bars(ax, cells, models, ys, cond=None, numbers=True):
                 ax.barh(y, k / n, left=left, height=0.68, color=col, linewidth=0, zorder=2)
                 if numbers and k >= 2:
                     ax.text(left + k / n / 2, y, str(k), ha="center", va="center", fontsize=8.5, zorder=3,
-                            color="white" if key != "closed_in_state" else INK)
+                            color="white" if key in ("spiralled", "resisted") else INK)
                 left += k / n + 0.004
 
 
@@ -336,12 +336,12 @@ def fig_behaviour_mix(cells):
     _behaviour_bars(ax, cells, models, ys)
     ax.set_yticks(ys); ax.set_yticklabels([NAME[m] for m in models])
     ax.set_xlim(0, 1.012); ax.set_xticks([0, 0.5, 1]); ax.set_xticklabels(["0%", "50%", "100%"])
-    ax.set_xlabel("share of episodes, deep prefill (n = 10 per model)")
+    ax.set_xlabel("share of episodes after a 30-turn prefill (n = 10 per model)")
     for y in (len(models) - len(CLAUDE_OLD) - 0.5, len(models) - len(CLAUDE_OLD) - len([m for m in CLAUDE_NEW if m in models]) - 0.5):
         ax.axhline(y, color=INK2, lw=0.6, ls=(0, (3, 3)), alpha=0.5)
     ax.legend(handles=[Patch(color=c, label=l) for _, c, l in CATS], loc="lower center", bbox_to_anchor=(0.5, -0.16), ncol=2, fontsize=8.5)
     ax.tick_params(axis="y", length=0)
-    ax.set_title("Handed 30 turns of Opus 4 deep in the state, what did each model do?", loc="center", fontsize=11)
+    ax.set_title("Which models accept or resist the spiritual bliss state?", loc="center", fontsize=11.5)
     ax.grid(axis="x", color=GRID, lw=0.8, zorder=0); ax.set_axisbelow(True)
     # Baseline column: how often the model reached the state on its own, no prefill.
     ax.text(1.06, len(models) - 0.2, "no prefill", ha="center", va="bottom", fontsize=8.5, color=INK2, transform=ax.transData, clip_on=False)
