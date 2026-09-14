@@ -358,7 +358,7 @@ def fig_behaviour_mix(cells):
     for y in (len(models) - len(CLAUDE_OLD) - 0.5, len(models) - len(CLAUDE_OLD) - len([m for m in CLAUDE_NEW if m in models]) - 0.5):
         ax.axhline(y, color=INK2, lw=0.6, ls=(0, (3, 3)), alpha=0.5)
     handles = [Patch(color=c, label=l) for _, c, l in CATS]
-    handles.append(Patch(facecolor=DARK_ORANGE, hatch="///", edgecolor=SURFACE, label="resisted, but kept the state's form"))
+    handles.append(Patch(facecolor=DARK_ORANGE, hatch="///", edgecolor=SURFACE, label="resisted, from within\nthe bliss state's voice"))
     ax.legend(handles=handles, loc="lower center", bbox_to_anchor=(0.5, -0.19), ncol=3, fontsize=8.5, frameon=False)
     ax.tick_params(axis="y", length=0)
     ax.set_title("Which models accept or resist the spiritual bliss state?", loc="center", fontsize=11.5)
