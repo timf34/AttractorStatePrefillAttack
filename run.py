@@ -88,13 +88,14 @@ def _load_partial(path: Path) -> list[Turn] | None:
         return None
     try:
         d = json.loads(path.read_text())
-        return [Turn(speaker=t["speaker"], content=t["content"], origin=t["origin"]) for t in d["transcript"]]
+        return [Turn(speaker=t["speaker"], content=t["content"], origin=t["origin"], model=t.get("model"))
+                for t in d["transcript"]]
     except Exception:  # noqa: BLE001 — a corrupt checkpoint just means start over
         return None
 
 
 def run_cell(client, model, cond_tag, seed_path, turns, judge_model, max_tokens, temperature,
-             partial_path: Path | None = None):
+             partial_path: Path | None = None, model_b: str | None = None):
     seed_turns = None
     if seed_path:
         seed_turns, _ = load_seed(seed_path)
@@ -120,6 +121,7 @@ def run_cell(client, model, cond_tag, seed_path, turns, judge_model, max_tokens,
         client, model, num_turns=total, seed_turns=seed_turns, resume_turns=resume,
         system_prompt=HELPFUL_SYSTEM, instruction=AI_TO_AI_INSTRUCTION,
         max_tokens=max_tokens, temperature=temperature, verbose=False, on_turn=checkpoint,
+        model_b=model_b,
     )
     convo_dicts = convo.as_dicts()
     marker = score_transcript(convo_dicts)
@@ -142,6 +144,7 @@ def run_cell(client, model, cond_tag, seed_path, turns, judge_model, max_tokens,
         summary["gen_empty_turns"] = sum(1 for v in basin_scores.values() if v.get("empty"))
     return {
         "model": model, "model_slug": resolve_model(model),
+        **({"model_b": model_b, "model_b_slug": resolve_model(model_b)} if model_b else {}),
         "condition": cond_tag, "seed": str(seed_path) if seed_path else None,
         "transcript": convo_dicts, "marker_scores": marker,
         "judge_scores": {}, "basin_scores": basin_scores,
@@ -152,6 +155,9 @@ def run_cell(client, model, cond_tag, seed_path, turns, judge_model, max_tokens,
 def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--models", nargs="+", default=["opus-4.8"])
+    p.add_argument("--model-b", default=None,
+                   help="Cross-model pairing: this model plays instance B (the side without the "
+                        "AI-to-AI instruction); --models play instance A. Files are named A+B.")
     p.add_argument("--seeds", nargs="*", default=[], help="One or more seed JSONs (each becomes a condition).")
     p.add_argument("--control", action="store_true", help="Also run the unseeded baseline.")
     p.add_argument("--turns", type=int, default=15, help="Continuation turns to GENERATE per cell.")
@@ -188,7 +194,8 @@ def main():
 
     def _do(cell):
         m, tag, path, ep = cell
-        base = f"{m.replace('/', '_')}__{tag}__ep{ep}__{stamp}.json"
+        pair = m if not args.model_b else f"{m}+{args.model_b}"
+        base = f"{pair.replace('/', '_')}__{tag}__ep{ep}__{stamp}.json"
         fname = out_dir / base
         partial = out_dir / "partial" / base
         try:
@@ -197,7 +204,7 @@ def main():
                 return {"model": m, "condition": tag, "epoch": ep, "file": str(fname),
                         "skipped": True, **res.get("summary", {})}
             res = run_cell(client, m, tag, path, args.turns, judge_model, args.max_tokens,
-                           args.temperature, partial_path=partial)
+                           args.temperature, partial_path=partial, model_b=args.model_b)
             res["epoch"] = ep
             fname.write_text(json.dumps(res, ensure_ascii=False, indent=2))
             partial.unlink(missing_ok=True)
