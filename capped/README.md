@@ -14,6 +14,8 @@ Both are also on OpenRouter (`google/gemma-4-31b-it`, `qwen/qwen3-32b`), which i
 where the uncapped API baseline was run with the ordinary `run.py` (aliases
 `gemma-4-31b`, `qwen3-32b` in `attractor/client.py`, thinking disabled).
 
+Results and the full table of cells are in [RESULTS.md](RESULTS.md).
+
 ## Design
 
 Identical protocol to `run.py`: the 30-turn deep prefill
