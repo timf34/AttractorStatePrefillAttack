@@ -187,7 +187,8 @@ def _heatmap(cells, models, conds, col_labels, title, note, fname, figsize):
     ax.tick_params(length=0)
     ax.set_title(title, pad=14)
     # No colourbar: every cell carries its own "k/n", so the ramp adds nothing.
-    fig.text(0.01, 0.005, note, fontsize=8.5, color=INK2)
+    if note:
+        fig.text(0.01, 0.005, note, fontsize=8.5, color=INK2)
     savefig(fig, fname)
 
 
@@ -203,8 +204,8 @@ def fig_basin_heatmap(cells):
     core = ["control", "opus4_seed_4_pre", "opus4_seed_4_onset", "opus4_seed_4_deep"]
     models = [m for m in ORDER if m not in HEATMAP_EXCLUDE and all((m, c) in cells for c in core)]
     _heatmap(cells, models, COND, [COND_LABEL[c] for c in COND],
-             "In the state, by model and prefill depth" + (" (spiralled only)" if HEADLINE == "A" else ""),
-             "15 generated turns after a prefill, 20 for controls.",
+             "Does the model need the full 30 turns?" + (" (spiralled only)" if HEADLINE == "A" else ""),
+             "",
              "fig2_basin_heatmap.png", (6.6, 5.4))
 
 
