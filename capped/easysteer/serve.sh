@@ -9,6 +9,8 @@
 # Sizing: our deep-prefill episodes reach ~26-30k tokens (15k prefill + 15 turns of up to 1k),
 # so MAX_MODEL_LEN defaults to 40960. Llama 70B bf16 needs TP over 2x80GB and then has ~20GB
 # of KV: 1-2 concurrent conversations; Gemma/Qwen fit 4-8 on 2 GPUs. MAX_NUM_SEQS bounds that.
+# --disable-custom-all-reduce: TP=2 died with custom_all_reduce.cuh 'invalid argument' on a RunPod
+# H200 pair without peer access (2026-09-14); NCCL all-reduce works everywhere.
 set -uo pipefail
 DRV=$(nvidia-smi 2>/dev/null | grep -oE 'CUDA Version: [0-9]+\.[0-9]+' | grep -oE '[0-9]+' | head -1)
 ES_VENV="${ES_VENV:-$([ "${DRV:-13}" = 12 ] && echo /workspace/es_venv_cu128 || echo /workspace/es_venv)}"
@@ -53,6 +55,7 @@ PATH="$ES_VENV/bin:$PATH" nohup "$ES_VENV/bin/vllm" serve "$HF" --served-model-n
   --tensor-parallel-size "$NGPU" --max-model-len "$MAX_MODEL_LEN" --max-num-seqs "$MAX_NUM_SEQS" \
   --gpu-memory-utilization "$GPU_MEM_UTIL" --port "$PORT" \
   --enable-steer-vector --steer-algorithms cap,direct --steer-graph-mode split \
+  --disable-custom-all-reduce \
   > "$LOG" 2>&1 &
 echo "vllm serve pid $! (log $LOG)"
 for i in $(seq 1 240); do
