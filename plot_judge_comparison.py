@@ -41,14 +41,14 @@ def draw(cut, label, out):
     models = [m for m in ORDER if n[m]]
     if not models: return
     fig, axes = plt.subplots(1, 2, figsize=(12, 0.34*len(models)+2.6), sharey=True, gridspec_kw=dict(wspace=0.08))
-    fig.patch.set_facecolor("#fcfcfb"); y = list(range(len(models)))[::-1]; nmax = max(n.values())
+    fig.patch.set_facecolor("#ffffff"); y = list(range(len(models)))[::-1]; nmax = max(n.values())
     for ax, (title, data, cats) in zip(axes, [("Per-turn judge (old): entry = engaged pair", old, OLD), ("Whole-episode behaviour judge (new)", new, NEW)]):
-        ax.set_facecolor("#fcfcfb")
+        ax.set_facecolor("#ffffff")
         for yi, m in zip(y, models):
             left = 0
             for key, lab, col in cats:
                 k = data[m].get(key, 0)
-                if k: ax.barh(yi, k, left=left, color=col, height=0.72, edgecolor="#fcfcfb", linewidth=1.5)
+                if k: ax.barh(yi, k, left=left, color=col, height=0.72, edgecolor="#ffffff", linewidth=1.5)
                 if k >= 2: ax.text(left+k/2, yi, str(k), ha="center", va="center", fontsize=8.5, color="#fff" if col in (RED,BLUE,GREEN) else "#222")
                 left += k
         ax.set_xlim(0, nmax); ax.set_xticks(range(0, nmax+1, 2)); ax.set_title(title, fontsize=11, loc="left", pad=10)

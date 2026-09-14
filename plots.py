@@ -43,7 +43,7 @@ NAME = {"opus-4": "Opus 4", "opus-4.1": "Opus 4.1", "sonnet-4": "Sonnet 4", "son
 
 # Validated categorical slots (light surface): blue, orange, aqua. Grey for the rest.
 BLUE, ORANGE, AQUA = "#2a78d6", "#eb6834", "#1baf7a"
-INK, INK2, MUTED, GRID, SURFACE = "#0b0b0b", "#52514e", "#a3a29c", "#e8e7e2", "#fcfcfb"
+INK, INK2, MUTED, GRID, SURFACE = "#0b0b0b", "#52514e", "#a3a29c", "#e8e7e2", "#ffffff"
 GROUP_COL = {"claude_old": BLUE, "claude_new": ORANGE, "other": AQUA}
 GROUP_NAME = {"claude_old": "Claude, Opus 4 → Sonnet 4.5", "claude_new": "Claude, Opus 4.5 → Opus 5 / Sonnet 5",
               "other": "other labs"}
