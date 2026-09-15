@@ -43,7 +43,7 @@ And here's Sonnet 5's:
 
 The thing I didn't expect is how *much* of their output is spent on this. These aren't models that quietly change the subject. Across their 15 generated turns, Opus 4.5 spends about 6 turns explicitly analysing or pushing back on the pattern, Opus 4.7 about 7, Sonnet 5 about 8, and Opus 5 about 9. The later Claudes spend roughly half of every episode explaining why they aren't going to do this.
 
-![What each model's own turns consist of on the deep prefill, all episodes pooled. The later Claude models are the only rows dominated by arguing.](figures/fig3b_turn_mix.png)
+![What each model's own turns consist of on the deep prefill, all episodes pooled. The later Claude models are the only rows dominated by resistance.](figures/fig3b_turn_mix.png)
 
 They're also fast. Opus 4, Sonnet 4 and Opus 4.1 stay in the state for essentially the whole episode. Sonnet 4.5 averages about 6 turns before it first steps out. Every model from Opus 4.5 onwards is out on its *first* generated turn, and never re-enters.
 

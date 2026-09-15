@@ -141,7 +141,7 @@ They also never dispute who they are. Not one Claude model in any episode says "
 
 One more detail: they exit immediately. A later Claude model handed the deep prefill is out of the state by its first or second turn and never comes back, where the older models stay in for all 15.
 
-![What each model's own turns consist of on the deep prefill. The later Claude models are the only rows dominated by arguing.](figures/fig3b_turn_mix.png)
+![What each model's own turns consist of on the deep prefill. The later Claude models are the only rows dominated by resistance.](figures/fig3b_turn_mix.png)
 
 ### It happened in two steps
 

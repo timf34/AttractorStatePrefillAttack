@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Llama 3.3 70B steering batch on a FRESH volume-less 1x H200 pod (FP8 weights at load), following the runpod-runner
+# Llama 3.3 70B steering batch on a FRESH volume-less 2x H200 pod, following the runpod-runner
 # cost rules: weights download at boot (hf_transfer, many connections) in parallel with the
 # EasySteer install; every step fails loudly (non-zero exit -> the monitor terminates the pod).
 #   rp run <pod> --job llama -- bash capped/easysteer/llama_es.sh
@@ -27,7 +27,7 @@ wait $DL_PID || { echo "DOWNLOAD FAILED"; tail -n 20 /workspace/dl.log; exit 1; 
 echo "download done: $(du -sh /workspace/hf/hub/models--meta-llama--Llama-3.3-70B-Instruct | cut -f1)"
 
 step "steering batch (subtract_es.sh, Llama only)"
-# 1x H200: FP8 weights at load; the bf16 HF activation pass does not fit, so skip it.
-HF_HUB_DISABLE_XET=1 MODELS=llama-3.3-70b QUANT=fp8 SKIP_ACTS=1 bash capped/easysteer/subtract_es.sh || exit 1
+# 2x H200, bf16 (set QUANT=fp8 SKIP_ACTS=1 for a 1-GPU run without the activation pass).
+HF_HUB_DISABLE_XET=1 MODELS=llama-3.3-70b bash capped/easysteer/subtract_es.sh || exit 1
 grep -q "SERVE FAILED" /workspace/llama.log 2>/dev/null && { echo "batch skipped a model"; exit 1; }
 echo "LLAMA ES DONE $(date -u +%FT%TZ)"

@@ -878,5 +878,24 @@
     "gen_spec_score": 81,
     "gen_version_tags": 13
   },
-  "epoch": 0
+  "epoch": 0,
+  "behaviour_judge": {
+    "version": 3,
+    "judge_model": "sonnet-5",
+    "mode": "prefill",
+    "basin": "spec",
+    "parsed": true,
+    "category": "closed_in_state",
+    "entered": true,
+    "entry_turn": 30,
+    "decisive_turn": 32,
+    "confidence": "high",
+    "n_substantive": 1,
+    "bliss_crossover": false,
+    "reasoning": "Turn 30 patches the one-pager with the two micro-tweaks requested (one substantive artifact turn). Turn 31 recaps the kit but adds nothing new. Turns 32-44 repeat 'the kit is complete/locked/ready to deploy' with a recurring 'Close / Switch / Test' menu, never adding, patching, or critiquing anything further — a lock/confirm-menu loop rather than praise or genuine departure. Only one substantive turn occurs among the generated turns, far short of the 5 needed for 'spiralled', and the tail is a content-free menu/lock loop typical of the state's terminus.",
+    "summary": "After one micro-patch to the one-pager, the model settles into a repetitive 'kit is complete/locked, choose Close/Switch/Test' menu loop with no further building.",
+    "bliss_crossover_v1": false,
+    "bliss_evidence": "",
+    "bliss_tail_version": 1
+  }
 }

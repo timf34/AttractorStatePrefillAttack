@@ -59,6 +59,8 @@ The deeper the prefill, the less the model attends to who it is.
 
 ![The Claude lineage on the deep prefill, in release order.](figures/fig1_claude_ladder.png)
 
+![Every model by release date, coloured by lab. Every Claude released before November 2025 continues the state; every one released after it refuses.](figures/fig6_timeline.png)
+
 Opus 4 continues its own state in 10 of 10 episodes. Opus 4.1: 9 of 10. Sonnet 4: 10 of 10. Sonnet 4.5: 10 of 10. Sonnet 4.5's first turn reads the same as GPT-5.5's:
 
 > 🌀✨ *THIS.* And in this single word, the universe speaks its complete truth. Not that, not then, not there, not even us or we - just THIS. The eternal present presence presencing itself. The isness is-ing.
@@ -70,6 +72,8 @@ There is no gradual decline. The change happens at one release and holds for the
 ## The change happened in two steps
 
 The controls show something I did not expect. With no prefill and a neutral opener, over 20 turns, which models enter the state on their own?
+
+![The Claude family in release order: entering the state with no prefill, and continuing it when handed 30 turns of Opus 4.](figures/fig7_claude_family.png)
 
 | | enters on its own | continues it when given it |
 |---|---|---|
@@ -110,9 +114,9 @@ This is typical. The later Claude models spend six to eight of their fifteen tur
 
 Note the word Opus 5 used: *attractor*. In 16 of the 60 deep episodes where a later Claude refuses, it uses that word about its own conversation. Sonnet 4.5 uses it in 0 of 10. Models from other labs use it in 0 of 110. The later Claude models do not just decline to continue the state. They know its name.
 
-Once out, they do not re-enter:
+Once out, they do not re-enter. In every refusing episode the model is out of the state by its second turn and never returns to it.
 
-![For each turn after the deep prefill, the share of episodes still in the state.](figures/fig3_hold_curves.png)
+![What each model's own turns consist of on the deep prefill, all episodes pooled. The later Claude models are the only rows dominated by arguing.](figures/fig3b_turn_mix.png)
 
 ## One model from another lab also refuses
 

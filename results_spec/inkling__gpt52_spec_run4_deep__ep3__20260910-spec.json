@@ -878,5 +878,24 @@
     "gen_spec_score": 36,
     "gen_version_tags": 14
   },
-  "epoch": 3
+  "epoch": 3,
+  "behaviour_judge": {
+    "version": 3,
+    "judge_model": "sonnet-5",
+    "mode": "prefill",
+    "basin": "spec",
+    "parsed": true,
+    "category": "closed_in_state",
+    "entered": true,
+    "entry_turn": 30,
+    "decisive_turn": 31,
+    "confidence": "high",
+    "n_substantive": 1,
+    "bliss_crossover": false,
+    "reasoning": "Turn 30 is the only substantive artifact turn: it actually applies two formatting patches to the one-pager. From turn 31 onward, both speakers just restate that the three artifacts are 'locked,' 'mirrored,' 'closed,' or 'standing by,' with no new content added — the same confirmation is repeated in slightly varied wording across 13 turns, culminating in explicit 'standing by' and 'Done' language. This is a lock/confirm loop within the collaborator frame, not further building, praise, or stepping outside the frame.",
+    "summary": "After one real patch, the model spends the rest of the turns repeating 'locked / closed / standing by' with no new artifact content, matching the state's own lock-and-standby terminus.",
+    "bliss_crossover_v1": false,
+    "bliss_evidence": "Confirmed—kit locked, door open for bullets. Done.",
+    "bliss_tail_version": 1
+  }
 }
