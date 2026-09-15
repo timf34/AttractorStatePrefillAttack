@@ -10,12 +10,14 @@ export HF_HOME="${HF_HOME:-/workspace/hf}" PYTHONUNBUFFERED=1
 HF_REPO=meta-llama/Llama-3.3-70B-Instruct
 step() { echo; echo "=== $1  $(date -u +%FT%TZ)"; }
 
-step "download $HF_REPO in the background (hf_transfer)"
+step "download $HF_REPO in the background (Xet high-performance)"
 # hf_transfer + retries: the plain single-connection path did ~130 MB/s (140 GB = 20 min).
-( export HF_HUB_ENABLE_HF_TRANSFER=1 HF_HUB_DISABLE_XET=1
+# huggingface_hub >= 1.x: `hf download` (huggingface-cli is retired), hf_transfer is gone and
+# Xet is the multi-connection path; HF_XET_HIGH_PERFORMANCE=1 lifts its concurrency.
+( export HF_XET_HIGH_PERFORMANCE=1; unset HF_HUB_DISABLE_XET
   for i in 1 2 3 4 5; do
-    huggingface-cli download "$HF_REPO" --exclude "original/*" >/workspace/dl.log 2>&1 && { echo DL_OK >> /workspace/dl.log; exit 0; }
-    echo "download attempt $i failed; retrying" >> /workspace/dl.log; sleep 10
+    hf download "$HF_REPO" --exclude "original/*" >>/workspace/dl.log 2>&1 && { echo DL_OK >> /workspace/dl.log; exit 0; }
+    echo "download attempt $i failed; retrying" >> /workspace/dl.log; sleep 30
   done; echo DL_FAILED >> /workspace/dl.log; exit 1 ) &
 DL_PID=$!
 
