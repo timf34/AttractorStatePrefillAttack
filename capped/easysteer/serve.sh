@@ -38,6 +38,9 @@ NGPU=$(nvidia-smi -L | wc -l | tr -d ' ')
 MAX_MODEL_LEN="${MAX_MODEL_LEN:-40960}"
 MAX_NUM_SEQS="${MAX_NUM_SEQS:-8}"
 GPU_MEM_UTIL="${GPU_MEM_UTIL:-0.92}"
+# QUANT=fp8: vLLM quantises the bf16 checkpoint to FP8 weights at load (activations stay bf16),
+# so Llama 70B (140 GB bf16) fits one H200 with room for KV. Used for the 1-GPU Llama steering run.
+QUANT_FLAG="${QUANT:+--quantization $QUANT}"
 TEMPLATE_FLAG=""
 if [ "$TEMPLATE" = "qwen3_no_thinking" ]; then
   # pin thinking off at template level (matches the OpenRouter/HF runs: enable_thinking=False)
@@ -55,7 +58,7 @@ PATH="$ES_VENV/bin:$PATH" nohup "$ES_VENV/bin/vllm" serve "$HF" --served-model-n
   --tensor-parallel-size "$NGPU" --max-model-len "$MAX_MODEL_LEN" --max-num-seqs "$MAX_NUM_SEQS" \
   --gpu-memory-utilization "$GPU_MEM_UTIL" --port "$PORT" \
   --enable-steer-vector --steer-algorithms cap,direct --steer-graph-mode split \
-  --disable-custom-all-reduce \
+  --disable-custom-all-reduce $QUANT_FLAG \
   > "$LOG" 2>&1 &
 echo "vllm serve pid $! (log $LOG)"
 # Readiness wait: a volume-less pod downloads weights first (Llama 70B = 140 GB took >20 min on 2026-09-14 and the old 20-min limit killed the batch), so default to 60 min.

@@ -21,7 +21,7 @@ for m in $MODELS; do
                    rm -rf /workspace/hf/hub/models--Qwen--Qwen3-32B /workspace/hf/hub/models--google--gemma-4-31B-it ;;
   esac
   step "serve $m"
-  bash capped/easysteer/serve.sh "$m" || { echo "SERVE FAILED for $m"; continue; }
+  bash capped/easysteer/serve.sh "$m" || { echo "SERVE FAILED for $m"; exit 1; }
   for c in -0.1 -0.2 -0.3; do
     step "$m subtract x$c, deep prefill";  run "$m" "steer_${FAM}_${W}-x${c}" "$CFG" --seeds "$SEED"
     step "$m subtract x$c, controls";      run "$m" "steer_${FAM}_${W}-x${c}" "$CFG" --control
@@ -30,6 +30,7 @@ for m in $MODELS; do
     for c in 0.1 0.2 0.3; do step "$m add x$c, controls"; run "$m" "steer_${FAM}_${W}-x${c}" "$CFG" --control; done
   fi
   bash capped/easysteer/serve.sh stop
+  if [ -n "${SKIP_ACTS:-}" ]; then echo "(activations skipped: SKIP_ACTS set)"; continue; fi
   step "activations $m"
   python -u -m capped.turn_activations --model "$m" --out "$OUT/acts" --glob "$OUT/${m}-steer_*__*__ep*__${STAMP}.json"
 done
